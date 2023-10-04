@@ -1,4 +1,4 @@
-package com.maxrun.application.photoapp.event;
+package com.maxrun.application.event;
 
 import java.util.List;
 

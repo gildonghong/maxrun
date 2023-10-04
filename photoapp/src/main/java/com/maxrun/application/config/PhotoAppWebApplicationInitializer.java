@@ -1,4 +1,4 @@
-package com.maxrun.application.photoapp.config;
+package com.maxrun.application.config;
 
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;

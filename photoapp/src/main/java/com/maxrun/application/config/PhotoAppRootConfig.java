@@ -1,4 +1,4 @@
-package com.maxrun.application.photoapp.config;
+package com.maxrun.application.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

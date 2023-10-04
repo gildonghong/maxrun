@@ -1,4 +1,4 @@
-package com.maxrun.application.photoapp.config;
+package com.maxrun.application.config;
 
 import javax.sql.DataSource;
 
