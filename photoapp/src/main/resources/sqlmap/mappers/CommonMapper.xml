@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sabang.common.sd.service.CommonMapper">
+
+<select id="getPointScoreList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	{
+		call sp_selectPointScoreList(#{strtDate})
+	}	
+</select>
+
+<select id="getPointDetailsList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	{
+		call sp_selectPointScoreDetails(#{emp_serno}, #{strtDate}, #{endDate})
+	}	
+</select>
+
+<select id="getIncentiveRangkingList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	{
+		call sp_selectIncentiveRangkingList(#{strtDate}, #{endDate})
+	}	
+</select>
+
+<select id="getWorkList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	{
+		call sp_selectWorkList(#{strtDate}, #{endDate})
+	}	
+</select>
+
+<select id="getMamaFeeList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	{
+		call sp_selectMamaFeeList(#{strtDate}, #{endDate})
+	}	
+</select>
+
+<select id="getRealIncentive" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	{
+		call sp_deductPenalty(#{strtDate}, #{endDate}, #{emp_serno})
+	}	
+</select>
+
+
+</mapper>
