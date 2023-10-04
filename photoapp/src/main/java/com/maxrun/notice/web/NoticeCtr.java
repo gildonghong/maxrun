@@ -1,4 +1,4 @@
-package com.maxrun.web;
+package com.maxrun.notice.web;
 
 public class NoticeCtr {
 
