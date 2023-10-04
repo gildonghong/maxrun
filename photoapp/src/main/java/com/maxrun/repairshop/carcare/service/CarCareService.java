@@ -1,4 +1,4 @@
-package com.maxrun.carcare.service;
+package com.maxrun.repairshop.carcare.service;
 
 import java.util.List;
 import java.util.Map;

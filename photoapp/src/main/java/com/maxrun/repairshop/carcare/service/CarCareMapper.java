@@ -1,4 +1,4 @@
-package com.maxrun.carcare.service;
+package com.maxrun.repairshop.carcare.service;
 
 import java.sql.SQLException;
 import java.util.List;
