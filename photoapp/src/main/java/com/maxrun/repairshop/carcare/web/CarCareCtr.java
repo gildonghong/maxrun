@@ -1,4 +1,4 @@
-package com.maxrun.repairshop.carcare;
+package com.maxrun.repairshop.carcare.web;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.maxrun.common.photoapp;
+package com.maxrun.common;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;

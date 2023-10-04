@@ -1,4 +1,4 @@
-package com.maxrun.common.photoapp;
+package com.maxrun.common;
 
 import javax.servlet.ServletContext;
 
