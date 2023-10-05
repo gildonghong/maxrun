@@ -10,6 +10,6 @@ public class LoginService {
 	@Autowired
 	LoginMapper loginMapper;
 	public Map<String, Object> login(Map<String, Object> param) throws Exception{
-		return param;
+		return loginMapper.login(param);
 	}
 }

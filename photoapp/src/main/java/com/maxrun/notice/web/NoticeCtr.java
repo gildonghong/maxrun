@@ -22,31 +22,19 @@ public class NoticeCtr {
 	
 	@ResponseBody
 	@GetMapping("/notice/list")
-	public List<Map<String, Object>> getNoticeList(Map<String, Object> param) {
-		return null;
+	public List<Map<String, Object>> getNoticeList(Map<String, Object> param)throws Exception{
+		return noticeService.getNoticeList(param);
 	}
 	
 	@ResponseBody
 	@GetMapping("/notice/list/{noticeNo}")
-	public List<Map<String, Object>> getNoticeDetails(@PathVariable("noticeNo") int noticeNo) {
-		return null;
+	public Map<String, Object> getNoticeDetails(@PathVariable("noticeNo") int noticeNo)throws Exception{
+		return noticeService.getNoticeDetails(noticeNo);
 	}
 	
 	@ResponseBody
 	@PostMapping("/notice")
-	public List<Map<String, Object>> regNotice(Map<String, Object> param) {
-		List<Map<String, Object>> lst = null;
-		try {
-			noticeService.regNotice(param);
-			return noticeService.getNoticeList(param);
-		}catch(Exception ex) {
-			ex.printStackTrace();
-			lst = new ArrayList<Map<String, Object>>();
-			Map<String, Object> mp = new HashMap<String, Object>();
-			mp.put("errDesc", ex.getMessage());
-			
-			lst.add(mp);
-		}
-		return lst;
+	public List<Map<String, Object>> regNotice(Map<String, Object> param) throws Exception{
+		return noticeService.regNotice(param);
 	}
 }

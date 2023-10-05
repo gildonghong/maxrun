@@ -20,7 +20,7 @@ public class NoticeService {
 		return noticeMapper.regNotice(param);
 	}
 	
-	public void getNoticeDetails(int noticeNo)throws Exception{
-		noticeMapper.getNoticeDetails(noticeNo);
+	public Map<String, Object> getNoticeDetails(int noticeNo)throws Exception{
+		return noticeMapper.getNoticeDetails(noticeNo);
 	}
 }
