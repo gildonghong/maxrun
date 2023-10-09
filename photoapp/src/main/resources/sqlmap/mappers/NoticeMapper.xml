@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maxrun.notice.service.NoticeMapper">
+<!-- PROCEDURE [dbo].[sp_getNoticeList]	@from_date	smalldatetime,
+											@to_date	smalldatetime,
+											@pageNo		int -->
+<select id="getNoticeList" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
+	{
+		call sp_getNoticeList(#{from_date},#{to_date}, #{pageNo})
+	}	
+</select>
+<!-- [dbo].[sp_regNotice]	@noticeNo		bigint=null,
+								@notice			nvarchar(1000), 
+								@regUserId		bigint,
+								@outNoticeNo	bigint	output -->
+<select id="regNotice" parameterType="java.util.HashMap" >
+	{
+		call sp_regNotice(#{noticeNo},#{notice}, #{wokerNo}, #{noticeNo})
+	}	
+</select>
+</mapper>

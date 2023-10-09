@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maxrun.application.common.auth.service.JWTTokenMapper">
+<!-- sp_regRefreshToken	@tokenNo	bigint=null,
+									@workerNo	bigint,
+									@tokenType	nvarchar(10),
+									@token		nvarchar(max),
+									@outTokenNo	bigint -->
+	<insert id="regRefreshToken" parameterType="java.util.HashMap" statementType="CALLABLE">
+		{					
+			call sp_regRefreshToken	(#{workerNo}, #{tokenType}, #{token})
+		}
+	</insert>
+
+	<delete id="deleteRefreshToken" parameterType="map">
+		{
+			call sp_deleteRefreshToken	(#{workerNo}) 
+		}
+	</delete>
+	
+	<select id="getRefreshToken" parameterType="map" statementType="CALLABLE" resultType="CamelCaseHashMap">
+		{
+			call sp_getRefreshToken (#{workerNo})
+		}
+	</select>
+	
+</mapper>

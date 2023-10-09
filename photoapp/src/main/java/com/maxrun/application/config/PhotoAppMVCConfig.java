@@ -13,12 +13,16 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.EncodedResourceResolver;
 
+import com.maxrun.application.common.interceptor.AuthInterceptor;
 import com.maxrun.http.message.json.XssDefenderableMapper;
 
 @Configuration
@@ -116,5 +120,25 @@ public class PhotoAppMVCConfig implements WebMvcConfigurer{
                 .setCachePeriod(60) // 리소스에 캐시 설정 가능
                 .resourceChain(true) // 리졸버 체인 설정 :
                 .addResolver(new EncodedResourceResolver()); // Request Header의 Accept-Encoding 정보를 보고 resource를 gzip형태로 매핑?
+    }
+    
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+    	InterceptorRegistration ir = registry.addInterceptor(createInterceptor(AuthInterceptor.class));
+    	
+    	ir.excludePathPatterns("/index");
+    	ir.excludePathPatterns("/notice/list");
+    	ir.excludePathPatterns("/login");
+    	ir.excludePathPatterns("/logout");
+    }
+    
+    @Bean
+    public HandlerInterceptor createInterceptor(Class clazz) {
+    	HandlerInterceptor ret = null;
+    	if (clazz.equals(AuthInterceptor.class)) {
+    		ret = new AuthInterceptor();
+    	}
+    	
+    	return ret;
     }
 }

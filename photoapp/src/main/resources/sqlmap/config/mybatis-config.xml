@@ -8,4 +8,8 @@
 		<setting name="callSettersOnNulls" value="false"/> <!--true: 쿼리 결과 필드가 null인 경우, 누락이 되서 나오는데 누락이 안되게 하는 설정-->
         <setting name="jdbcTypeForNull" value="NULL"/> <!-- 쿼리에 보내는 파라메터가 null인 경우, 오류 발생하는 것 방지  예) #{search.user} -->
 	</settings>
+	
+	<typeAliases>
+		<typeAlias type="com.maxrun.application.common.ibatis.CamelCaseMap" alias="CamelCaseHashMap" />
+	</typeAliases>
 </configuration>

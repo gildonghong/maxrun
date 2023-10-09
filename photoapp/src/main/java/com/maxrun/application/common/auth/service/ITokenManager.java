@@ -17,7 +17,7 @@ public interface ITokenManager {
 	//현재 쿠키에 있는 토큰 정보를 대상으로 인증사용자의 정보를 반환
 	public Map<String, Object> getAuthenticatedUserInformation() throws BizException;	
 	//인증용 토큰 검증
-	public Map<String, Object> evaluateToken() throws IllegalArgumentException, BizException;
+	//public Map<String, Object> evaluateToken() throws IllegalArgumentException, BizException;
 	//원타임토큰 인증
 	public Map<String, Object> evaluateToken(String token) throws BizException;
 	//token을 파라미터로 사용하고자 할때

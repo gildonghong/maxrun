@@ -19,12 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.maxrun.application.common.crytography.DefaultCryptographyHelper;
-import com.maxrun.application.common.crytography.ICryptographyHelper;
 import com.maxrun.application.common.utils.CommonUtils;
 import com.maxrun.application.common.utils.CookieUtils;
 import com.maxrun.application.common.utils.HttpServletUtils;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
+
 import eu.bitwalker.useragentutils.BrowserType;
 import eu.bitwalker.useragentutils.UserAgent;
 import io.jsonwebtoken.ClaimJwtException;
@@ -69,7 +69,8 @@ import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
 
-@Service("jwtTokenManager")
+@SuppressWarnings("deprecation")
+@Service
 public class JWTTokenManager implements ITokenManager {
 
 	protected final Key KEY;
@@ -106,7 +107,7 @@ public class JWTTokenManager implements ITokenManager {
 	public Map<String, Object> generateToken(Map<String, Object> param) throws JwtException, BizException {
 		Map<String, Object> ret = null;
 		try {
-			if(param.get("memberNo") == null && param.get("userId") == null)  throw new BizException(BizExType.PARAMETER_MISSING,"memberNo or userId parameter is required");
+			if(param.get("workerNo") == null)  throw new BizException(BizExType.PARAMETER_MISSING,"workerNo is required");
 
 			long nowMillis = System.currentTimeMillis();
 			long expirationMillis = nowMillis + (MEMBER_ACCESS_TOKEN_EXPIRATION_MIN  * 60 * 1000); //(분 ->초 -> 밀리세컨)한 값을 nowMillis에 더한다
@@ -161,16 +162,17 @@ public class JWTTokenManager implements ITokenManager {
 			//생성된 REF 토큰을 DB에 저장, refresh token의 경우 암호화된 토큰값이 생성되므로 DB저장시는 복호화해서 저장한다
 			Map<String, Object> refreshTokenClaims = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(cryptographyHelper.decAES(refreshToken)).getBody();
 			//refresh token을 DB에 저장하기 위해 필요 파라미터를 맵변수에 할당
-			refreshTokenClaims.put("memberNo", param.get("memberNo"));
-			refreshTokenClaims.put("userId", param.get("userId"));
-			refreshTokenClaims.put("tokenTypeCd", "0002800002");
-			refreshTokenClaims.put("expiryDate", expirationMillis);
-			refreshTokenClaims.put("token", cryptographyHelper.decAES(refreshToken));
+			Map<String, Object> tokenInfo = new HashMap<String, Object>();
+			tokenInfo.put("tokenNo",refreshTokenClaims.get("tokenNo"));
+			tokenInfo.put("token", cryptographyHelper.decAES(refreshToken));
+			tokenInfo.put("workerNo", param.get("workerNo"));
+			tokenInfo.put("tokenType", "R");
+			tokenInfo.put("outTokenNo", null);
 			
-			JWTTokenMapper.insertToken(refreshTokenClaims);
+			JWTTokenMapper.regRefreshToken(tokenInfo);
 
 			//App의 경우 쿠키를 expiryTime까지 영속시켜야 함
-			if(CommonUtils.isApp()) {
+			//if(CommonUtils.isApp()) {
 				int exp = Integer.parseInt(evaluateToken(accessToken).get("exp").toString());
 				CookieUtils.addCookie("uAtoken", accessToken,getMaxAge((int)(nowMillis/1000), exp));
 				exp = Integer.parseInt(refreshTokenClaims.get("exp").toString());
@@ -181,16 +183,17 @@ public class JWTTokenManager implements ITokenManager {
 				logger.info("########################### non session cookie created ###############################");
 				logger.info("#########################################################################");
 				logger.info("#########################################################################");
-			}else {
-				CookieUtils.addCookie(param.get("userId") == null?"uAtoken":"mAtoken", accessToken, -1);
-				CookieUtils.addCookie(param.get("userId") == null?"uRtoken":"mRtoken", refreshToken, -1);
-				
-				logger.info("#########################################################################");
-				logger.info("#########################################################################");
-				logger.info("########################### session cookie created###############################");
-				logger.info("#########################################################################");
-				logger.info("#########################################################################");
-			}
+			//}
+//			else {
+//				CookieUtils.addCookie(param.get("userId") == null?"uAtoken":"mAtoken", accessToken, -1);
+//				CookieUtils.addCookie(param.get("userId") == null?"uRtoken":"mRtoken", refreshToken, -1);
+//				
+//				logger.info("#########################################################################");
+//				logger.info("#########################################################################");
+//				logger.info("########################### session cookie created###############################");
+//				logger.info("#########################################################################");
+//				logger.info("#########################################################################");
+//			}
 
 			ret.put("uAtoken", accessToken);
 			ret.put("uRtoken", refreshToken);
@@ -218,112 +221,89 @@ public class JWTTokenManager implements ITokenManager {
 	}
 
 	@Override
-	public Map<String, Object> evaluateToken() throws JwtException, BizException {	//현재 세션의 쿠키로 유지되고 있는 토큰의 유효성을 검증한다
-		Map<String, Object> ret = null;
-		String accessToken = null;
-		
-		if ((HttpServletUtils.getRequest().getRequestURI().contains("/mgr/") || HttpServletUtils.getRequest().getRequestURI().equals("/mgr")) && CookieUtils.getCookieValue("mAtoken") != null) {
-			accessToken = CookieUtils.getCookieValue("mAtoken");
-		}else {
-			if(HttpServletUtils.getRequest().getSession().getAttribute("managerInfo") != null && HttpServletUtils.getRequest().getSession().getAttribute("memberInfo") == null) {
-				accessToken = CookieUtils.getCookieValue("mAtoken");
-			}else if(HttpServletUtils.getRequest().getSession().getAttribute("memberInfo") != null && HttpServletUtils.getRequest().getSession().getAttribute("managerInfo") == null ){
-				accessToken = CookieUtils.getCookieValue("uAtoken");
-			}else {	// uAtoken, mAtoken 모두 존재시
-				if(HttpServletUtils.getRequstHeaderValue("referer").contains("/mgr") || HttpServletUtils.getRequest().getRequestURI().contains("/mgr")) {
-					accessToken = CookieUtils.getCookieValue("mAtoken");
-				}else {
-					accessToken = CookieUtils.getCookieValue("uAtoken");
-				}
-			}
-		}
-
-		try {
-			
-//			if (StringUtils.isEmpty(accessToken)) {
-//				throw new BizException(BizExType.ACCESS_TOKEN_MISSING, "token is null");
+//	public Map<String, Object> evaluateToken() throws JwtException, BizException {	//현재 세션의 쿠키로 유지되고 있는 토큰의 유효성을 검증한다
+//		Map<String, Object> ret = null;
+//		String accessToken = null;
+//		
+//		if ((HttpServletUtils.getRequest().getRequestURI().contains("/mgr/") || HttpServletUtils.getRequest().getRequestURI().equals("/mgr")) && CookieUtils.getCookieValue("mAtoken") != null) {
+//			accessToken = CookieUtils.getCookieValue("mAtoken");
+//		}else {
+//			if(HttpServletUtils.getRequest().getSession().getAttribute("managerInfo") != null && HttpServletUtils.getRequest().getSession().getAttribute("memberInfo") == null) {
+//				accessToken = CookieUtils.getCookieValue("mAtoken");
+//			}else if(HttpServletUtils.getRequest().getSession().getAttribute("memberInfo") != null && HttpServletUtils.getRequest().getSession().getAttribute("managerInfo") == null ){
+//				accessToken = CookieUtils.getCookieValue("uAtoken");
+//			}else {	// uAtoken, mAtoken 모두 존재시
+//				if(HttpServletUtils.getRequstHeaderValue("referer").contains("/mgr") || HttpServletUtils.getRequest().getRequestURI().contains("/mgr")) {
+//					accessToken = CookieUtils.getCookieValue("mAtoken");
+//				}else {
+//					accessToken = CookieUtils.getCookieValue("uAtoken");
+//				}
 //			}
-			
-			Claims claims = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(accessToken).getBody();
-
-			if (!claims.containsKey("guestNo") && this.isStolenToken(accessToken)) { 				
-				// token 탈위여부 체크
-				deleteAllJWTToken();		  				
-				throw new BizException(BizExType.ACCESS_TOKEN_DIRTY,"access token may be counterfeited, so login retry is needed");
-			}else if(claims.containsKey("guestNo") && !StringUtils.isEmpty(CookieUtils.getCookieValue("uRtoken"))) {// 지속쿠키의 access token이 만료된 경우 
-				logger.info("############################################## access token is expired ################################");
-				return reGenerateToken(claims, CookieUtils.getCookieValue("uRtoken"));
-			}
-
-			return claims;
-
-		} catch (ExpiredJwtException e) {
-			if (e.getClaims().containsKey("guestNo")) {
-				return this.generateGuestToken(e.getClaims());
-			} else  return reGenerateToken(e.getClaims(), null);
-		} catch (RequiredTypeException e) {
-			e.printStackTrace();
-			deleteAllJWTToken();
-			throw e;
-		} catch (MalformedJwtException e) {
-			e.printStackTrace();
-			deleteAllJWTToken();
-			throw e;
-		} catch (SignatureException e) {
-			e.printStackTrace();
-			deleteAllJWTToken();
-			throw e;
-		} catch (UnsupportedJwtException e) {
-			e.printStackTrace();
-			deleteAllJWTToken();
-			throw e;
-		} catch (JwtException | SecurityException | IllegalArgumentException e) {
-			if(StringUtils.isEmpty(accessToken)) {	// 지속쿠키 access token 만료된 경우
-				return this.reGenerateToken(null, CookieUtils.getCookieValue("uRtoken"));
-			}
-			e.printStackTrace();
-			deleteAllJWTToken();
-			throw new BizException(BizExType.ACCESS_TOKEN_DIRTY, "access token is not valid, so login retry is needed");
-		} catch(BizException e) {
-			e.printStackTrace();
-			deleteAllJWTToken();
-			throw e;
-		}
-	}
+//		}
+//
+//		try {
+//
+//			Claims claims = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(accessToken).getBody();
+//
+//			if (!claims.containsKey("guestNo") && this.isStolenToken(accessToken)) { 				
+//				// token 탈위여부 체크
+//				deleteAllJWTToken();		  				
+//				throw new BizException(BizExType.ACCESS_TOKEN_DIRTY,"access token may be counterfeited, so login retry is needed");
+//			}else if(claims.containsKey("guestNo") && !StringUtils.isEmpty(CookieUtils.getCookieValue("uRtoken"))) {// 지속쿠키의 access token이 만료된 경우 
+//				logger.info("############################################## access token is expired ################################");
+//				return reGenerateToken(claims, CookieUtils.getCookieValue("uRtoken"));
+//			}
+//
+//			return claims;
+//
+//		} catch (ExpiredJwtException e) {
+//			if (e.getClaims().containsKey("guestNo")) {
+//				return this.generateGuestToken(e.getClaims());
+//			} else  return reGenerateToken(e.getClaims(), null);
+//		} catch (RequiredTypeException e) {
+//			e.printStackTrace();
+//			deleteAllJWTToken();
+//			throw e;
+//		} catch (MalformedJwtException e) {
+//			e.printStackTrace();
+//			deleteAllJWTToken();
+//			throw e;
+//		} catch (SignatureException e) {
+//			e.printStackTrace();
+//			deleteAllJWTToken();
+//			throw e;
+//		} catch (UnsupportedJwtException e) {
+//			e.printStackTrace();
+//			deleteAllJWTToken();
+//			throw e;
+//		} catch (JwtException | SecurityException | IllegalArgumentException e) {
+//			if(StringUtils.isEmpty(accessToken)) {	// 지속쿠키 access token 만료된 경우
+//				return this.reGenerateToken(null, CookieUtils.getCookieValue("uRtoken"));
+//			}
+//			e.printStackTrace();
+//			deleteAllJWTToken();
+//			throw new BizException(BizExType.ACCESS_TOKEN_DIRTY, "access token is not valid, so login retry is needed");
+//		} catch(BizException e) {
+//			e.printStackTrace();
+//			deleteAllJWTToken();
+//			throw e;
+//		}
+//	}
 
 	//매개변수로 전달된 토큰 문자열을 파싱하여 calims를 반환한다
 	public Map<String, Object> evaluateToken(String token) throws BizException {
 
 		try {
-//			if (StringUtils.isEmpty(token)) {
-//				deleteAllJWTToken();
-//				throw new BizException(BizExType.ACCESS_TOKEN_MISSING, "access token is null");
-//			}
 			logger.info("###### token ===>" + token);
-			
+			/*유효한 토큰이 없는 경우,다시 로그인 해야 함*/
 			if (token==null && StringUtils.isEmpty(CookieUtils.getCookieValue("uRtoken"))) return null;
 			
 			Claims claims = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(token).getBody();
 			
 			logger.info("claims==>" + claims);
-			 
-			/*if (!claims.containsKey("guestNo")) { 				
-				if(this.isStolenToken(token)) {//회원의 경우는 token 탈위여부 체크
-					deleteAllJWTToken();		  				
-					throw new BizException(BizExType.ACCESS_TOKEN_DIRTY,"access token may be counterfeited, so login retry is needed");
-				}
-			}else*/ if(claims.containsKey("guestNo") && !StringUtils.isEmpty(CookieUtils.getCookieValue("uRtoken"))) {// 지속쿠키의 access token이 만료된 경우 
-				logger.info("############################################## access token is expired ################################");
-				return reGenerateToken(claims, null);
-			}
 			
 			return claims;
 		} catch (ExpiredJwtException e) {
-			if(e.getClaims().containsKey("guestNo")) {
-				deleteAllJWTToken();
-				return generateGuestToken(e.getClaims());
-			}
-	
 			try {
 				logger.info("############################# access token expired ###############################");
 				return this.reGenerateToken(e.getClaims(), null);
@@ -402,17 +382,11 @@ public class JWTTokenManager implements ITokenManager {
 		JwtParserBuilder builder = Jwts.parserBuilder().setSigningKey(KEY); // Clock Skew를 1분으로 설정
 		
 		logger.info("reguest uri ==>" + HttpServletUtils.getRequest().getRequestURI());
-		String refToken = null;
-		boolean isScpDbAgent=false;	//scpDbAgent 모듈을 사용해서 리프레시 토큰을 암호화했는지 여부
+		String refToken = refreshToken==null?CookieUtils.getCookieValue("uRtoken"):refreshToken;
 
-		if(claims != null && claims.containsKey("userId") && (Boolean)claims.containsKey("isManager")) {
-			refToken = refreshToken==null?CookieUtils.getCookieValue("mRtoken"):refreshToken;
-		}else {
-			refToken = refreshToken==null?CookieUtils.getCookieValue("uRtoken"):refreshToken;
-		}
 		
 		//refToken이 만료되면 브라우저에서 토큰을 삭제하기 때문에 쿠키에 refToken이 null일수 있음
-		if (refToken==null) {
+		if (refToken==null || StringUtils.isEmpty(refToken)) {
 			throw new BizException(BizExType.REF_TOKEN_EXPIRED, "refresh token is expired");
 		}
 
@@ -420,12 +394,12 @@ public class JWTTokenManager implements ITokenManager {
 		Map<String, Object> mp = null;
 		try {
 			// 리프레시 토큰 복호화
-			if(!StringUtils.isEmpty(refToken))	refToken = cryptographyHelper.decAES(refToken);
+			refToken = cryptographyHelper.decAES(refToken);
 			mp = new HashMap<String, Object>();
 			mp.put("token", refToken);
 			// 클라이언트에서 보낸 리프레시 토큰 값이 DB에 있다면 ===> result != null
-			Map<String, Object> refreshTokenFromDB = JWTTokenMapper.selectRefreshToken(mp);
-			// 리프레시 토큰 값이 DB에 없거나 acessToken 없이 접근한 경우라면
+			Map<String, Object> refreshTokenFromDB = JWTTokenMapper.getRefreshToken(mp);
+			// 리프레시 토큰 값이 DB에 없는 경우
 			if (refreshTokenFromDB == null) {	
 				throw new BizException(BizExType.REF_TOKEN_DIRTY, "refresh token may be counterfeited because the refresh token does not exists");
 			}
@@ -437,13 +411,6 @@ public class JWTTokenManager implements ITokenManager {
 					throw new BizException(BizExType.REF_TOKEN_DIRTY, "refresh token may be counterfeited");
 				};
 			}catch (ExpiredJwtException e) { 
-				if(e.getClaims().get("isManager")!=null && (boolean)e.getClaims().get("isManager")) {
-					CookieUtils.deleteCookie("mAtoken");
-					CookieUtils.deleteCookie("mRtoken");
-				} else {
-					CookieUtils.deleteCookie("uAtoken");
-					CookieUtils.deleteCookie("uRtoken");
-				}
 				throw new BizException(BizExType.REF_TOKEN_EXPIRED, "refresh token is expired");		
 			}catch (JwtException | IllegalArgumentException e) { // 토큰없거나 오류
 				this.deleteAllJWTToken();
@@ -456,30 +423,31 @@ public class JWTTokenManager implements ITokenManager {
 			long expirationMillis = nowMillis + (MEMBER_ACCESS_TOKEN_EXPIRATION_MIN * 60 * 1000);
 			jti = (String) refreshClaims.get("jti"); // refreshToken으로 재 생성
 
-			if(CommonUtils.isApp())	expirationMillis =nowMillis + (60*1000); //app에서 접속한 경우 테스트를 위해서 1분짜리 access token을 발행해본다, 운영 적용전에는 코드 삭제 필요
+			//if(CommonUtils.isApp())	expirationMillis =nowMillis + (60*1000); //app에서 접속한 경우 테스트를 위해서 1분짜리 access token을 발행해본다, 운영 적용전에는 코드 삭제 필요
 			
 			if((int)expirationMillis/1000 > Integer.parseInt(refreshClaims.get("exp").toString())) {//accesstoken exp 값이 refshtoken exp 값보다 큰 경우
 				expirationMillis=Integer.parseInt(refreshClaims.get("exp").toString())*1000;
 			}
 			
-			if(claims==null) {	// access token이 만료되서 null로 넘어온 경우 
-				logger.info("####################################### access token is null, so user info get by reftoekn #######################################");
-				mp = new HashMap<String, Object>();
-				mp.put("token", refToken);
-				
-				Map<String, Object> userInfo= JWTTokenMapper.selectUserInfoByToken(mp);
-				userInfo.put("isManager", false);
-				accessToken = createToken(jti, KEY, nowMillis, expirationMillis, userInfo);
-			}else {
-				accessToken = createToken(jti, KEY, nowMillis, expirationMillis, (Map<String, Object>) claims);
-			}
+//			if(claims==null) {	// access token이 만료되서 null로 넘어온 경우 
+//				logger.info("####################################### access token is null, so user info get by reftoekn #######################################");
+//				mp = new HashMap<String, Object>();
+//				mp.put("token", refToken);
+//				
+//				Map<String, Object> userInfo= JWTTokenMapper.getToken(mp);
+//				userInfo.put("isManager", false);
+//				accessToken = createToken(jti, KEY, nowMillis, expirationMillis, userInfo);
+//			}else {
+//				accessToken = createToken(jti, KEY, nowMillis, expirationMillis, (Map<String, Object>) claims);
+//			}
 			
 			//re-generating 된 access token을 쿠키에 저장한다
-			if(CommonUtils.isApp()) {//app에서 접속한 경우 쿠키 유지기한을 expirationMillis 와 동기화시킨다
-				CookieUtils.addCookie("uAtoken", accessToken, (int)this.getMaxAge(nowMillis, expirationMillis));
-			}else {
-				CookieUtils.addCookie(CookieUtils.getCookieValue("uRtoken")!=null?"mAtokedn":"uAtoken", accessToken, -1);	//app에서 접속한 것이 아니므로 세션 쿠키로 저장한다
-			}
+			CookieUtils.addCookie("uAtoken", accessToken, (int)this.getMaxAge(nowMillis, expirationMillis));
+//			if(CommonUtils.isApp()) {//app에서 접속한 경우 쿠키 유지기한을 expirationMillis 와 동기화시킨다
+//				CookieUtils.addCookie("uAtoken", accessToken, (int)this.getMaxAge(nowMillis, expirationMillis));
+//			}else {
+//				CookieUtils.addCookie(CookieUtils.getCookieValue("uRtoken")!=null?"mAtokedn":"uAtoken", accessToken, -1);	//app에서 접속한 것이 아니므로 세션 쿠키로 저장한다
+//			}
 		}catch (JwtException | SQLException | NullPointerException e) {
 			e.printStackTrace();
 			logger.error("reGenerateToken Exception : {}", e.getMessage());

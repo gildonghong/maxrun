@@ -34,6 +34,8 @@ public class PersistenceConfig {
 		
 	    config.setMaximumPoolSize(10);
 	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+	    //config.setDriverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
+	    //config.setDataSourceClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
 	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
 	    config.addDataSourceProperty("portNumber", 1433);
 	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
