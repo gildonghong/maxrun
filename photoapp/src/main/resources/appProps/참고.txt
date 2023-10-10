@@ -1,1 +1,20 @@
+무제한스크롤링 리스트
 https://velog.io/@tygerhwang/Flutter-Http-%ED%86%B5%EC%8B%A0-Rest-API-%ED%98%B8%EC%B6%9C%ED%95%98%EA%B8%B0-1%ED%8E%B8-Http
+
+multipart/form-data를 통해 서버로 파일 업로드하기
+https://blog.yjyoon.dev/flutter/2021/11/24/flutter-02/
+https://velog.io/@jiun-dev/flutter-Dio%EC%99%80-FilePicker%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%98%EC%97%AC-api%EC%84%9C%EB%B2%84%EC%97%90-%ED%8C%8C%EC%9D%BC%EC%9D%84-%EC%A0%84%EC%86%A1%ED%95%B4%EB%B3%B4%EC%9E%90
+http 이용해서 이미지 파일 post로 보내기
+https://marrrang.tistory.com/22
+
+이미지를 불러와서 자르고 압축하고 업로드까지
+https://blog.yjyoon.dev/flutter/2021/11/25/flutter-03/
+
+
+[Flutter]카메라 연동 앱 만들기
+https://youngjumoney.tistory.com/12
+
+https://m.blog.naver.com/eastfever5/222137313950
+
+https://fre2-dom.tistory.com/346
+https://kyungsnim.net/113
