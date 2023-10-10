@@ -22,5 +22,8 @@ https://kyungsnim.net/113
 플러터 공식 코딩 참고페이지
 https://docs.flutter.dev/cookbook
 
+플러터웹소켓
+https://blog.logrocket.com/using-websockets-flutter/
+
 플러터로 로그인 구현
 https://velog.io/@jakob1/Flutter%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%ED%98%84%ED%95%98%EA%B8%B0
