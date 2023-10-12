@@ -1,0 +1,138 @@
+import "package:flutter/material.dart";
+
+void main(){
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  MyApp({super.key});
+
+  var appBar = AppBar( title: Text("MediaQuery Test"),);
+
+  String? deviceHeight;
+  String? windowHeight;
+  String? appBarHeight;
+  String? bodyHeight;
+
+  @override
+  Widget build(BuildContext context) {
+    deviceHeight = MediaQuery.of(context).size.height.toString();
+    windowHeight = MediaQuery.sizeOf(context).height.toString();
+    appBarHeight = appBar.preferredSize.height.toString();
+    bodyHeight = (MediaQuery.sizeOf(context).height - appBar.preferredSize.height).toString();
+    //MediaQuery.of(context).padding.top;
+
+    print('device height==>${deviceHeight}');
+    print('windowHeight height==>${windowHeight}');
+    print('bodyHeight height==>${bodyHeight}');
+    return Placeholder(
+      child: MaterialApp(
+        home: Scaffold(
+          appBar: appBar,
+          body: MyRowInColumn()
+        ),
+      ),
+    );
+  }
+}
+
+class MyRowInColumn extends StatefulWidget {
+  const MyRowInColumn({super.key});
+
+  @override
+  State<MyRowInColumn> createState() => _MyRowInColumnState();
+}
+
+class _MyRowInColumnState extends State<MyRowInColumn> {
+  final GlobalKey _containerKey = GlobalKey();
+  final GlobalKey _containerKey2 = GlobalKey();
+  Size? size;
+  Size? size2;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      setState(() {
+        size = _getSize();
+        size2= _getSize2();
+        print("컬럼높이");
+        print(size?.height.toString());
+        //print(size.height??"NULL".toString());
+      });
+    });
+  }
+
+  Size? _getSize() {
+    if (_containerKey.currentContext != null) {
+      final RenderBox renderBox =
+      _containerKey.currentContext!.findRenderObject() as RenderBox;
+      size = renderBox.size;
+      return size;
+    }
+  }
+
+  Size? _getSize2() {
+    if (_containerKey2.currentContext != null) {
+      final RenderBox renderBox =
+      _containerKey.currentContext!.findRenderObject() as RenderBox;
+      size2 = renderBox.size;
+      return size;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      key: _containerKey,
+      children: [
+        Text("${size?.height}"),
+        Row(
+          key:_containerKey2,
+          children: [
+            // Text("${size2?.height}"),
+            // Spacer(),
+            // Text("${size2?.width}")
+            Container(
+              width: 200.0,
+              child: TextField(
+                decoration: InputDecoration(
+                    label: Text("from")
+                )),)
+
+          ],
+        ),
+      ],
+      // children: [
+      //   Row(
+      //     children: [
+      //       Text("hi"),
+      //       TextField(
+      //       ),
+      //     ],
+      //   )
+      // ],
+    );
+  }
+}
+
+
+// class MyRowInColumn extends StatelessWidget{
+//   const MyRowInColumn({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Row(
+//           children: [
+//             Text("1"), Text("2")
+//           ],
+//         ),
+//         Container(
+//           child: Text("Hi")
+//         )
+//       ],
+//     );
+//   }
+// }
