@@ -30,3 +30,9 @@ https://velog.io/@jakob1/Flutter%EB%A1%9C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EA%B5%AC%
 플러터반응형레이아웃
 https://docs.flutter.dev/ui/layout/responsive/adaptive-responsive
 https://papabee.tistory.com/72
+
+플러터 꿀팁
+https://velog.io/@sangh518/flutter-tips
+
+Datatable 예제
+https://blog.logrocket.com/flutter-datatable-widget-guide-displaying-data/
