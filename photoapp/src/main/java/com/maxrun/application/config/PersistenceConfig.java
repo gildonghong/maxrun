@@ -32,16 +32,25 @@ public class PersistenceConfig {
 	public DataSource getDataSource() {
 	    HikariConfig config = new HikariConfig();
 		
+//	    config.setMaximumPoolSize(10);
+//	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+//	    //config.setDriverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
+//	    //config.setDataSourceClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
+//	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
+//	    config.addDataSourceProperty("portNumber", 1433);
+//	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
+//	    config.addDataSourceProperty("databaseName", "MAX-RUN");
+//	    config.addDataSourceProperty("user", "sa");
+//	    config.addDataSourceProperty("password", "object_1@@4");
+	    
 	    config.setMaximumPoolSize(10);
 	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
-	    //config.setDriverClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
-	    //config.setDataSourceClassName("net.sf.log4jdbc.sql.jdbcapi.DriverSpy");
-	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
+	    config.addDataSourceProperty("serverName","sql16ssd-017.localnet.kr");
 	    config.addDataSourceProperty("portNumber", 1433);
 	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
-	    config.addDataSourceProperty("databaseName", "MAX-RUN");
-	    config.addDataSourceProperty("user", "sa");
-	    config.addDataSourceProperty("password", "object_1@@4");
+	    config.addDataSourceProperty("databaseName", "gildonghon_sd1004");
+	    config.addDataSourceProperty("user", "gildonghon_sd1004");
+	    config.addDataSourceProperty("password", "aoekf1djrdltkd");
 
 	    return new HikariDataSource(config);  //pass in HikariConfig to HikariDataSource
 	}
