@@ -5,11 +5,10 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.maxrun</groupId>
-  <artifactId>photoapp</artifactId>
+  <artifactId>photoappApplicationServer</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
 
-  <name>photapp Maven Webapp</name>
   <!-- FIXME change it to the project's website -->
   <url>http://www.maxrun.com</url>
 
@@ -247,4 +246,5 @@
       </plugins>
     </pluginManagement>
   </build>
+  <name>photoappApplicationServer</name>
 </project>
