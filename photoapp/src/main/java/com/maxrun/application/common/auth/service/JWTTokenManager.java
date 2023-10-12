@@ -160,11 +160,11 @@ public class JWTTokenManager implements ITokenManager {
 			String refreshToken = createToken(jti, KEY, nowMillis, expirationMillis, null);	// refresh token 발행시 claim 파람은 null을 전달한다
 			logger.info("refreshToken 유효기간: " + CommonUtils.getCalendarToFormatString(CommonUtils.getCalendarObject(expirationMillis), "yyyyMMdd HH:mm:ss"));
 			//생성된 REF 토큰을 DB에 저장, refresh token의 경우 암호화된 토큰값이 생성되므로 DB저장시는 복호화해서 저장한다
-			Map<String, Object> refreshTokenClaims = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(cryptographyHelper.decAES(refreshToken)).getBody();
+			Map<String, Object> refreshTokenClaims = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(refreshToken).getBody();
 			//refresh token을 DB에 저장하기 위해 필요 파라미터를 맵변수에 할당
 			Map<String, Object> tokenInfo = new HashMap<String, Object>();
 			tokenInfo.put("tokenNo",refreshTokenClaims.get("tokenNo"));
-			tokenInfo.put("token", cryptographyHelper.decAES(refreshToken));
+			tokenInfo.put("token", refreshToken);
 			tokenInfo.put("workerNo", param.get("workerNo"));
 			tokenInfo.put("tokenType", "R");
 			tokenInfo.put("outTokenNo", null);
@@ -369,7 +369,7 @@ public class JWTTokenManager implements ITokenManager {
 			createdToken = builder.compact();
 			beforeEnc=createdToken;
 			String beforEncStr = createdToken;
-			createdToken = cryptographyHelper.encAES(createdToken);
+			//createdToken = cryptographyHelper.encAES(createdToken);
 		}
 		
 		logger.info("createdToken -->" + Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(beforeEnc).getBody());
@@ -394,7 +394,7 @@ public class JWTTokenManager implements ITokenManager {
 		Map<String, Object> mp = null;
 		try {
 			// 리프레시 토큰 복호화
-			refToken = cryptographyHelper.decAES(refToken);
+			//refToken = cryptographyHelper.decAES(refToken);
 			mp = new HashMap<String, Object>();
 			mp.put("token", refToken);
 			// 클라이언트에서 보낸 리프레시 토큰 값이 DB에 있다면 ===> result != null
