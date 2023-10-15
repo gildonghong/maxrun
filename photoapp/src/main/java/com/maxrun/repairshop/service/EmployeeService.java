@@ -13,12 +13,12 @@ public class EmployeeService {
 	@Autowired 
 	private EmployeeMapper employeeMapper;
 	
-	public List<Map<String, Object>> getEmployeeList(Map<String, Object> param) throws Exception{
-		return employeeMapper.getEmployeeList(param);
+	public List<Map<String, Object>> getWorkerList(Map<String, Object> param) throws Exception{
+		return employeeMapper.getWorkerList(param);
 	}
 	
-	public Map<String, Object> regEmployee(Map<String, Object> param) throws Exception {
-		return employeeMapper.regEmployee(param);
+	public Map<String, Object> regWorker(Map<String, Object> param) throws Exception {
+		return employeeMapper.regWorker(param);
 	}
 	
 }

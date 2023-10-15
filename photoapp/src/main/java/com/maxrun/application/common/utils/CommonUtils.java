@@ -360,7 +360,7 @@ public class CommonUtils {
     	
     	return dateFormat.format(cal.getTime());
     }
-    
+
     public static String getAppContxt() {
     	
     	if (isApp()) return "user";
@@ -403,6 +403,7 @@ public class CommonUtils {
     public static boolean isBase64Encoded(String encodedString) {
     	return org.apache.commons.codec.binary.Base64.isArrayByteBase64(encodedString.getBytes());
     }
+    
     
 //    public static Calendar toEpoch(String timestamp) {
 //    	long epochTime = Instant

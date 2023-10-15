@@ -1,11 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.maxrun.repairshop.carcare.service.CarCareMapper">
+<mapper namespace="com.maxrun.repairshop.carcare.service.CarCareJobMapper">
 
-<select id="getCarList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+<!-- 입고차량별 디렉토리 명칭 반환 -->
+<select id="getRepairReqPhotoPath" parameterType="int" statementType="CALLABLE"  resultType="String">
 	{
-		call sp_getCarList(#{repair_shop_no})
+		call sp_getRepairReqPhotoPath(#{reqNo})
 	}	
 </select>
+
+<!-- 최초 차량 입고시 -->
+<select id="regCarEnterIn" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="String">
+	{
+		call sp_regCarEnterIn(	#{reqNo},
+								#{repairShopNo},
+								#{carLicenseNo},
+								#{venderNo},
+								#{modelNo},
+								#{etcInfo},
+								#{memo},
+								#{ownerName},
+								#{ownerCpNo},
+								#{ownerEmail},
+								#{paymentType},
+								#{workerNo},
+								#{outReqNo, jdbcType=BIGINT, mode=OUT})
+	}
+</select>
+
+<!-- 공정별 작업 사진 파일 등록 -->
+<select id="regPhoto" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="int">
+	{
+		call sp_regPhoto(	#{reqNo},
+							#{fileGroupNo},
+							#{fileSavedPath},
+							#{fileName},
+							#{originalFileName},
+							#{fileSize},
+							#{fileExt},
+							#{departmentNo},
+							#{regUserId},
+							#{outFileNo, jdbcType=BIGINT, mode=OUT},
+							#{outFileGroupNo, jdbcType=BIGINT, mode=OUT})
+	}
+</select>
+
+<select	id="getPhotoList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_getPhotoList( 	#{repairShopNo}, 
+								#{departmentNo})
+	}
+</select>
+
+
 
 </mapper>

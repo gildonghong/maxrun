@@ -9,6 +9,6 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface EmployeeMapper {
 
-	public List<Map<String, Object>> getEmployeeList(Map<String, Object> param) throws SQLException;
-	public Map<String, Object> regEmployee(Map<String, Object> param) throws SQLException;
+	public List<Map<String, Object>> getWorkerList(Map<String, Object> param) throws SQLException;
+	public Map<String, Object> regWorker(Map<String, Object> param) throws SQLException;
 }

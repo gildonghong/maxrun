@@ -296,7 +296,7 @@ public class JWTTokenManager implements ITokenManager {
 		try {
 			logger.info("###### token ===>" + token);
 			/*유효한 토큰이 없는 경우,다시 로그인 해야 함*/
-			if (token==null && StringUtils.isEmpty(CookieUtils.getCookieValue("uRtoken"))) return null;
+			if (token==null && StringUtils.isEmpty(CookieUtils.getCookieValue("uRtoken"))) throw new BizException(BizExType.ACCESS_TOKEN_MISSING, "access token is null");
 			
 			Claims claims = Jwts.parserBuilder().setSigningKey(KEY).build().parseClaimsJws(token).getBody();
 			

@@ -9,10 +9,12 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface CarCareJobMapper {
 
-	public List<Map<String, Object>>getCarCareList(Map<String, Object> param)throws SQLException;
+	public List<Map<String, Object>>getPhotoList(Map<String, Object> param)throws SQLException;
 	public List<Map<String, Object>>getJobList(Map<String, Object> param)throws SQLException;
 	
-	public Map<String, Object> regCarCareJob(Map<String, Object> param)throws SQLException;
+	public void regCarEnterIn(Map<String, Object> param) throws SQLException;
+	public void regPhoto(Map<String, Object> param)throws SQLException;
 	public Map<String, Object> getJobDetails(Map<String, Object> param)throws SQLException;
+	public String getRepairReqPhotoPath(int reqNo)throws SQLException;
 	
 }

@@ -13,6 +13,8 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartResolver;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
@@ -44,6 +46,14 @@ public class PhotoAppMVCConfig implements WebMvcConfigurer{
         System.out.println("PhotoAppMVCConfig.configureViewResolvers, I was called");
     }
     
+    @Bean
+    public MultipartResolver multipartResolver() {
+       CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
+       multipartResolver.setMaxUploadSize(-1); // 30MB
+       multipartResolver.setMaxUploadSizePerFile(-1); // 30MB
+       multipartResolver.setMaxInMemorySize(0);
+       return multipartResolver;
+    }
 //    @Override
 //    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
 //    	System.out.println("SDWebMVCConfig.configureMessageConverters, I was called");
@@ -130,6 +140,7 @@ public class PhotoAppMVCConfig implements WebMvcConfigurer{
     	ir.excludePathPatterns("/notice/list");
     	ir.excludePathPatterns("/login");
     	ir.excludePathPatterns("/logout");
+    	//ir.excludePathPatterns("/repairshop/**");	//당분간 개발동안
     }
     
     @Bean

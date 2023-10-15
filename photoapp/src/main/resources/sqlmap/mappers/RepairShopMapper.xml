@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maxrun.repairshop.service.RepairShopMapper">
+<!-- PROCEDURE [dbo].[sp_getNoticeList]	@from_date	smalldatetime,
+											@to_date	smalldatetime,
+											@pageNo		int -->
+<select id="getRepairShop" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
+	{
+		call sp_getRepairShop(#{repairShopNo})
+	}	
+</select>
+<!-- [dbo].[sp_regNotice]	@noticeNo		bigint=null,
+								@notice			nvarchar(1000), 
+								@regUserId		bigint,
+								@outNoticeNo	bigint	output -->
+<select id="regRepairShop" statementType="CALLABLE" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
+<!-- [dbo].[sp_regRepairShop]	@repairShopNo	integer=null,
+								@repairShopName	nvarchar(100),
+								@photoSavedPath	nvarchar(300),
+								@repairShopEmail	nvarchar(300)=null,
+								@maxrunChargerCpNo	integer,
+								@regUserId	integer,
+								@outRepairShopNo	integer output -->
+
+	{
+		call sp_regRepairShop(#{repairShopNo},#{repairShopName}, #{photoSavedPath}, #{repairShopEmail}, #{maxrunChargerCpNo}, #{regUserId}, #{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
+	}	
+</select>
+
+<select id="getDepartmentList" parameterType="int" statementType="CALLABLE" resultType="CamelCaseHashMap">
+	{
+		call sp_getDepartmentList(#{value})
+	}
+</select>
+
+<select	id="regDepartment" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
+	{
+		call sp_regDepartment(	#{repairShopNo}, 
+								#{departmentNo}, 
+								#{departmentName}, 
+								#{regUserId})
+	}
+</select>
+</mapper>

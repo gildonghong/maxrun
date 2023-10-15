@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import com.maxrun.application.common.auth.service.JWTTokenManager;
@@ -27,16 +28,29 @@ public class AuthInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		log.info(request.getRequestURI() + "에 대해서 preHandle 수행");
-		String uAtoken = CookieUtils.getCookieValue("uAtoken");
 		
+
+        
+//        Map<String, Object> user=jwtTokenManager.evaluateToken(uAtoken);
+//		
+		String uAtoken = CookieUtils.getCookieValue("uAtoken");
+		//String bearerToken =null;
 		if (uAtoken==null) {
-			UserAgent ua= UserAgent.parseUserAgentString(request.getHeader("userAgent"));
+//			UserAgent ua= UserAgent.parseUserAgentString(request.getHeader("userAgent"));
+//			
+//			throw new BizException(BizExType.ACCESS_TOKEN_MISSING, ErrorCode.UNAUTHORIZED.getMessage());
+			uAtoken = request.getHeader("Authorization");
 			
-			throw new BizException(BizExType.ACCESS_TOKEN_MISSING, ErrorCode.UNAUTHORIZED.getMessage());
+	        if (!StringUtils.hasText(uAtoken) || !uAtoken.startsWith("Bearer")) {
+	        	throw new BizException(BizExType.ACCESS_TOKEN_MISSING, ErrorCode.UNAUTHORIZED.getMessage());
+	        }
+	        uAtoken = uAtoken.replace("Bearer ", "");
 		}
 
 		try {
 			Map<String, Object> user=jwtTokenManager.evaluateToken(uAtoken);
+			request.getSession().setAttribute("uAtoken", uAtoken);
+			//CookieUtils.addCookie("uAtoken", uAtoken, 0);
 			return true;
 		}catch(Exception e) {
 			throw e;

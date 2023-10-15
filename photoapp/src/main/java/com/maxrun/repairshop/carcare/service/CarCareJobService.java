@@ -1,6 +1,5 @@
 package com.maxrun.repairshop.carcare.service;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,18 +10,19 @@ public class CarCareJobService {
 	@Autowired
 	private CarCareJobMapper carCareJobMapper;
 	
-	public List<Map<String, Object>>getCarCareList(Map<String, Object> param)throws Exception{
-		return carCareJobMapper.getCarCareList(param);
+	public List<Map<String, Object>>getPhotoList(Map<String, Object> param)throws Exception{
+		return carCareJobMapper.getPhotoList(param);
 	}
 
-	public List<Map<String, Object>>getJobList(Map<String, Object> param)throws Exception{
-		return carCareJobMapper.getJobList(param);
+	public void regCarEnterIn(Map<String, Object> param)throws Exception{
+		carCareJobMapper.regCarEnterIn(param);;
 	}
 	
-	public Map<String, Object> regCarCareJob(Map<String, Object> param)throws Exception{
-		return carCareJobMapper.regCarCareJob(param);
+	public void regPhoto(Map<String, Object>param)throws Exception{
+		carCareJobMapper.regPhoto(param);
 	}
-	public Map<String, Object> getJobDetails(Map<String, Object> param)throws Exception{
-		return carCareJobMapper.getJobDetails(param);
+ 
+	public String getRepairReqPhotoPath(int reqNo)throws Exception{
+		return carCareJobMapper.getRepairReqPhotoPath(reqNo);
 	}
 }
