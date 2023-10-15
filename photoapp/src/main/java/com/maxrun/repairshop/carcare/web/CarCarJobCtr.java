@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.google.gson.Gson;
 import com.maxrun.application.common.auth.service.JWTTokenManager;
 import com.maxrun.application.common.utils.CookieUtils;
 import com.maxrun.application.common.utils.HttpServletUtils;
@@ -42,6 +44,12 @@ public class CarCarJobCtr {
 		
 		param.put("workerNo", claims.get("workerNo"));
 		param.put("repairShopNo", claims.get("repairShopNo"));
+
+		if(param.get("memo")!=null) {
+			Map<String, Object> memoList=(Map<String, Object>)param.get("memo");
+			
+			
+		}
 		
 		carCareJobService.regCarEnterIn(param);
 		ret.put("reqNo", param.get("outReqNo"));
