@@ -25,4 +25,8 @@ public class CarCareJobService {
 	public String getRepairReqPhotoPath(int reqNo)throws Exception{
 		return carCareJobMapper.getRepairReqPhotoPath(reqNo);
 	}
+	
+	public List<Map<String, Object>> getFileListForTransffering()throws Exception{
+		return carCareJobMapper.getFileListForTransffering();
+	}
 }

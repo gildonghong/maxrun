@@ -52,6 +52,10 @@
 	}
 </select>
 
-
+<select id="getFileListForTransffering" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_getFileListForTransffering()
+	}
+</select>
 
 </mapper>
