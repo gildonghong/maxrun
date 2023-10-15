@@ -3,7 +3,10 @@ package com.maxrun.application.config;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
+import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.FrameworkServlet;
@@ -51,6 +54,11 @@ public class PhotoAppWebApplicationInitializer extends AbstractAnnotationConfigD
 	public void onStartup(ServletContext servletContext) throws ServletException {
 		super.onStartup(servletContext);
 		
+		AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
+		applicationContext.register(PhotoAppMVCConfig.class);
+		
+		//servletContext.addListener(new ContextLoaderListener(applicationContext));
+		
 		/* web.xml없이  java config로 필터 등록*/
 		FilterRegistration.Dynamic encodingFilter = servletContext.addFilter("encodingFilter", new CharacterEncodingFilter());
 		encodingFilter.setInitParameter("encoding", "UTF-8");
@@ -59,6 +67,8 @@ public class PhotoAppWebApplicationInitializer extends AbstractAnnotationConfigD
 		
 		FilterRegistration.Dynamic lucyXssFilter = servletContext.addFilter("lucyXssFilter", new XssEscapeServletFilter());
 		lucyXssFilter.addMappingForUrlPatterns(null, true, "/*");
+		
+		
 	}
 
 //	@Override

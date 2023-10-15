@@ -9,7 +9,7 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import com.maxrun.application.common.interceptor.WebSocketHandshakeInterceptor;
-import com.maxrun.application.common.websocket.MaxrunWebSocket;
+import com.maxrun.application.common.websocket.MaxrunWebSocketSvr;
 
 @Configuration
 @EnableWebSocket
@@ -24,7 +24,7 @@ public class PhotoAppWebSocketConfig implements WebSocketConfigurer{
 	//A handler for WebSocket messages and lifecycle events.
 	@Bean
 	public WebSocketHandler getSocketHandler() {
-		return new MaxrunWebSocket();
+		return new MaxrunWebSocketSvr();
 	}
 	
 	@Bean
