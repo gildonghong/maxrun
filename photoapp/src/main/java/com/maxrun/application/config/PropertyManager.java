@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import com.maxrun.common.ContextHolder;
 
 @Component
-@PropertySource(value="classpath:appProps/globals.properties", ignoreResourceNotFound=true)
-@PropertySource(value="classpath:appProps/globals-${spring.profiles.active}.properties", ignoreResourceNotFound=true)
+@PropertySource(value="classpath:appProps/photoapp.properties", ignoreResourceNotFound=true)
+@PropertySource(value="classpath:appProps/photoapp-${spring.profiles.active}.properties", ignoreResourceNotFound=true)
 public class PropertyManager extends PropertySourcesPlaceholderConfigurer {
 	//private final ContextHolder contextHolder;
 

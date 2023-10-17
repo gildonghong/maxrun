@@ -68,7 +68,7 @@ public class CarCarJobCtr {
 	}
 
 	@ResponseBody
-	@PostMapping("/repairshop/carcare/reqair")	/*작업사진등록, /repairshop/carcare/reqair/department 와 동일한 기능*/
+	@PostMapping("/repairshop/carcare/repair")	/*작업사진등록, /repairshop/carcare/reqair/department 와 동일한 기능*/
 	public Map<String, Object> regCarCareJob(MultipartHttpServletRequest request)throws Exception{
 		if (!StringUtils.hasText(request.getParameter("reqNo")) || !StringUtils.hasText(request.getParameter("departmentNo"))) {
 			throw new BizException(BizExType.PARAMETER_MISSING, "입고번호,부서번호는 필수파라미터입니다");
@@ -85,10 +85,13 @@ public class CarCarJobCtr {
 		LocalDate now = LocalDate.now();
 		String mm = String.valueOf(now.getMonthValue());
 		String year=String.valueOf(now.getYear());
+		//String fileWebPath=null;
 		
 		String folderNameForCar = carCareJobService.getRepairReqPhotoPath(reqNo);
-
-		String pathString=PropertyManager.get("Globals.photo.root.path") + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
+		
+		//fileWebPath = PropertyManager.get("Globals.photo.root.path") + File.separator + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;
+//		String pathString="/sabangdisco/photopath/" + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
+		String pathString=PropertyManager.get("Globals.photo.os.path") + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
 		
 		File folder= new File(pathString);
 		
@@ -97,15 +100,17 @@ public class CarCarJobCtr {
 		List<MultipartFile> files =request.getMultiFileMap().get("photo");
 		
 		for(MultipartFile file: files) {
+			String fileNm = UUID.randomUUID().toString().replace("-", "");
+			String filePath=PropertyManager.get("Globals.photoapp.contetxt.root") + "/" + PropertyManager.get("Globals.photo.root.path") + "/" + String.valueOf(repairShopNo) + "/" + year + "/" +  mm + "/" + folderNameForCar;
 			Map<String, Object> fileMap = new HashMap<String, Object>();
 			
 			fileMap.put("reqNo", reqNo);
 			fileMap.put("fileGroupNo", fileGroupNo);
-			fileMap.put("fileSavedPath", PropertyManager.get("Globals.photoapp.contetxt.root")+pathString + File.separator + file.getName());
+			fileMap.put("fileSavedPath", filePath + "/" + fileNm);
 			fileMap.put("originalFileName", file.getOriginalFilename());
 			fileMap.put("fileExt", file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.')).replace(".", ""));
 			fileMap.put("fileSize", file.getSize());
-			fileMap.put("fileName", UUID.randomUUID());
+			fileMap.put("fileName", fileNm);
 			fileMap.put("departmentNo", departmentNo);
 			fileMap.put("regUserId", claims.get("workerNo"));
 			fileMap.put("outFileNo", null);

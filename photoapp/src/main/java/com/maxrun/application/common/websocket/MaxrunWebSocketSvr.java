@@ -43,12 +43,12 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 	
 	@Scheduled(fixedDelay=5000)
 	public void doSomething() throws Exception {
-		System.out.println("1111111111111111111");
-		if(lst!=null) {
-			System.out.println(lst.size());
-			lst.addAll(carCareService.getFileListForTransffering());
-		}else {
-			lst = carCareService.getFileListForTransffering();
-		}
+		//System.out.println("1111111111111111111");
+//		if(lst!=null) {
+//			System.out.println(lst.size());
+//			lst.addAll(carCareService.getFileListForTransffering());
+//		}else {
+//			lst = carCareService.getFileListForTransffering();
+//		}
 	}
 }

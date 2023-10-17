@@ -13,7 +13,7 @@
 
 	<h3>File Upload:</h3>
       Select a file to upload: <br />
-	<form action = "/repairshop/carcare/reqair" method = "post" enctype = "multipart/form-data">
+	<form action = "/repairshop/carcare/repair" method = "post" enctype = "multipart/form-data">
 	   <input type="hidden" name="departmentNo" value="1"/>
 	   <input type="hidden" name="reqNo" value="1"/>
 	   
