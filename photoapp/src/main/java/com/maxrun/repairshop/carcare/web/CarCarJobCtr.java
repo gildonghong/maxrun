@@ -86,7 +86,7 @@ public class CarCarJobCtr {
 		}
 		
 		System.out.println("------------Globals.photo.os.path===============>" + pmt.get("Globals.photo.os.path"));
-		System.out.println("------------Globals.photo.os.path===============>" + PropertyManager.get("Globals.photo.os.path"));
+		System.out.println("------------Globals.photoapp.contetxt.root===============>" + PropertyManager.get("Globals.photoapp.contetxt.root"));
 		
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		int reqNo = Integer.parseInt(request.getParameter("reqNo"));

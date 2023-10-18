@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 	PersistenceConfig.class
 	})
 @PropertySource("classpath:appProps/photoapp.properties")
+@PropertySource(value="classpath:appProps/photoapp-${spring.profiles.active}.properties", ignoreResourceNotFound=true)
 @ComponentScan(	basePackages = {"com.maxrun"}, useDefaultFilters = true,
 				excludeFilters= @Filter(type = FilterType.ANNOTATION, classes = {Controller.class}))
 public class PhotoAppRootConfig {
