@@ -29,7 +29,7 @@ public class RepairShopCtr {
 	public Map<String, Object> regRepairShop(@RequestParam Map<String, Object> param) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
-		//param.put("repairShopNo", claims.get("repairShopNo"));
+		param.put("repairShopNo", claims.get("repairShopNo"));
 		param.put("regUserId", claims.get("workerNo"));
 		return repairShopService.regRepairShop(param);
 	}

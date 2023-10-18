@@ -15,7 +15,7 @@ public class CarCareJobService {
 	}
 
 	public void regCarEnterIn(Map<String, Object> param)throws Exception{
-		carCareJobMapper.regCarEnterIn(param);;
+		carCareJobMapper.regCarEnterIn(param);
 	}
 	
 	public void regPhoto(Map<String, Object>param)throws Exception{

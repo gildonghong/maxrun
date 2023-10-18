@@ -1,13 +1,16 @@
 package com.maxrun.repairshop.carcare.web;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,12 +21,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
-import com.google.gson.Gson;
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
 import com.maxrun.application.common.auth.service.JWTTokenManager;
-import com.maxrun.application.common.utils.CookieUtils;
 import com.maxrun.application.common.utils.HttpServletUtils;
 import com.maxrun.application.config.PropertyManager;
 import com.maxrun.application.exception.BizExType;
@@ -56,11 +56,14 @@ public class CarCarJobCtr {
 
 		if(param.get("memo")!=null) {
 			Map<String, Object> memoList=(Map<String, Object>)param.get("memo");
-			
-			
+
 		}
 		
 		carCareJobService.regCarEnterIn(param);
+
+		if (StringUtils.isEmpty(createDirectory(Integer.parseInt(String.valueOf(param.get("outReqNo")))))) {
+			throw new BizException(BizExType.UNKNOWN, "차량별 디렉토리 생성에 실패했습니다");
+		}
 		ret.put("reqNo", param.get("outReqNo"));
 		
 		return ret;
@@ -91,42 +94,29 @@ public class CarCarJobCtr {
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		int reqNo = Integer.parseInt(request.getParameter("reqNo"));
 		int departmentNo  = Integer.parseInt(request.getParameter("departmentNo"));
-		int	fileGroupNo  = Integer.parseInt(request.getParameter("fileGroupNo")==null?"0":request.getParameter("fileGroupNo"));
+		int	fileGroupNo  = Integer.parseInt(request.getParameter("fileGroupNo")==null?"0":String.valueOf(request.getParameter("fileGroupNo")).trim());
 		int repairShopNo  = Integer.parseInt(String.valueOf(claims.get("repairShopNo")));
-		String departmentName = request.getParameter("departmentName");
-		
-		if (departmentName==null)
-			departmentName = repairShopService.getDepartmentName(departmentNo);
 		
 		LocalDate now = LocalDate.now();
 		String mm = String.valueOf(now.getMonthValue());
 		String year=String.valueOf(now.getYear());
 		String day = now.getDayOfMonth()>9?String.valueOf(now.getDayOfMonth()):"0" + now.getDayOfMonth();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
-		String formatedNow = LocalTime.now().format(formatter);
-		//String fileWebPath=null;
-		
+
 		String folderNameForCar = carCareJobService.getRepairReqPhotoPath(reqNo);
-		
-		//fileWebPath = PropertyManager.get("Globals.photo.root.path") + File.separator + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;
-//		String pathString="/sabangdisco/photopath/" + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
-		String pathString=pmt.get("Globals.photo.os.path") + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
-		
-		File folder= new File(pathString);
-		
-		folder.mkdirs();
+
+		String pathString= this.createDirectory(reqNo);
 
 		List<MultipartFile> files =request.getMultiFileMap().get("photo");
 		
 		for(MultipartFile file: files) {
-			//String fileNm = UUID.randomUUID().toString().replace("-", "");
-			String fileNm = departmentName + "_" +  year+mm+day+formatedNow+ "_" + String.valueOf(claims.get("loginId"));
-			String filePath=pmt.get("Globals.photoapp.contetxt.root") + "/" + pmt.get("Globals.photo.root.path") + "/" + String.valueOf(repairShopNo) + "/" + year + "/" +  mm + "/" + folderNameForCar;
+			String fileNm = this.createFileName(departmentNo);
+			
+			String fileUrl=pmt.get("Globals.photoapp.contetxt.root") + "/" + pmt.get("Globals.photo.root.path") + "/" + String.valueOf(repairShopNo) + "/" + year + "/" +  mm + "/" + String.valueOf(reqNo);
 			Map<String, Object> fileMap = new HashMap<String, Object>();
 			
 			fileMap.put("reqNo", reqNo);
 			fileMap.put("fileGroupNo", fileGroupNo);
-			fileMap.put("fileSavedPath", filePath + "/" + fileNm);
+			fileMap.put("fileSavedPath", fileUrl + "/" + fileNm + file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.')));
 			fileMap.put("originalFileName", file.getOriginalFilename());
 			fileMap.put("fileExt", file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf('.')).replace(".", ""));
 			fileMap.put("fileSize", file.getSize());
@@ -157,6 +147,91 @@ public class CarCarJobCtr {
 		Map<String, Object> ret = new HashMap();
 		ret.put("fileGroupNo", fileGroupNo);
 		return ret;
+	}
+
+	//차량별 디렉토리 생성
+	private String createDirectory(int reqNo) throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		//int reqNo = Integer.parseInt(request.getParameter("reqNo"));
+		//int departmentNo  = Integer.parseInt(request.getParameter("departmentNo"));
+		int repairShopNo  = Integer.parseInt(String.valueOf(claims.get("repairShopNo")));
+		
+		LocalDate now = LocalDate.now();
+		String mm = String.valueOf(now.getMonthValue());
+		String year=String.valueOf(now.getYear());
+		String day = now.getDayOfMonth()>9?String.valueOf(now.getDayOfMonth()):"0" + now.getDayOfMonth();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
+		String formatedNow = LocalTime.now().format(formatter);
+		//2310_22나8888
+		String folderNameForCar = carCareJobService.getRepairReqPhotoPath(reqNo);
+		folderNameForCar=folderNameForCar.replaceAll(" ", "");
+		
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		
+		folderNameForCar = year.substring(2) + mm + folderNameForCar;
+		
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+		
+		String pathString=pmt.get("Globals.photo.os.path") + File.separator + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + String.valueOf(reqNo);	//차량별 디렉토리
+		
+		System.out.println("******************************************");
+		System.out.println("pathString is =============>" + pathString);
+		System.out.println("pathString is =============>" + pathString);
+		System.out.println("pathString is =============>" + pathString);
+		System.out.println("pathString is =============>" + pathString);
+		System.out.println("pathString is =============>" + pathString);
+		
+		File folder= new File(pathString);
+		
+		folder.mkdirs();
+		if(folder.exists()) {
+			System.out.println("######################################################################");
+			System.out.println("######################################################################");
+			System.out.println("######################################################################");
+			System.out.println(folder.getAbsolutePath() + " directory is created!!!!!!!!!!!!!!!!!");
+			System.out.println("######################################################################");
+			System.out.println("######################################################################");
+			System.out.println("######################################################################");
+		}else {
+			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+			System.out.println(folder.getAbsolutePath() + " directory is creatiom fail!!!!!!!!!!!!!!!!!");
+			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+		}
+		return folder.getAbsolutePath();
+	}
+	
+	private String createFileName(int departmentNo) throws Exception{
+		String departmentName = null;
+		
+		LocalDate now = LocalDate.now();
+		String mm = String.valueOf(now.getMonthValue());
+		String year=String.valueOf(now.getYear());
+		String day = now.getDayOfMonth()>9?String.valueOf(now.getDayOfMonth()):"0" + now.getDayOfMonth();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
+		String formatedNow = LocalTime.now().format(formatter);
+		
+		if (departmentName==null)
+			departmentName = repairShopService.getDepartmentName(departmentNo);
+		
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		String fileNm = String.valueOf(departmentNo) + "_" +  year+mm+day+formatedNow+ "_" + String.valueOf(claims.get("workerNo"));
+		return fileNm;
 	}
 	
 }

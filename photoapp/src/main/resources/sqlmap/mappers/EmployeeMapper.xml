@@ -2,14 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maxrun.repairshop.service.EmployeeMapper">
 
-<select id="getWorkerList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+<select id="getWorkerList" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
 	{
 		call sp_getWorkerList(#{repairShopNo})
 	}	
 </select>
 
-<!-- CREATE PROCEDURE	[dbo].[sp_regWorker]	@repairShopNo	int,
-												@departmentNo	int,
+<!-- CREATE PROCEDURE	[dbo].[sp_regWorker]	@departmentNo	int,
 												@workerNo		bigint=null,
 												@workerName		nvarchar(100),
 												@position		nvarchar(100),
@@ -18,12 +17,13 @@
 												@lastUseDate	smalldatetime,
 												@loginId		nvarchar(30),
 												@pwd			nvarchar(100),
+												@status			nvarchar(50),
 												@os				nvarchar(50),
 												@osVersion		nvarchar(50),
 												@regUserId		bigint,
 												@outWorkerNo	bigint -->
 									
-<select id="regWorker" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="java.util.HashMap">
+<select id="regWorker" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
 		call sp_regWorker(	#{departmentNo},
 							#{workerNo},
@@ -34,6 +34,7 @@
 							#{lastUseDate},
 							#{loginId},
 							#{pwd},
+							#{status},
 							#{os},
 							#{osVersion},
 							#{regUserId},
