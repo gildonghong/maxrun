@@ -14,7 +14,7 @@ import org.springframework.web.socket.client.WebSocketClient;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-@Service
+//@Service
 public class MaxrunWebSocketClient {
 	//private static final Logger LOGGER = LoggerFactory.getLogger(MaxrunWebSocketClient.class);
 	

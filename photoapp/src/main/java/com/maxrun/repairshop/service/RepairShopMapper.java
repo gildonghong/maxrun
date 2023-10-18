@@ -12,5 +12,6 @@ public interface RepairShopMapper {
 	public Map<String, Object> getRepairShop(int repairShopNo) throws SQLException;
 	public Map<String, Object> regRepairShop(Map<String, Object> param) throws SQLException;
 	public List<Map<String, Object>> getDepartmentList(int repairShopNo) throws SQLException;
+	public String getDepartmentName(int departmentNo) throws SQLException;
 	public Map<String, Object> regDepartment(Map<String, Object> param) throws SQLException;
 }

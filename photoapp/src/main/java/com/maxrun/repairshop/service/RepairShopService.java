@@ -39,6 +39,10 @@ public class RepairShopService {
 		return repairShopMapper.getDepartmentList(repairShopNo);
 	}
 	
+	public String	getDepartmentName(int departmentNo) throws Exception{
+		return repairShopMapper.getDepartmentName(departmentNo);
+	}
+	
 	public Map<String, Object> regDepartment(Map<String, Object> param) throws Exception{
 		
 		try {

@@ -33,6 +33,12 @@
 	}
 </select>
 
+<select	id="getDepartmentName" parameterType="int" statementType="CALLABLE" resultType="string">
+	{
+		call sp_getDepartmentName(#{value})
+	}
+</select>
+
 <select	id="regDepartment" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
 		call sp_regDepartment(	#{repairShopNo}, 

@@ -2,6 +2,8 @@ package com.maxrun.repairshop.carcare.web;
 
 import java.io.File;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.google.gson.Gson;
+import com.j256.simplemagic.ContentInfo;
+import com.j256.simplemagic.ContentInfoUtil;
 import com.maxrun.application.common.auth.service.JWTTokenManager;
 import com.maxrun.application.common.utils.CookieUtils;
 import com.maxrun.application.common.utils.HttpServletUtils;
@@ -25,6 +29,7 @@ import com.maxrun.application.config.PropertyManager;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
 import com.maxrun.repairshop.carcare.service.CarCareJobService;
+import com.maxrun.repairshop.service.RepairShopService;
 
 @Controller
 public class CarCarJobCtr {
@@ -33,7 +38,11 @@ public class CarCarJobCtr {
 	@Autowired
 	CarCareJobService carCareJobService;
 	@Autowired
+	RepairShopService repairShopService;
+	@Autowired
 	JWTTokenManager jwt;
+	@Autowired
+	PropertyManager	pmt;
 	
 	@ResponseBody
 	@PostMapping("/repairshop/carcare/enterin")	/*차량입고등록*/
@@ -76,22 +85,32 @@ public class CarCarJobCtr {
 			throw new BizException(BizExType.PARAMETER_MISSING, "사진 파일이 누락되었습니다");
 		}
 		
+		System.out.println("------------Globals.photo.os.path===============>" + pmt.get("Globals.photo.os.path"));
+		System.out.println("------------Globals.photo.os.path===============>" + PropertyManager.get("Globals.photo.os.path"));
+		
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		int reqNo = Integer.parseInt(request.getParameter("reqNo"));
 		int departmentNo  = Integer.parseInt(request.getParameter("departmentNo"));
 		int	fileGroupNo  = Integer.parseInt(request.getParameter("fileGroupNo")==null?"0":request.getParameter("fileGroupNo"));
 		int repairShopNo  = Integer.parseInt(String.valueOf(claims.get("repairShopNo")));
+		String departmentName = request.getParameter("departmentName");
+		
+		if (departmentName==null)
+			departmentName = repairShopService.getDepartmentName(departmentNo);
 		
 		LocalDate now = LocalDate.now();
 		String mm = String.valueOf(now.getMonthValue());
 		String year=String.valueOf(now.getYear());
+		String day = now.getDayOfMonth()>9?String.valueOf(now.getDayOfMonth()):"0" + now.getDayOfMonth();
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
+		String formatedNow = LocalTime.now().format(formatter);
 		//String fileWebPath=null;
 		
 		String folderNameForCar = carCareJobService.getRepairReqPhotoPath(reqNo);
 		
 		//fileWebPath = PropertyManager.get("Globals.photo.root.path") + File.separator + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;
 //		String pathString="/sabangdisco/photopath/" + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
-		String pathString=PropertyManager.get("Globals.photo.os.path") + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
+		String pathString=pmt.get("Globals.photo.os.path") + String.valueOf(repairShopNo) + File.separator + year + File.separator + mm+ File.separator + folderNameForCar;	//차량별 디렉토리 
 		
 		File folder= new File(pathString);
 		
@@ -100,8 +119,9 @@ public class CarCarJobCtr {
 		List<MultipartFile> files =request.getMultiFileMap().get("photo");
 		
 		for(MultipartFile file: files) {
-			String fileNm = UUID.randomUUID().toString().replace("-", "");
-			String filePath=PropertyManager.get("Globals.photoapp.contetxt.root") + "/" + PropertyManager.get("Globals.photo.root.path") + "/" + String.valueOf(repairShopNo) + "/" + year + "/" +  mm + "/" + folderNameForCar;
+			//String fileNm = UUID.randomUUID().toString().replace("-", "");
+			String fileNm = departmentName + "_" +  year+mm+day+formatedNow+ "_" + String.valueOf(claims.get("loginId"));
+			String filePath=pmt.get("Globals.photoapp.contetxt.root") + "/" + pmt.get("Globals.photo.root.path") + "/" + String.valueOf(repairShopNo) + "/" + year + "/" +  mm + "/" + folderNameForCar;
 			Map<String, Object> fileMap = new HashMap<String, Object>();
 			
 			fileMap.put("reqNo", reqNo);
@@ -115,6 +135,18 @@ public class CarCarJobCtr {
 			fileMap.put("regUserId", claims.get("workerNo"));
 			fileMap.put("outFileNo", null);
 			fileMap.put("outFileGroupNo", null);
+			
+			//서버단에서 FILE MIME 타입 체크할 것
+			ContentInfoUtil util = new ContentInfoUtil();
+			ContentInfo info = util.findMatch(file.getBytes());
+			if (info == null) {
+				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111111 Unknown content-type");
+				throw new BizException(BizExType.PARAMETER_NOT_ALLOWDED, "Unknown content-type");
+			} else if(!info.getMimeType().startsWith("image/")) {
+			   // other information in ContentInfo type
+			   System.out.println("##########################  Content-type is: " + info.getMimeType());
+			   throw new BizException(BizExType.PARAMETER_NOT_ALLOWDED, "only image file can be uploaded");
+			}
 			
 			carCareJobService.regPhoto(fileMap);
 			fileGroupNo = Integer.parseInt(String.valueOf(fileMap.get("outFileGroupNo")));

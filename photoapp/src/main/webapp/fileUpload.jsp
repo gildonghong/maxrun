@@ -14,8 +14,8 @@
 	<h3>File Upload:</h3>
       Select a file to upload: <br />
 	<form action = "/repairshop/carcare/repair" method = "post" enctype = "multipart/form-data">
-	   <input type="hidden" name="departmentNo" value="1"/>
-	   <input type="hidden" name="reqNo" value="1"/>
+	   <input type="hidden" name="departmentNo" value="2"/>
+	   <input type="hidden" name="reqNo" value="19"/>
 	   
 	   <input type = "file" name = "photo" size = "50" />
 	   <input type = "file" name = "photo" size = "50" />
