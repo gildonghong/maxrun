@@ -6,6 +6,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.maxrun.application.exception.BizExType;
+import com.maxrun.application.exception.BizException;
+
 @Service
 public class CarCareJobService {
 	@Autowired
@@ -16,7 +19,17 @@ public class CarCareJobService {
 	}
 
 	public void regCarEnterIn(Map<String, Object> param)throws Exception{
-		carCareJobMapper.regCarEnterIn(param);
+		try {
+			carCareJobMapper.regCarEnterIn(param);
+		}catch(Exception e) {
+			System.out.println(e.getMessage());
+			if(e.getMessage().contains("이미 입고내역이 있는 차량번호입니다")) {
+				throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "동일 년월에 등록된 차량번호입니다. 차량번호 다음에 _숫자등을 부여해서 구분해주세요!!");
+			}else {
+				throw e;
+			}
+		}
+		
 	}
 	
 	public void regPhoto(Map<String, Object>param)throws Exception{

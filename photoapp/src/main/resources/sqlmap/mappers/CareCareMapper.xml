@@ -48,7 +48,9 @@
 <select	id="getPhotoList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
 		call sp_getPhotoList( 	#{repairShopNo}, 
-								#{departmentNo})
+								#{departmentNo},
+								#{departmentName},
+								#{carLicenseNo})
 	}
 </select>
 

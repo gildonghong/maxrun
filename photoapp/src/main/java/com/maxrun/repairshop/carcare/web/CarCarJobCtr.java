@@ -147,11 +147,23 @@ public class CarCarJobCtr {
 					String tempPath="/sabangdisco/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
 									CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
 									CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
-									String.valueOf(reqNo) + File.separator;
-					File tempFile=new File( tempPath + "/" + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
+									String.valueOf(reqNo);
 					
+					File folder= new File(pathString);
+					folder.mkdirs();
+					
+					if(!folder.exists()) {
+						throw new BizException(BizExType.SERVER_ERROR, "file saving error!!!");
+					}else {
+						System.out.println(tempPath + " directory 가 잘 생성되었습니다");
+					}
+					
+					File tempFile=new File( tempPath + "/" + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
+					System.out.println("################ tempFile 생성완료");
 					FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(tempFile));
+					System.out.println("################ tempFile 생성완료");
 					FileCopyUtils.copy(tempFile, new File(pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt")));
+					System.out.println("################ os 경로로 tempFile 복사 !!!!!");
 				}else {
 					//DB 트랜잭션이 성공했으므로 실제 물리 파일을 서비스 경로로 복사
 					file.transferTo(new File(pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt")));
