@@ -131,8 +131,8 @@ public class PhotoAppMVCConfig implements WebMvcConfigurer{
                 .resourceChain(true) // 리졸버 체인 설정 :
                 .addResolver(new EncodedResourceResolver()); // Request Header의 Accept-Encoding 정보를 보고 resource를 gzip형태로 매핑?
         
-        registry.addResourceHandler("/photopath/**") // resource에 대한 전체 요청 발생 시
-		        .addResourceLocations("/photopath/") // resource에 대한 위치 설정 - resources 하위로 매핑
+        registry.addResourceHandler("/photo/**") // resource에 대한 전체 요청 발생 시
+		        .addResourceLocations("/photo/") // resource에 대한 위치 설정 - resources 하위로 매핑
 		        .setCachePeriod(60) // 리소스에 캐시 설정 가능
 		        .resourceChain(true) // 리졸버 체인 설정 :
 		        .addResolver(new EncodedResourceResolver()); // Request Header의 Accept-Encoding 정보를 보고 resource를 gzip형태로 매핑?

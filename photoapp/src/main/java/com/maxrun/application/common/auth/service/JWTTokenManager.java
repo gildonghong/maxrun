@@ -107,6 +107,7 @@ public class JWTTokenManager implements ITokenManager {
 	public Map<String, Object> generateToken(Map<String, Object> param) throws JwtException, BizException {
 		Map<String, Object> ret = null;
 		try {
+			if(param==null) throw new BizException(BizExType.NOT_AUTHENTICATED,"잘못된 접근입니다");
 			if(param.get("workerNo") == null)  throw new BizException(BizExType.PARAMETER_MISSING,"workerNo is required");
 
 			long nowMillis = System.currentTimeMillis();

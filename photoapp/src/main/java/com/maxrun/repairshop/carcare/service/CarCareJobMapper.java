@@ -13,11 +13,10 @@ public interface CarCareJobMapper {
 	public List<Map<String, Object>>getJobList(Map<String, Object> param)throws SQLException;
 	
 	public void regCarEnterIn(Map<String, Object> param) throws SQLException;
+	public void removePhoto(int fileNo) throws SQLException;
 	public void regPhoto(Map<String, Object> param)throws SQLException;
 	public Map<String, Object> getJobDetails(Map<String, Object> param)throws SQLException;
 	public String getRepairReqPhotoPath(int reqNo)throws SQLException;
 	public List<Map<String, Object>> getFileListForTransffering()throws SQLException;
-	
-	
 	
 }

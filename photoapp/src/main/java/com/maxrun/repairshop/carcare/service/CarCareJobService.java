@@ -2,6 +2,7 @@ package com.maxrun.repairshop.carcare.service;
 
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,10 @@ public class CarCareJobService {
 	
 	public void regPhoto(Map<String, Object>param)throws Exception{
 		carCareJobMapper.regPhoto(param);
+	}
+	
+	public void removePhoto(int fileNo) throws Exception{
+		carCareJobMapper.removePhoto(fileNo);
 	}
  
 	public String getRepairReqPhotoPath(int reqNo)throws Exception{

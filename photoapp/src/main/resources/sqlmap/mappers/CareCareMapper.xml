@@ -58,4 +58,10 @@
 	}
 </select>
 
+<select id="removePhoto" parameterType="int" statementType="CALLABLE" >
+	{
+		call sp_removePhoto(#{value})
+	}
+</select>
+
 </mapper>

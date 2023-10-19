@@ -12,7 +12,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.TransactionManagementConfigurer;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -22,7 +24,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @EnableScheduling
 @EnableTransactionManagement
 @MapperScan(basePackages = {"com.maxrun"})
-public class PersistenceConfig {
+public class PersistenceConfig{
 
 	@Autowired
 	ApplicationContext applicationContext;

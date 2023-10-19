@@ -14,8 +14,11 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
@@ -47,7 +50,31 @@ import com.maxrun.application.exception.BizException;
  */
 public class CommonUtils {
 
-
+	public static void main(String args[]) {
+		
+		LocalDate now = LocalDate.now();
+		
+		System.out.println(String.valueOf(now.getYear()).toString().substring(2));
+		
+		String queryString="http://localhost:8080/socket?loginId=loginId1&passwd=loginId1";
+		
+		System.out.println("queryString ========>" + queryString);
+		System.out.println("queryString ========>" + queryString);
+		System.out.println("queryString ========>" + queryString);
+		
+		System.out.println("queryString.indexOf(=) ========>" + queryString.indexOf("="));
+		System.out.println("queryString.indexOf(&) ========>" + queryString.indexOf("&"));
+		System.out.println("http://localhost:8080/socket?loginId=loginId1&passwd=loginId1".substring(36,45));
+		System.out.println("http://localhost:8080/socket?loginId=loginId1&passwd=loginId1".substring(37,45));
+		
+		String loginId=queryString.substring(queryString.indexOf("="), queryString.indexOf("&"));
+		String passwd=queryString.substring(queryString.indexOf("=", queryString.indexOf("&")+1));
+		
+		
+		System.out.println("loginId ========>" + loginId);
+		System.out.println("passwd ========>" + passwd);
+		
+	}
     private Logger logger = LogManager.getLogger(this.getClass());
 
     public static JSONObject getJsonObject(String apiAddress) throws IOException, JSONException {
@@ -359,6 +386,35 @@ public class CommonUtils {
     	}
     	
     	return dateFormat.format(cal.getTime());
+    }
+    
+    public static String getYearBy4Digit(LocalDate now) {
+    	String year=String.valueOf(now.getYear());
+    	return year;
+    }
+    
+    public static String getYearBy2Digit(LocalDate now) {
+    	String year=String.valueOf(now.getYear());
+    	return year.substring(2);
+    }
+    
+    public static String getMonthBy2Digit(LocalDate now) {
+    	int mm = now.getMonthValue();
+    	
+    	return mm>9?String.valueOf(mm):"0" + String.valueOf(mm);
+    }
+    
+    public static String getDayOfMonthBy2Digit(LocalDate now) {
+    	String day = now.getDayOfMonth()>9?String.valueOf(now.getDayOfMonth()):"0" + now.getDayOfMonth();
+    	
+    	return day;
+    }
+    
+    public static String getHHmmss(LocalTime time) {
+    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HHmmss");
+    	String formatedNow = time.format(formatter);
+    	
+    	return formatedNow;
     }
 
     public static String getAppContxt() {
