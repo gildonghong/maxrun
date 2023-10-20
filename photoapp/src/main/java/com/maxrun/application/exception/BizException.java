@@ -8,7 +8,7 @@ import java.util.Map;
  * @date 2021. 6. 15
  * @desc 사용자정의 CheckedException
  */
-public class BizException extends Exception {
+public class BizException extends RuntimeException {
 	/**
 	 * 
 	 */

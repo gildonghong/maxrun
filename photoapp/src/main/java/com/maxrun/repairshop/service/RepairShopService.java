@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.maxrun.application.common.auth.service.JWTTokenManager;
@@ -13,6 +14,7 @@ import com.maxrun.application.common.utils.CookieUtils;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
 
+@Transactional
 @Service
 public class RepairShopService {
 //	public List<Map<String, Object>> getRepairShopList() throws SQLException;

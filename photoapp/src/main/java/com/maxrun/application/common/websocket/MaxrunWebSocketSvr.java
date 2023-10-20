@@ -62,7 +62,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 		return null;
 	}
 	
-	@Scheduled(fixedDelay=2000)
+	//@Scheduled(fixedDelay=2000)
 	public void doSomething() throws Exception {
 		//System.out.println("1111111111111111111");
 		if(lst!=null) {
