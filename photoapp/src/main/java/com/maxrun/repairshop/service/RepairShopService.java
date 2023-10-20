@@ -54,4 +54,8 @@ public class RepairShopService {
 			throw e;
 		}
 	}
+
+	public void regMaxRun(Map<String, Object> param) throws Exception{
+		repairShopMapper.regMaxRun(param);
+	}
 }

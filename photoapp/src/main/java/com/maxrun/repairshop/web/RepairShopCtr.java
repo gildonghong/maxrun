@@ -29,8 +29,10 @@ public class RepairShopCtr {
 	public Map<String, Object> regRepairShop(@RequestParam Map<String, Object> param) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
-		param.put("repairShopNo", claims.get("repairShopNo"));
+		if(!param.containsKey("repairShopNo"))	/*parameter로 명시적으로 전달하는 경우는 파라미터 값을 사용할 것*/
+			param.put("repairShopNo", claims.get("repairShopNo"));	//파라밑로 전달되지 않은 경우에만 토큰에서 껴낼것
 		param.put("regUserId", claims.get("workerNo"));
+		param.put("outRepairShopNo", null);
 		return repairShopService.regRepairShop(param);
 	}
 	@ResponseBody
@@ -56,5 +58,15 @@ public class RepairShopCtr {
 		param.put("repairShopNo", claims.get("repairShopNo"));
 		param.put("regUserId", claims.get("workerNo"));
 		return repairShopService.regDepartment(param);
+	}
+	
+	@ResponseBody
+	@PostMapping("/maxrun")
+	public int regMaxRun(@RequestParam Map<String, Object> param) throws Exception{
+		param.put("repairShopNo", -1);
+		
+		repairShopService.regMaxRun(param);
+		
+		return -1;
 	}
 }

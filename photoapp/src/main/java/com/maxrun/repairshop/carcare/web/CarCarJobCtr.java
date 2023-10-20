@@ -144,7 +144,7 @@ public class CarCarJobCtr {
 			try {
 				if(! System.getProperty("os.name").toLowerCase().contains("window")) {	/*로컬 환경이 아니면*/
 					//스토리징 장비 달기전까지 런타임시에 파일을 웹문맥에도 중복으로 저장
-					String tempPath="/sabangdisco/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
+					String tempPath="/maxrunphoto/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
 									CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
 									CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
 									String.valueOf(reqNo);

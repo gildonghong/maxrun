@@ -33,6 +33,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         
 //        Map<String, Object> user=jwtTokenManager.evaluateToken(uAtoken);
 //		
+		
 		String uAtoken = CookieUtils.getCookieValue("uAtoken");
 		//String bearerToken =null;
 		if (uAtoken==null) {

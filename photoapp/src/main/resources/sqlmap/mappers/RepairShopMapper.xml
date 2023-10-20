@@ -44,7 +44,14 @@
 		call sp_regDepartment(	#{repairShopNo}, 
 								#{departmentNo}, 
 								#{departmentName}, 
-								#{regUserId})
+								#{regUserId}, 
+								#{outDepartmentNo, jdbcType=INTEGER, mode=OUT})
+	}
+</select>
+
+<select id="regMaxRun" parameterType="java.util.HashMap" statementType="CALLABLE">
+	{
+		call sp_regMaxRun(#{maxrunChargerCpNo})
 	}
 </select>
 </mapper>
