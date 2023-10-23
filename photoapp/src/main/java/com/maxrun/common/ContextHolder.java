@@ -2,6 +2,8 @@ package com.maxrun.common;
 
 import javax.servlet.ServletContext;
 
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -41,6 +43,16 @@ public class ContextHolder implements ApplicationContextAware, ServletContextAwa
         for (String bean : beans) {
             System.out.println("bean : " + bean);
         }
+        
+//        SqlSessionFactory sqlSessionFactory = applicationContext.getBean(SqlSessionFactory.class);
+//        
+//        Configuration conf = sqlSessionFactory.getConfiguration();
+//        
+//        conf.isCallSettersOnNulls();
+//        conf.setCallSettersOnNulls(true);
+//        
+//        sqlSessionFactory.openSession().getConfiguration().isCallSettersOnNulls();
+        
 	}
 	
 	public static ApplicationContext getSpringContext() {

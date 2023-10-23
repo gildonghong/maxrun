@@ -52,6 +52,13 @@ public class CommonUtils {
 
 	public static void main(String args[]) {
 		
+		Map<String, String> test = new HashMap<String, String>();
+		
+		test.put("test", "test");
+		test.put("test",  "test111");
+		
+		System.out.println(test);
+		
 		LocalDate now = LocalDate.now();
 		
 		System.out.println(String.valueOf(now.getYear()).toString().substring(2));

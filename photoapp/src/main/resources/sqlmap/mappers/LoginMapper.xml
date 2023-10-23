@@ -6,8 +6,12 @@
 	{
 		call sp_login(#{loginId},#{passwd})
 	}	
-</select>
+</select> 
 
+<!-- <select id="login" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
+	SELECT	1 id, 2 id2, null id3
+</select>
+ -->
 <select id="logout" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
 	{
 		call sp_logout(#{loginId},#{passwd})

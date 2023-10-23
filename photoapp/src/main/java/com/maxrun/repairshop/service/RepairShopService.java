@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.maxrun.application.common.auth.service.JWTTokenManager;
@@ -45,6 +46,10 @@ public class RepairShopService {
 		return repairShopMapper.getDepartmentName(departmentNo);
 	}
 	
+	public int	getDepartmentNo(Map<String, Object> param) throws Exception{
+		return repairShopMapper.getDepartmentNo(param);
+	}
+	
 	public Map<String, Object> regDepartment(Map<String, Object> param) throws Exception{
 		
 		try {
@@ -60,4 +65,31 @@ public class RepairShopService {
 	public void regMaxRun(Map<String, Object> param) throws Exception{
 		repairShopMapper.regMaxRun(param);
 	}
+	
+	public List<Map<String, Object>> getNeedToSenderListForTransffering() throws Exception{
+		return repairShopMapper.getFileListForTransffering();
+	}
+	
+	public void completeCopyToRepairShop(Map<String, Object> param) throws Exception{
+		
+		System.out.println("param===>" + param);
+//		CREATE PROCEDURE sp_completeCopyToRepairShop	@repairShopNo	int,
+//														@division		nvarchar(30)='FILE',
+//														@reqNo			bigint=null,
+//														@fileNo			bigint=null,
+//														@result			nvarchar(30)='SUCCESS'
+		List<Map<String, Object>> ret = repairShopMapper.completeCopyToRepairShop(param);
+		
+		System.out.println("ret===>" + ret);
+	}
+	
+	public List<Map<String, Object>> getEnterList(@RequestParam Map<String, Object> param) throws Exception{
+		return repairShopMapper.getEnterList(param);
+	}
+	
+	public List<Map<String, Object>> getPhotoList(Map<String, Object> param) throws Exception{
+		return repairShopMapper.getPhotoList(param);
+	}
+	
+	
 }

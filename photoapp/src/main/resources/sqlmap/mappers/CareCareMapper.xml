@@ -54,12 +54,6 @@
 	}
 </select>
 
-<select id="getFileListForTransffering" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
-	{
-		call sp_getFileListForTransffering()
-	}
-</select>
-
 <select id="removePhoto" parameterType="int" statementType="CALLABLE" >
 	{
 		call sp_removePhoto(#{value})

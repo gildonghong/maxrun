@@ -2,6 +2,7 @@ package com.maxrun.repairshop.carcare.service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +24,13 @@ import com.maxrun.application.common.utils.HttpServletUtils;
 import com.maxrun.application.config.PropertyManager;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
+import com.maxrun.repairshop.service.RepairShopService;
 
 @Transactional
 @Service
 public class CarCareJobService {
+	@Autowired
+	RepairShopService repairShopService;
 	@Autowired
 	private CarCareJobMapper carCareJobMapper;
 	@Autowired
@@ -35,7 +39,17 @@ public class CarCareJobService {
 	private PropertyManager	pmt;
 	
 	public List<Map<String, Object>>getPhotoList(Map<String, Object> param)throws Exception{
-		return carCareJobMapper.getPhotoList(param);
+		List<Map<String, Object>> photoList = carCareJobMapper.getPhotoList(param);
+		String photoRootPath = pmt.get("Globals.photoapp.contetxt.root") + "/" + pmt.get("Globals.photo.root.path");
+		
+		for(Map m:photoList) {
+			if(String.valueOf(m.get("fileSavedPath")).startsWith("/"))
+				m.replace("fileSavedPath", photoRootPath + m.get("fileSavedPath"));
+			else
+				m.replace("fileSavedPath", photoRootPath + "/" +  m.get("fileSavedPath"));
+		}
+			
+		return photoList;
 	}
 
 	public void regCarEnterIn(Map<String, Object> param)throws Exception{
@@ -59,15 +73,66 @@ public class CarCareJobService {
 		
 	}
 	
+	public Map<String, Object> regCarEnterWithPhoto(MultipartHttpServletRequest request)throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+//		call sp_regCarEnterIn(	#{reqNo},
+//				#{repairShopNo},
+//				#{carLicenseNo},
+//				#{venderNo},
+//				#{modelNo},
+//				#{etcInfo},
+//				#{memo},
+//				#{ownerName},
+//				#{ownerCpNo},
+//				#{ownerEmail},
+//				#{paymentType},
+//				#{workerNo},
+//				#{outReqNo, jdbcType=BIGINT, mode=OUT})
+//		param.put("workerNo", claims.get("workerNo"));
+//		param.put("repairShopNo", claims.get("repairShopNo"));
+		Map<String, Object> param = new HashMap<String, Object>();
+		
+		param.put("workerNo", claims.get("workerNo"));
+		param.put("repairShopNo", claims.get("repairShopNo"));
+		param.put("carLicenseNo", request.getParameter("carLicenseNo"));
+		param.put("ownerCpNo", request.getParameter("ownerCpNo"));
+		param.put("paymentType", request.getParameter("paymentType"));
+		param.put("departmentName", "신규등록");
+		
+		regCarEnterIn(param);
+		
+		request.setAttribute("reqNo", param.get("reqNo"));
+		request.setAttribute("departmentNo", repairShopService.getDepartmentNo(param));
+		
+		int fileGroupNo = regPhoto(request);
+		
+		param.put("fileGroupNo", fileGroupNo);
+		
+		return param;
+	}
+	
 	public int regPhoto(MultipartHttpServletRequest request)throws Exception{
 		System.out.println("------------Globals.photo.os.path===============>" + pmt.get("Globals.photo.os.path"));
 		System.out.println("------------Globals.photoapp.contetxt.root===============>" + PropertyManager.get("Globals.photoapp.contetxt.root"));
 		
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
-		int reqNo = Integer.parseInt(request.getParameter("reqNo"));
-		int departmentNo  = Integer.parseInt(request.getParameter("departmentNo"));
+		int reqNo = Integer.parseInt(request.getParameter("reqNo")==null?String.valueOf(request.getAttribute("reqNo")):request.getParameter("reqNo"));
 		int	fileGroupNo  = Integer.parseInt(request.getParameter("fileGroupNo")==null?"0":String.valueOf(request.getParameter("fileGroupNo")).trim());
 		int repairShopNo  = Integer.parseInt(String.valueOf(claims.get("repairShopNo")));
+		int departmentNo  = Integer.parseInt(request.getParameter("departmentNo")==null?String.valueOf(request.getAttribute("departmentNo")):request.getParameter("departmentNo"));
+		/*사진 등록시 부서번호 또는 부서명 파라미터는 필수값*/
+//		if (request.getParameter("departmentNo")==null || "".equals(String.valueOf(request.getParameter("departmentNo")))) {
+//			if (request.getParameter("departmentName")==null || "".equals(String.valueOf(request.getParameter("departmentName")))) {
+//				throw new BizException(BizExType.PARAMETER_MISSING, "부서지정없이 파일 사진을 등록할수 없습니다");
+//			}
+//			Map<String, Object> param = new HashMap<String, Object>();
+//			param.put("repairShopNo", repairShopNo);
+//			param.put("departmentName", request.getParameter("departmentName"));
+//			departmentNo  = repairShopService.getDepartmentNo(param);
+//		}else {
+//			departmentNo  = Integer.parseInt(request.getParameter("departmentNo"));
+//		}
 		String pathString= this.createDirectory(reqNo);
 
 		List<MultipartFile> files =request.getMultiFileMap().get("photo");
@@ -75,9 +140,7 @@ public class CarCareJobService {
 		for(MultipartFile file: files) {
 			//String fileNm = this.createFileName(departmentNo);
 			//web상의 이미지 경로 : contextPath + "/" + 이미지폴더root + "/" + 정비소번호 + "/" + 년 + "/" + 월 + "/" + 파일명
-			String fileUrl=pmt.get("Globals.photoapp.contetxt.root") + "/" + 
-							pmt.get("Globals.photo.root.path") + "/" + 
-							String.valueOf(repairShopNo) + "/" + 
+			String fileUrl= "/" + String.valueOf(repairShopNo) + "/" + 
 							CommonUtils.getYearBy4Digit(LocalDate.now()) + "/" +  
 							CommonUtils.getMonthBy2Digit(LocalDate.now()) + "/" + 
 							String.valueOf(reqNo);
@@ -114,15 +177,22 @@ public class CarCareJobService {
 			fileMap.put("fileGroupNo", fileMap.get("outFileGroupNo"));
 			fileMap.put("fileName", fileMap.get("outFileNo"));	//파일명은 인코딩 문제때문에 파일번호로 저장하기로 한다
 			fileGroupNo = Integer.parseInt(String.valueOf(fileMap.get("outFileGroupNo")));
-
+			
+//			URL resource = this.getClass().getClassLoader().getResource(PropertyManager.get("Globals.photo.root.path"));
+//			String photoRootPath = resource.getPath().toString();
+			
 			//exception 발생시 fileDB 삭제
 			try {
 				if(! System.getProperty("os.name").toLowerCase().contains("window")) {	/*로컬 환경이 아니면*/
 					//스토리징 장비 달기전까지 런타임시에 파일을 웹문맥에도 중복으로 저장
-					String tempPath="/maxrunphoto/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
-									CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
-									CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
-									String.valueOf(reqNo);
+//					String tempPath="/maxrunphoto/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
+//									CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
+//									CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
+//									String.valueOf(reqNo);
+					String tempPath="/sabangdisco/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
+							CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
+							CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
+							String.valueOf(reqNo);
 					
 					File folder= new File(pathString);
 					folder.mkdirs();
@@ -162,12 +232,7 @@ public class CarCareJobService {
 	public String getRepairReqPhotoPath(int reqNo)throws Exception{
 		return carCareJobMapper.getRepairReqPhotoPath(reqNo);
 	}
-	
-	public List<Map<String, Object>> getFileListForTransffering()throws Exception{
-		return carCareJobMapper.getFileListForTransffering();
-	}
-	
-	
+
 	private String createDirectory(int reqNo) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 

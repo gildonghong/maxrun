@@ -52,6 +52,13 @@ public class CarCarJobCtr {
 		return param;
 	}
 	
+	/*입고등록과 함께 사진 등록을 동시에 */
+	@ResponseBody
+	@PostMapping("/repairshop/carcare/enterwithphoto")	/*차량입고등록*/
+	public Map<String, Object>regCarRepairReqWithPhoto(	MultipartHttpServletRequest request)throws Exception{
+		return carCareJobService.regCarEnterWithPhoto(request);
+	}
+	
 	@ResponseBody
 	@GetMapping("/repairshop/carcare/list")
 	public List<Map<String, Object>>getCarCareList(@RequestParam Map<String, Object> param)throws Exception{

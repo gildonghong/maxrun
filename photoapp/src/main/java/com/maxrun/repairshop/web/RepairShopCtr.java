@@ -69,4 +69,24 @@ public class RepairShopCtr {
 		
 		return -1;
 	}
+	
+	@ResponseBody
+	@GetMapping("/repairshop/enter/list")
+	public List<Map<String, Object>> getEnterList(@RequestParam Map<String, Object> param) throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		param.put("repairShopNo", claims.get("repairShopNo"));
+		param.put("regUserId", claims.get("workerNo"));
+		
+		return repairShopService.getEnterList(param);
+	}
+	
+	@ResponseBody
+	@GetMapping("/repairshop/enter/photo/list")
+	public List<Map<String, Object>> getPhotoList(@RequestParam Map<String, Object> param) throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		param.put("repairShopNo", claims.get("repairShopNo"));
+		param.put("regUserId", claims.get("workerNo"));
+		
+		return repairShopService.getPhotoList(param);
+	}
 }

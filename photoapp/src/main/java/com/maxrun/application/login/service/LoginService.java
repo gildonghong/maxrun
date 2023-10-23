@@ -15,7 +15,7 @@ public class LoginService {
 	JWTTokenManager tokenManager;
 	
 	public Map<String, Object> login(Map<String, Object> param) throws Exception{
-
+		Map<String, Object> test = loginMapper.login(param);
 		Map<String, Object> user=tokenManager.generateToken(loginMapper.login(param));
 		
 		return user;

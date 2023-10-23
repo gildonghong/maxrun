@@ -38,15 +38,31 @@ public class PersistenceConfig{
 	@Bean(destroyMethod="close")
 	public DataSource getDataSource() {
 	    HikariConfig config = new HikariConfig();
-		
-//	    config.setMaximumPoolSize(10);
-//	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
-//	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
+//	    Globals.database.datasource.class.name=com.microsoft.sqlserver.jdbc.SQLServerDataSource	    
+//	    		Globals.database.server.name=sql16ssd-006.localnet.kr
+//	    		Globals.database.name=maxrundb_admin
+//	    		Globals.database.user.name=maxrundb_admin
+//	    		Globals.database.user.password=maxrun!!
+//	    		Globals.photoapp.contetxt.root=http://www.sabangdisco.com
+	    config.setMaximumPoolSize(10);
+	    
+//	    System.out.println("datasource class -->" + PropertyManager.get("Globals.database.datasource.class.name"));
+//	    
+//	    config.setDataSourceClassName(PropertyManager.get("Globals.database.datasource.class.name"));
+//	    config.addDataSourceProperty("serverName",PropertyManager.get("Globals.database.server.name"));
 //	    config.addDataSourceProperty("portNumber", 1433);
 //	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
-//	    config.addDataSourceProperty("databaseName", "MAX-RUN");
-//	    config.addDataSourceProperty("user", "sa");
-//	    config.addDataSourceProperty("password", "object_1@@4");
+//	    config.addDataSourceProperty("databaseName", PropertyManager.get("Globals.database.name"));
+//	    config.addDataSourceProperty("user", PropertyManager.get("Globals.database.user.name"));
+//	    config.addDataSourceProperty("password", PropertyManager.get("Globals.database.user.password"));
+	    
+	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
+	    config.addDataSourceProperty("portNumber", 1433);
+	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
+	    config.addDataSourceProperty("databaseName", "max-run");
+	    config.addDataSourceProperty("user", "sa");
+	    config.addDataSourceProperty("password", "object_1@@4");
 	    
 //	    config.setMaximumPoolSize(10);
 //	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
@@ -57,14 +73,14 @@ public class PersistenceConfig{
 //	    config.addDataSourceProperty("user", "gildonghon_sd1004");
 //	    config.addDataSourceProperty("password", "aoekf1djrdltkd");
 	    
-	    config.setMaximumPoolSize(10);
-	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
-	    config.addDataSourceProperty("serverName","sql16ssd-006.localnet.kr");
-	    config.addDataSourceProperty("portNumber", 1433);
-	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
-	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
-	    config.addDataSourceProperty("user", "maxrundb_admin");
-	    config.addDataSourceProperty("password", "maxrun!!");
+//	    config.setMaximumPoolSize(10);
+//	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+//	    config.addDataSourceProperty("serverName","sql16ssd-006.localnet.kr");
+//	    config.addDataSourceProperty("portNumber", 1433);
+//	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
+//	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
+//	    config.addDataSourceProperty("user", "maxrundb_admin");
+//	    config.addDataSourceProperty("password", "maxrun!!");
 
 	    return new HikariDataSource(config);  //pass in HikariConfig to HikariDataSource
 	}

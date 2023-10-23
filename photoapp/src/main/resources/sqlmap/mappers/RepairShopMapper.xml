@@ -39,6 +39,12 @@
 	}
 </select>
 
+<select id="getDepartmentNo" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="int">
+	{
+		call sp_getDepartmentNo(#{repairShopNo}, #{departmentName})
+	}
+</select>
+
 <select	id="regDepartment" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
 		call sp_regDepartment(	#{repairShopNo}, 
@@ -52,6 +58,40 @@
 <select id="regMaxRun" parameterType="java.util.HashMap" statementType="CALLABLE">
 	{
 		call sp_regMaxRun(#{maxrunChargerCpNo})
+	}
+</select>
+
+<select id="getFileListForTransffering" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_getFileListForTransffering()
+	}
+</select>
+<!-- CREATE PROCEDURE sp_completeCopyToRepairShop	@repairShopNo	int,
+												@division		nvarchar(30)='FILE',
+												@reqNo			bigint=null,
+												@fileNo			bigint=null,
+												@result			nchar(1)='SUCCESS' -->
+<select id="completeCopyToRepairShop" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_completeCopyToRepairShop(#{repairShopNo}, #{division}, #{reqNo}, #{fileNo}, #{result})
+	}
+</select>
+<!-- sp_getEnterListForMgrProgram	@repairShopNo	int,
+												@fromDate		smalldatetime=null,
+												@toDate			smalldatetime=null,
+												@carLicenseNo		nvarchar(100)=null -->
+<select id="getEnterList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_getEnterListForMgrProgram(#{repairShopNo}, #{fromDate}, #{toDate}, #{carLicenseNo})
+	}
+</select>
+
+<select id="getPhotoList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		<!-- PROCEDURE sp_getPhotoListForMgrProgram	@reqNo	bigint,
+											@departmentNo	int=null,
+											@departmentName	nvarchar(50)=null -->
+		call sp_getPhotoListForMgrProgram (#{reqNo}, #{departmentNo}, #{departmentName})
 	}
 </select>
 </mapper>
