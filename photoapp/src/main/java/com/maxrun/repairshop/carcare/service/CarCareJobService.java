@@ -137,6 +137,8 @@ public class CarCareJobService {
 
 		List<MultipartFile> files =request.getMultiFileMap().get("photo");
 		
+		if(files == null) throw new BizException(BizExType.PARAMETER_MISSING, "이미지 파일이 누락되었습니다");
+		
 		for(MultipartFile file: files) {
 			//String fileNm = this.createFileName(departmentNo);
 			//web상의 이미지 경로 : contextPath + "/" + 이미지폴더root + "/" + 정비소번호 + "/" + 년 + "/" + 월 + "/" + 파일명

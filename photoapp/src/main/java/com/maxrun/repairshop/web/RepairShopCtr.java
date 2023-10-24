@@ -89,4 +89,13 @@ public class RepairShopCtr {
 		
 		return repairShopService.getPhotoList(param);
 	}
+	
+	@ResponseBody
+	@GetMapping("/repairshop/performance/list")
+	public List<Map<String, Object>>getPerformanceList(@RequestParam Map<String, Object> param)throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		param.put("repairShopNo", claims.get("repairShopNo"));
+		
+		return repairShopService.getPerformanceList(param);
+	}
 }

@@ -91,5 +91,8 @@ public class RepairShopService {
 		return repairShopMapper.getPhotoList(param);
 	}
 	
+	public List<Map<String, Object>>getPerformanceList(Map<String, Object> param)throws Exception{
+		return repairShopMapper.getPerformanceList(param);
+	}
 	
 }

@@ -88,10 +88,19 @@
 
 <select id="getPhotoList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		<!-- PROCEDURE sp_getPhotoListForMgrProgram	@reqNo	bigint,
-											@departmentNo	int=null,
-											@departmentName	nvarchar(50)=null -->
 		call sp_getPhotoListForMgrProgram (#{reqNo}, #{departmentNo}, #{departmentName})
+	}
+</select>
+
+<select	id="getPerformanceList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_getPerformanceList (#{repairShopNo}, 
+									#{fromDate, jdbcType=DATE},
+									#{toDate, jdbcType=DATE},
+									#{workerNo},
+									#{workerName},
+									#{carLicenseNo},
+									#{orderByColName})
 	}
 </select>
 </mapper>
