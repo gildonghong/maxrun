@@ -59,5 +59,14 @@
 		call sp_removePhoto(#{value})
 	}
 </select>
+<!-- sp_reqRepairMemo	@reqNo	bigint,
+									@memoNo	BIGINT=NULL,
+									@memo	nvarchar(100),
+									@regDate	smalldatetime=NULL -->
+<select id= "reqRepairMemo" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_removePhoto(#{reqNo}, #{memoNo}, #{memo}, #{regDate})
+	}
+</select>
 
 </mapper>

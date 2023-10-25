@@ -6,16 +6,16 @@
 											@pageNo		int -->
 <select id="getNoticeList" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
 	{
-		call sp_getNoticeList(#{from_date},#{to_date}, #{pageNo})
+		call sp_getNoticeList(#{fromDate},#{toDate})
 	}	
 </select>
 <!-- [dbo].[sp_regNotice]	@noticeNo		bigint=null,
 								@notice			nvarchar(1000), 
 								@regUserId		bigint,
 								@outNoticeNo	bigint	output -->
-<select id="regNotice" parameterType="java.util.HashMap" >
+<select id="regNotice" statementType="CALLABLE" parameterType="java.util.HashMap" >
 	{
-		call sp_regNotice(#{noticeNo},#{notice}, #{wokerNo}, #{noticeNo})
+		call sp_regNotice(#{noticeNo},#{notice}, #{regUserId}, #{outNoticeNo,jdbcType=BIGINT, mode=OUT})
 	}	
 </select>
 </mapper>

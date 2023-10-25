@@ -3,6 +3,8 @@ package com.maxrun.repairshop.carcare.service;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -41,12 +43,13 @@ public class CarCareJobService {
 	public List<Map<String, Object>>getPhotoList(Map<String, Object> param)throws Exception{
 		List<Map<String, Object>> photoList = carCareJobMapper.getPhotoList(param);
 		String photoRootPath = pmt.get("Globals.photoapp.contetxt.root") + "/" + pmt.get("Globals.photo.root.path");
+		photoRootPath = photoRootPath.trim();
 		
 		for(Map m:photoList) {
 			if(String.valueOf(m.get("fileSavedPath")).startsWith("/"))
-				m.replace("fileSavedPath", photoRootPath + m.get("fileSavedPath"));
+				m.replace("fileSavedPath", photoRootPath + String.valueOf(m.get("fileSavedPath")).trim());
 			else
-				m.replace("fileSavedPath", photoRootPath + "/" +  m.get("fileSavedPath"));
+				m.replace("fileSavedPath", photoRootPath + "/" +  String.valueOf(m.get("fileSavedPath")).trim());
 		}
 			
 		return photoList;
@@ -55,6 +58,12 @@ public class CarCareJobService {
 	public void regCarEnterIn(Map<String, Object> param)throws Exception{
 		try {
 			carCareJobMapper.regCarEnterIn(param);
+			
+			//List<Map<String, Object>> memoLst = (List<Map<String, Object>>) param.get("memo");
+			
+//			for(Map<String, Object> m:memoLst) {
+//				carCareJobMapper.reqRepairMemo(m);
+//			}
 			
 			if (StringUtils.isEmpty(createDirectory(Integer.parseInt(String.valueOf(param.get("outReqNo")))))) {
 				throw new BizException(BizExType.UNKNOWN, "차량별 디렉토리 생성에 실패했습니다");
@@ -185,36 +194,49 @@ public class CarCareJobService {
 			
 			//exception 발생시 fileDB 삭제
 			try {
-				if(! System.getProperty("os.name").toLowerCase().contains("window")) {	/*로컬 환경이 아니면*/
-					//스토리징 장비 달기전까지 런타임시에 파일을 웹문맥에도 중복으로 저장
-//					String tempPath="/maxrunphoto/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
-//									CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
-//									CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
-//									String.valueOf(reqNo);
-					String tempPath="/sabangdisco/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
-							CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
-							CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
-							String.valueOf(reqNo);
-					
-					File folder= new File(pathString);
-					folder.mkdirs();
-					
-					if(!folder.exists()) {
-						throw new BizException(BizExType.SERVER_ERROR, "file saving error!!!");
-					}else {
-						System.out.println(tempPath + " directory 가 잘 생성되었습니다");
-					}
-					
-					File tempFile=new File( tempPath + "/" + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
-					System.out.println("################ tempFile 생성완료");
-					FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(tempFile));
-					System.out.println("################ tempFile 생성완료");
-					FileCopyUtils.copy(tempFile, new File(pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt")));
-					System.out.println("################ os 경로로 tempFile 복사 !!!!!");
-				}else {
+//				if(! System.getProperty("os.name").toLowerCase().contains("window")) {	/*로컬 환경이 아니면*/
+//					//스토리징 장비 달기전까지 런타임시에 파일을 웹문맥에도 중복으로 저장
+////					String tempPath="/maxrunphoto/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
+////									CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
+////									CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
+////									String.valueOf(reqNo);
+//					String tempPath="/sabangdisco/tomcat/webapps/ROOT/photo/" + String.valueOf(repairShopNo) + File.separator + 
+//							CommonUtils.getYearBy4Digit(LocalDate.now()) + File.separator + 
+//							CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
+//							String.valueOf(reqNo);
+//					
+//					File folder= new File(pathString);
+//					folder.mkdirs();
+//					
+//					if(!folder.exists()) {
+//						throw new BizException(BizExType.SERVER_ERROR, "file saving error!!!");
+//					}else {
+//						System.out.println(tempPath + " directory 가 잘 생성되었습니다");
+//					}
+//					
+//					File tempFile=new File( tempPath + "/" + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
+//					System.out.println("################ tempFile 생성완료");
+//					FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(tempFile));
+//					System.out.println("################ tempFile 생성완료");
+//					FileCopyUtils.copy(tempFile, new File(pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt")));
+//					System.out.println("################ os 경로로 tempFile 복사 !!!!!");
+//				}else {
 					//DB 트랜잭션이 성공했으므로 실제 물리 파일을 서비스 경로로 복사
-					file.transferTo(new File(pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt")));
-				}
+					File targetFile=new File( pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
+					file.transferTo(targetFile);
+//					FileCopyUtils.copy(targetFile, new File("/maxrunphoto/tomcat/webapps/photo/"+pathString + "/" + fileMap.get("fileName")+ "." + fileMap.get("fileExt")));
+//					
+//					if(Files.exists(Paths.get("/maxrunphoto/tomcat/webapps/photo/"+ pathString + "/" + fileMap.get("fileName")+ "." + fileMap.get("fileExt")))) {
+//						System.out.println("################################# COPY SUCCESS ###########################################");
+//						System.out.println("################################# COPY SUCCESS ###########################################");
+//						System.out.println("생성된 사진 " + String.valueOf(fileMap.get("fileName")) + "." + String.valueOf(fileMap.get("fileExt")) + "을 webapps하위 photo directory로 복사하였습니다");
+//					}else {
+//						System.out.println("################################# COPY FAILE ###########################################");
+//						System.out.println("################################# COPY FAILE ###########################################");
+//						System.out.println("생성된 사진 " + String.valueOf(fileMap.get("fileName")) + "." + String.valueOf(fileMap.get("fileExt")) + "을 webapps하위 photo directory로 복사하지 못했습니다");
+//					}
+					//file.transferTo(new File(pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt")));
+//				}
 			}catch(Exception ex) {
 				ex.printStackTrace();
 				//OS 상에서 파일 저장과정에서 에러가 발생했으므로 DB에 기저장된 메터 정보도 같이 삭제한다

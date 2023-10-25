@@ -11,13 +11,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.maxrun.application.common.auth.service.JWTTokenManager;
+import com.maxrun.application.common.utils.HttpServletUtils;
 import com.maxrun.notice.service.NoticeService;
 
 @Controller
 public class NoticeCtr {
 	@Autowired
 	private NoticeService noticeService;
-	
+	@Autowired
+	JWTTokenManager jwt;
 	@ResponseBody
 	@GetMapping("/notice/list")
 	public List<Map<String, Object>> getNoticeList(@RequestParam Map<String, Object> param)throws Exception{
@@ -33,7 +36,13 @@ public class NoticeCtr {
 	
 	@ResponseBody
 	@PostMapping("/notice")
-	public List<Map<String, Object>> regNotice(Map<String, Object> param) throws Exception{
-		return noticeService.regNotice(param);
+	public Map<String, Object> regNotice(@RequestParam Map<String, Object> param) throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		param.put("regUserId",claims.get("workerNo"));
+		param.put("outNoticeNo", 0);
+		noticeService.regNotice(param);
+		param.replace("noticeNo", param.get("outNoticeNo"));
+		return param;
 	}
 }

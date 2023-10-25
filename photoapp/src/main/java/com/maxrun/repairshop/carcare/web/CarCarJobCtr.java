@@ -13,6 +13,7 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,7 +47,7 @@ public class CarCarJobCtr {
 		
 		param.put("workerNo", claims.get("workerNo"));
 		param.put("repairShopNo", claims.get("repairShopNo"));
-
+		
 		carCareJobService.regCarEnterIn(param);
 
 		return param;
