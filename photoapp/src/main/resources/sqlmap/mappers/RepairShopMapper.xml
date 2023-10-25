@@ -73,7 +73,7 @@
 												@result			nchar(1)='SUCCESS' -->
 <select id="completeCopyToRepairShop" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_completeCopyToRepairShop(#{repairShopNo}, #{division}, #{reqNo}, #{fileNo}, #{result})
+		call sp_completeCopyToRepairShop(#{repairShopNo}, #{division}, #{reqNo}, #{fileNo}, #{result}, #{errorMsg})
 	}
 </select>
 <!-- sp_getEnterListForMgrProgram	@repairShopNo	int,

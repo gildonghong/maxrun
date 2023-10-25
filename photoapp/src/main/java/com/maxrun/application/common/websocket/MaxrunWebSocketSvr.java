@@ -164,11 +164,16 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 //					InputStream in = new FileInputStream(file);
 //					byte[] bytes = new byte[(int) file.length()];
 					
-					byte[] bytes = Files.readAllBytes(Paths.get(filePath));
-					
-					String b64Str = Base64.getEncoder().encodeToString(bytes);
+					if (Files.notExists(Paths.get(filePath))) {
+						//서버경로에 파일이 없어서 
+					}else {
+						byte[] bytes = Files.readAllBytes(Paths.get(filePath));
+						
+						String b64Str = Base64.getEncoder().encodeToString(bytes);
 
-					m.put("base64", b64Str);
+						m.put("base64", b64Str);
+						
+					}
 					//m.put("clientPath", m.get("repairShopPhotoPath")+ "\\20" + m.get("year") + "\\" +  m.get("month") + "\\" + m.get("carLicenseNo"));
 //					byte[] data = DatatypeConverter.parseBase64Binary(b64Str);
 //					
