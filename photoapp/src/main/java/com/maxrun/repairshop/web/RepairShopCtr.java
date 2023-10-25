@@ -77,7 +77,10 @@ public class RepairShopCtr {
 		param.put("repairShopNo", claims.get("repairShopNo"));
 		param.put("regUserId", claims.get("workerNo"));
 		
-		return repairShopService.getEnterList(param);
+		List<Map<String, Object>> lst = repairShopService.getEnterList(param);
+		System.out.println("입고목록 ===>" + lst);
+		
+		return lst;
 	}
 	
 	@ResponseBody

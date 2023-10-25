@@ -18,7 +18,7 @@
 								#{venderNo},
 								#{modelNo},
 								#{etcInfo},
-								#{memo},
+								<!-- #{memo}, -->
 								#{ownerName},
 								#{ownerCpNo},
 								#{ownerEmail},
@@ -63,9 +63,9 @@
 									@memoNo	BIGINT=NULL,
 									@memo	nvarchar(100),
 									@regDate	smalldatetime=NULL -->
-<select id= "reqRepairMemo" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+<select id= "regRepairMemo" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_removePhoto(#{reqNo}, #{memoNo}, #{memo}, #{regDate})
+		call sp_regRepairMemo(#{reqNo}, #{memoNo}, #{memo}, #{regDate}, #{outMemoNo, jdbcType=BIGINT, mode=OUT})
 	}
 </select>
 

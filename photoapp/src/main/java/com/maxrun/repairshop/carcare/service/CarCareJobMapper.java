@@ -19,6 +19,6 @@ public interface CarCareJobMapper {
 	public Map<String, Object> getJobDetails(Map<String, Object> param)throws SQLException;
 	public String getRepairReqPhotoPath(int reqNo)throws SQLException;
 	public List<Map<String, Object>> getFileListForTransffering()throws SQLException;
-	public void reqRepairMemo(Map<String, Object> param) throws SQLException;
+	public void regRepairMemo(Map<String, Object> param) throws SQLException;
 	
 }

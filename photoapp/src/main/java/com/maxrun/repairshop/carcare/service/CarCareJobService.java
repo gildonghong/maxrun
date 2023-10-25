@@ -59,11 +59,15 @@ public class CarCareJobService {
 		try {
 			carCareJobMapper.regCarEnterIn(param);
 			
-			//List<Map<String, Object>> memoLst = (List<Map<String, Object>>) param.get("memo");
+			List<Map<String, Object>> memoLst = (List<Map<String, Object>>) param.get("memo");
 			
-//			for(Map<String, Object> m:memoLst) {
-//				carCareJobMapper.reqRepairMemo(m);
-//			}
+			for(Map<String, Object> m:memoLst) {
+				m.put("reqNo", param.get("reqNo"));
+				m.put("outMemoNo", null);
+				carCareJobMapper.regRepairMemo(m);
+				
+				m.replace("memoNo", m.get("outMemoNo"));
+			}
 			
 			if (StringUtils.isEmpty(createDirectory(Integer.parseInt(String.valueOf(param.get("outReqNo")))))) {
 				throw new BizException(BizExType.UNKNOWN, "차량별 디렉토리 생성에 실패했습니다");
@@ -76,6 +80,7 @@ public class CarCareJobService {
 			if(e.getMessage().contains("이미 입고내역이 있는 차량번호입니다")) {
 				throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "동일 년월에 등록된 차량번호입니다. 차량번호 다음에 _숫자등을 부여해서 구분해주세요!!");
 			}else {
+				e.printStackTrace();
 				throw e;
 			}
 		}

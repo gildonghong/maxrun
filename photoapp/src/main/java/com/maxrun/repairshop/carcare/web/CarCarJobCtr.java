@@ -42,7 +42,7 @@ public class CarCarJobCtr {
 
 	@ResponseBody
 	@PostMapping("/repairshop/carcare/enterin")	/*차량입고등록*/
-	public Map<String, Object>regCarRepairReq(@RequestParam Map<String, Object> param)throws Exception{
+	public Map<String, Object>regCarRepairReq(@RequestBody Map<String, Object> param)throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
 		param.put("workerNo", claims.get("workerNo"));
