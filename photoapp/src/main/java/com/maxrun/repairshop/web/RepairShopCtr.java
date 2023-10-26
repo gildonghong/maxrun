@@ -166,7 +166,6 @@ public class RepairShopCtr {
 //								msg, 
 //								headers);
 		
-		repairShopService.regMessageSending(param);
-		return claims;
+		return repairShopService.regMessageSending(param);
 	}
 }

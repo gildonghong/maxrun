@@ -172,7 +172,11 @@ public class RepairShopService {
 		param.put("templateId", msg.get("tmplId"));
 		
 		//알림톡 송신 결과를 DB에 저장한다
-		return repairShopMapper.regMessageSending(param);
+		repairShopMapper.regMessageSending(param);
+		
+		returnMsg.put("result", ret.get("code"));
+		returnMsg.put("returnMsg", ret.get("message"));
+		return returnMsg;
 	}
 	
 }
