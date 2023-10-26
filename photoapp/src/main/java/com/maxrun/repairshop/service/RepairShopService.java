@@ -95,4 +95,8 @@ public class RepairShopService {
 		return repairShopMapper.getPerformanceList(param);
 	}
 	
+	public Map<String, Object> regMessageSending(Map<String, Object> param)throws Exception{
+		return repairShopMapper.regMessageSending(param);
+	}
+	
 }

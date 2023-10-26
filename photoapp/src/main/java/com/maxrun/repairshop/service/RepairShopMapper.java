@@ -22,4 +22,5 @@ public interface RepairShopMapper {
 	public List<Map<String, Object>> getEnterList(Map<String, Object> param) throws SQLException;
 	public List<Map<String, Object>> getPhotoList(Map<String, Object> param) throws SQLException;
 	public List<Map<String, Object>>getPerformanceList(Map<String, Object> param)throws SQLException;
+	public Map<String, Object> regMessageSending(Map<String, Object> param) throws SQLException;
 }

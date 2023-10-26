@@ -103,4 +103,16 @@
 									#{orderByColName})
 	}
 </select>
+<!-- sp_regMessageSending	@messageId	nvarchar(100),
+										@reqNo		bigint,
+										@templateId	nvarchar(100),
+										@message	nvarchar(1000) -->
+<select	id="regMessageSending" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_regMessageSending (	@messageId, 
+									@reqNo,
+									@templateId,
+									@message)
+	}
+</select>
 </mapper>

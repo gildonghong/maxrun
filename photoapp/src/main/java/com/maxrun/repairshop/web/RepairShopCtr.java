@@ -4,15 +4,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maxrun.application.common.auth.service.JWTTokenManager;
 import com.maxrun.application.common.utils.CookieUtils;
+import com.maxrun.application.common.utils.HttpClientUtil;
 import com.maxrun.application.common.utils.HttpServletUtils;
 import com.maxrun.repairshop.service.RepairShopService;
 
@@ -100,5 +105,42 @@ public class RepairShopCtr {
 		param.put("repairShopNo", claims.get("repairShopNo"));
 		
 		return repairShopService.getPerformanceList(param);
+	}
+	
+	@ResponseBody
+	@PostMapping("/repairshop/message")
+	public Map<String, Object> sendMessage(@RequestBody Map<String, Object> param) throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		String talkMsg;
+		String carLicenseNo = String.valueOf(param.get("carLicenseNo"));
+//		[{
+//		    "message_type":"AT",
+//		    "phn":"821045673546",
+//		    "profile":"ddd220da6741a415878d216a1b93c0b93702d7b8",
+//		    "tmplId":"photoapp01",
+//		    "msg":"홍길동님의 33소3333 차량에 대한 케미컬 청구 신청 합니다."
+//		}]	
+		if(param.get("target").equals("customer")) {
+//			talkMsg = "홍길동님의 33소3333 차량에 대한 케미컬 청구 신청 합니다.";
+			talkMsg = param.get("ownerName") + "님의 " + carLicenseNo + " 차량에 대한 케미컬 청구 신청합니다";
+		}else {
+			//talkMsg = "홍길동 고객님\\n요청하신 33소3333 에 대한 수리가 완료되었습니다.\\n 맥스런을 믿고 차량을 맡겨주셔서 감사합니다.언제나최선을 다하겠습니다.\\n- 공공공공업사\\n- 연락처 : 02388838383";
+			talkMsg = param.get("ownerName") + " 고객님\\n" + "요청하신 " + param.get("carLicenseNo") + "에 대한 수리가 완료되었습니다 \\n" + param.get("repairShopName") + 
+					  "을(를) 믿고 차량을 맡겨주셔서 감사합니다. 언제나 최선을 다하겠습니다.\\n" + param.get("repairShopName") + " :" + param.get("repairShopTelNo");
+		}
+		List<Map<String, Object>> msgLst = null;
+		
+		HttpHeaders headers = new HttpHeaders();
+		
+		headers.add("userid", "maxrun");
+		
+		HttpClientUtil.execute(	HttpMethod.POST, 
+								MediaType.APPLICATION_JSON_UTF8, 
+								"https://alimtalk-api.bizmsg.kr/v2/sender/send", 
+								param, 
+								headers);
+		
+		repairShopService.regMessageSending(param);
+		return claims;
 	}
 }
