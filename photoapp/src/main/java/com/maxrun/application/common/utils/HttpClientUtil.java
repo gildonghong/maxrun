@@ -1,9 +1,18 @@
 package com.maxrun.application.common.utils;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import org.apache.http.impl.client.HttpClients;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,9 +27,44 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.maxrun.application.exception.BizException;
 
 public class HttpClientUtil {
+//	[{"message_type":"AT",
+//		"phn":"821045673546",
+//		"profile":"ddd220da6741a415878d216a1b93c0b93702d7b8",
+//		"msg":"홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다.",
+//		"tmplId":"photoapp01"
+//		}]
+	public static void main(String args[]) throws IOException {
+		
+//		ObjectMapper objectMapper=new ObjectMapper();
+//		objectMapper.readValue
+//		
+//		List<Map<String, Object>> myObjects = objectMapper.readValue(test , new TypeReference<List<Map<String, Object>>>(){});
+//		
+		// 리스트 파라미터 예시
+		JSONArray list = new JSONArray();
+		JSONObject data = new JSONObject();
+
+		HttpHeaders headers = new HttpHeaders();
+		
+		headers.add("userid", "maxrun");
+		
+		data.put("message_type", "AT");
+		data.put("phn", "821045673546");
+		data.put("profile", "ddd220da6741a415878d216a1b93c0b93702d7b8");
+		data.put("msg", "홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다.");
+		data.put("tmplId", "photoapp01");
+
+		list.add(data);
+		
+		List<Map<String, Object>> ret = excuteByJsonObject("POST", "https://alimtalk-api.bizmsg.kr/v2/sender/send", list);
+//		
+//		//ResponseEntity<Map<String, Object>> res = execute(HttpMethod.POST, MediaType.APPLICATION_JSON_UTF8, "https://alimtalk-api.bizmsg.kr/v2/sender/send", test, headers);
+//		ResponseEntity<?> res =  ajax2("https://alimtalk-api.bizmsg.kr/v2/sender/send", HttpMethod.POST, msg , headers);
+	}
 
 	public static HttpHeaders createHttpHeaders(Map<String, Object>heareders) throws BizException{
 		return null;
@@ -98,5 +142,38 @@ public class HttpClientUtil {
 		ResponseEntity<Map<String, Object>> res = restTemplate.exchange(url, HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>(){});
 		
 		return res;
+	}
+	
+	/* JSON API   */
+	public static List<Map<String, Object>> excuteByJsonObject(String method, String stringURL, JSONArray param) throws IOException {
+	    URL obj = null;
+	    obj = new URL(stringURL); // API URL
+
+	    HttpURLConnection con = (HttpURLConnection)obj.openConnection();
+	    con.setRequestMethod(method); // GET, POST
+	    con.setRequestProperty("Content-type", "application/json; charset=UTF-8");
+	    //con.setRequestProperty("Content-type", "application/json");
+	    con.setRequestProperty("userid", "maxrun");
+	    
+	    con.setDoOutput(true);
+	    // DATA
+	    OutputStreamWriter wr= new OutputStreamWriter(con.getOutputStream());
+	    System.out.println("ddd-->" + param.toString());
+	    System.out.println("ddd-->" + String.valueOf(param.toString()));
+	    wr.write(param.toString());
+	    wr.flush();
+	    // API 호출
+	    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+	    String line;
+	    StringBuffer sb = new StringBuffer();
+	    while((line = in.readLine()) != null){
+	        sb.append(line);
+	    }
+	    in.close();
+	    con.disconnect();
+	    String text = sb.toString();
+	    ObjectMapper mapper = new ObjectMapper();
+	    List<Map<String, Object>> ret = mapper.readValue(text, List.class);
+	    return ret; 
 	}
 }

@@ -14,16 +14,18 @@
 								@regUserId		bigint,
 								@outNoticeNo	bigint	output -->
 <select id="regRepairShop" statementType="CALLABLE" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
-<!-- [dbo].[sp_regRepairShop]	@repairShopNo	integer=null,
-								@repairShopName	nvarchar(100),
-								@photoSavedPath	nvarchar(300),
-								@repairShopEmail	nvarchar(300)=null,
-								@maxrunChargerCpNo	integer,
-								@regUserId	integer,
-								@outRepairShopNo	integer output -->
+<!-- CREATE	PROCEDURE	[dbo].[sp_regRepairShop]	@repairShopNo	integer=null,
+												@repairShopName	nvarchar(100),
+												@businessNo		nchar(10)=null,
+												@photoSavedPath	nvarchar(300)=null,
+												@repairShopEmail	nvarchar(100)=null,
+												@repairShopTelNo	nvarchar(30)=null,
+												@maxrunChargerCpNo	nvarchar(30),
+												@regUserId	integer,
+												@outRepairShopNo	integer=null output -->
 
 	{
-		call sp_regRepairShop(#{repairShopNo},#{repairShopName}, #{photoSavedPath}, #{repairShopEmail}, #{maxrunChargerCpNo}, #{regUserId}, #{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
+		call sp_regRepairShop(#{repairShopNo},#{repairShopName},#{businessNo}, #{photoSavedPath}, #{repairShopEmail}, #{repairShopTelNo}, #{maxrunChargerCpNo}, #{regUserId}, #{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
 	}	
 </select>
 
@@ -109,10 +111,10 @@
 										@message	nvarchar(1000) -->
 <select	id="regMessageSending" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_regMessageSending (	@messageId, 
-									@reqNo,
-									@templateId,
-									@message)
+		call sp_regMessageSending (	#{messageId}, 
+									#{reqNo},
+									#{templateId},
+									#{sendingResult})
 	}
 </select>
 </mapper>
