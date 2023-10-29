@@ -1,5 +1,6 @@
 package com.maxrun.repairshop.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -172,5 +173,11 @@ public class RepairShopService {
 		returnMsg.put("returnMsg", ret.get("message"));
 		return returnMsg;
 	}
+	
+	//
+	public void regWSException(Map<String, Object> param)throws Exception{
+		repairShopMapper.regWSException(param);
+	}
+
 	
 }

@@ -1,29 +1,18 @@
 package com.maxrun.repairshop.carcare.web;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-import com.j256.simplemagic.ContentInfo;
-import com.j256.simplemagic.ContentInfoUtil;
 import com.maxrun.application.common.auth.service.JWTTokenManager;
-import com.maxrun.application.common.utils.CommonUtils;
 import com.maxrun.application.common.utils.HttpServletUtils;
-import com.maxrun.application.config.PropertyManager;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
 import com.maxrun.repairshop.carcare.service.CarCareJobService;
@@ -46,8 +35,11 @@ public class CarCarJobCtr {
 		if(!param.containsKey("carLicenseNo") || param.get("carLicenseNo") == null || String.valueOf(param.get("carLicenseNo")).equals("")) {
 			throw new BizException(BizExType.PARAMETER_MISSING, "차량번호가 누락되었습니다");
 		}
-		
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		if(claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
+		}
 		
 		param.put("workerNo", claims.get("workerNo"));
 		param.put("repairShopNo", claims.get("repairShopNo"));
@@ -61,6 +53,12 @@ public class CarCarJobCtr {
 	@ResponseBody
 	@PostMapping("/repairshop/carcare/enterwithphoto")	/*차량입고등록*/
 	public Map<String, Object>regCarRepairReqWithPhoto(	MultipartHttpServletRequest request)throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		if(claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
+		}
+		
 		return carCareJobService.regCarEnterWithPhoto(request);
 	}
 	
@@ -82,6 +80,11 @@ public class CarCarJobCtr {
 		}else if(request.getMultiFileMap().get("photo")==null) {
 			throw new BizException(BizExType.PARAMETER_MISSING, "사진 파일이 누락되었습니다");
 		}
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		if(claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
+		}
 		
 		return carCareJobService.regPhoto(request);	//저장돈 파일의 파일그룹번호를 반환한다
 	}
@@ -99,13 +102,23 @@ public class CarCarJobCtr {
 			throw new BizException(BizExType.PARAMETER_MISSING, "차량 입고번호가 누락도었습니다!");
 		}
 		
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		if(claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
+		}
+		
 		return carCareJobService.regMemo(param);
 	}
 	
 	@ResponseBody
 	@PostMapping("/repairshop/carcare/memo/delete")
 	public int delMemo(@RequestParam int memoNo) throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
+		if(claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
+		}
 		return carCareJobService.deleteMemo(memoNo);
 	}
 	

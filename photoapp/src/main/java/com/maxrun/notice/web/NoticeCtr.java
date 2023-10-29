@@ -46,8 +46,8 @@ public class NoticeCtr {
 		}
 		param.put("regUserId",claims.get("workerNo"));
 		param.put("outNoticeNo", 0);
-		noticeService.regNotice(param);
-		param.replace("noticeNo", param.get("outNoticeNo"));
-		return param;
+		return noticeService.regNotice(param);
+//		param.replace("noticeNo", param.get("outNoticeNo"));
+//		return param;
 	}
 }

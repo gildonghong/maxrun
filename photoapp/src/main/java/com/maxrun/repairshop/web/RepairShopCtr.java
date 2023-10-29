@@ -119,6 +119,10 @@ public class RepairShopCtr {
 			        Object obj = jsonParser.parse(String.valueOf(m.get("memo")));
 			        org.json.simple.JSONArray memoLst = (org.json.simple.JSONArray) obj;
 			        m.replace("memo", memoLst.toArray());
+//			        List<Map<String, Object>> temp = (List<Map<String, Object>>)m.get("memo");
+//			        
+//			        for(Map<String, Object> mp: temp)
+//			        	mp.replace("reqNo", Integer.parseInt(String.valueOf(mp.get("reqNo"))));	//reqNo가 자꾸 문자열로 내려간다고 해서 
 				}
 		        
 			}
@@ -135,7 +139,7 @@ public class RepairShopCtr {
 	}
 	
 	@ResponseBody
-	@GetMapping("/repairshop/enter/photo/list")
+	@GetMapping("/repairshop/enter/photo/list")	/*관리자 차량별 사진 전체 목록*/
 	public List<Map<String, Object>> getPhotoList(@RequestParam Map<String, Object> param) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		param.put("repairShopNo", claims.get("repairShopNo"));
@@ -182,6 +186,17 @@ public class RepairShopCtr {
 				throw new BizException(BizExType.PARAMETER_MISSING, "고객전화번호가 전화번호가 누락되었습니다");
 		}
 		
+		if(claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.PARAMETER_MISSING, "maxrun 담당자로 로그인 된 상태에서는 알림톡을 보내실 수 없습니다");
+		}
+		
+		if(!claims.containsKey("repairShopTelNo")) {
+			throw new BizException(BizExType.PARAMETER_MISSING, "정비소 전화번호가 없이 알림톡을 보내실수는 없습니다");
+		}
+		if(!StringUtils.hasText(String.valueOf(claims.get("repairShopTelNo")))) {
+			throw new BizException(BizExType.PARAMETER_MISSING, "정비소 전화번호가 없이 알림톡을 보내실수는 없습니다");
+		}
+		
 		if(!param.get("target").equals("customer") && !param.get("target").equals("maxrun")) {
 			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "target parameter 값이 허용되지 않는 값을 가지고 있습니다");
 		}
@@ -202,6 +217,10 @@ public class RepairShopCtr {
 		
 		if (!param.containsKey("reqNo"))
 			throw new BizException(BizExType.PARAMETER_MISSING, "차량 입고번호가 누락되었습니다");
+
+		if(claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
+		}
 		
 		param.put("repairshopNo", claims.get("repairshopNo"));
 		param.put("regUserId", claims.get("workerNo"));

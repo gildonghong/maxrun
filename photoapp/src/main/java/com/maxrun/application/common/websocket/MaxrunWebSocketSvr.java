@@ -1,23 +1,15 @@
 package com.maxrun.application.common.websocket;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.xml.bind.DatatypeConverter;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.socket.CloseStatus;
@@ -25,11 +17,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.maxrun.application.config.PropertyManager;
-import com.maxrun.repairshop.carcare.service.CarCareJobService;
 import com.maxrun.repairshop.service.RepairShopService;
 
 public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
@@ -62,7 +52,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> msg = mapper.readValue(paylod, Map.class);
 
-			System.out.println("paylod--->" + msg);
+			//System.out.println("paylod--->" + msg);
 			repairShopService.completeCopyToRepairShop(msg);
 			
 			if(msg.get("result").equals("SUCCESS"))
@@ -90,7 +80,6 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 	}
 	
 	private synchronized void removeWorkListAlreadyCopyDone(Map<String, Object> copyDone){
-		//Paylod--->{division=FILE, repairShopNo=1, reqNo=1, fileNo=6, result=SUCCESS}
 		try {
 			System.out.println("copyDone-->" + copyDone);
 			
@@ -109,19 +98,6 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 					}
 				}
 			}
-//			for(Map<String, Object> m: needToSendLIst) {
-//				if (copyDone.get("division").equals("DIRECTORY")) {
-//					System.out.println("DIRECTORY--->" + m);
-//					if (m.get("division").toString().equals("DIRECTORY") && m.get("reqNo").toString().equals(copyDone.get("reqNo").toString())){
-//						needToSendLIst.remove(m);
-//					}
-//				}else {
-//					System.out.println("FILE--->" + m);
-//					if (m.get("division").toString().equals("FILE") && m.get("fileNo").toString().equals(copyDone.get("fileNo").toString())){
-//						needToSendLIst.remove(m);
-//					}
-//				}
-//			}
 		}catch(Exception ex) {
 			ex.printStackTrace();
 		}
@@ -152,21 +128,17 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 			try {
 				WebSocketSession repairShop = findRepairShopSession(repairShopNo);
 
-				//if(repairShop!=null && repairShop.isOpen()) {
 				if(m.get("division").equals("FILE")){
 					String filePath = PropertyManager.get("Globals.photo.os.path") + m.get("serverPath");
-					
-					//filePath=filePath.replaceAll("/", File.separator);
-					
+
 					System.out.println("filePath==>" + filePath);
-					
-//					File file = new File(filePath);
-//					InputStream in = new FileInputStream(file);
-//					byte[] bytes = new byte[(int) file.length()];
 					
 					if (Files.notExists(Paths.get(filePath))) {
 						//서버경로에 파일이 없어서
 						System.out.println(filePath + " is not exists");
+						m.put("exceptionDesc", "서버경로에 파일이 없습니다");
+
+						repairShopService.regWSException(m);	//예외발생을 기록함 
 					}else {
 						byte[] bytes = Files.readAllBytes(Paths.get(filePath));
 						
@@ -174,12 +146,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 						m.put("base64", b64Str);
 						
-					}
-					//m.put("clientPath", m.get("repairShopPhotoPath")+ "\\20" + m.get("year") + "\\" +  m.get("month") + "\\" + m.get("carLicenseNo"));
-//					byte[] data = DatatypeConverter.parseBase64Binary(b64Str);
-//					
-//					FileOutputStream out = new FileOutputStream(new File("C:\\Temp3\\base64Test." + m.get("fileExt")));
-//					out.write(data);		
+					}	
 				}
 				msgStr = gson.toJson(m);
 				TextMessage message = new TextMessage(msgStr);
@@ -187,10 +154,15 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 				repairShop.sendMessage(message);
 				//}
 			}catch(IndexOutOfBoundsException e) {
+				m.put("exceptionDesc", e.getMessage());
+				repairShopService.regWSException(m);
 				//System.out.println("ok");
 			}catch(Exception e) {
+				m.put("exceptionDesc", e.getMessage());
+				repairShopService.regWSException(m);
+				
 				e.printStackTrace();
-				throw e;
+				//throw e;
 			}
 		}
 	}

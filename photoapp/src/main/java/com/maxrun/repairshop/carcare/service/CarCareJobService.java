@@ -249,7 +249,7 @@ public class CarCareJobService {
 		
 		param.put("regDate", memo.get("regDate"));
 		param.put("memoNo", param.get("outMemoNo"));
-		return param;
+		return memo;
 	}
 	
 	public int deleteMemo(int memoNo) {

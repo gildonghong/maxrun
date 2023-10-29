@@ -13,7 +13,7 @@
 								@notice			nvarchar(1000), 
 								@regUserId		bigint,
 								@outNoticeNo	bigint	output -->
-<select id="regNotice" statementType="CALLABLE" parameterType="java.util.HashMap" >
+<select id="regNotice" statementType="CALLABLE" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
 	{
 		call sp_regNotice(#{noticeNo},#{notice}, #{regUserId}, #{outNoticeNo,jdbcType=BIGINT, mode=OUT})
 	}	

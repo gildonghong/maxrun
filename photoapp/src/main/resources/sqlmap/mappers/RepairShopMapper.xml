@@ -66,6 +66,12 @@
 	}
 </select>
 
+<select	id="regWSException" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
+	{
+		call sp_regWSException(	#{repairShopNo}, #{reqNo}, #{fileNo}, #{exceptionDesc})
+	}
+</select>
+
 <select id="getEnterList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
 		call sp_getEnterListForMgrProgram(#{repairShopNo}, #{fromDate}, #{toDate}, #{carLicenseNo})

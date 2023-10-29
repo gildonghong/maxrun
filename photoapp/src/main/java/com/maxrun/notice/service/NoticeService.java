@@ -16,9 +16,9 @@ public class NoticeService {
 		return noticeMapper.getNoticeList(param);
 	}
 	
-	public void regNotice(Map<String, Object> param)throws Exception{
+	public Map<String, Object> regNotice(Map<String, Object> param)throws Exception{
 		
-		noticeMapper.regNotice(param);
+		return noticeMapper.regNotice(param);
 	}
 	
 	public Map<String, Object> getNoticeDetails(int noticeNo)throws Exception{
