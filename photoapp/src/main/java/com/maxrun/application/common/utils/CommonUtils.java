@@ -1,8 +1,10 @@
 package com.maxrun.application.common.utils;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.URL;
 import java.net.URLConnection;
@@ -34,6 +36,14 @@ import javax.crypto.KeyGenerator;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +59,26 @@ import com.maxrun.application.exception.BizException;
  * <PRE>gslp-user|utils</PRE>
  */
 public class CommonUtils {
+	
+	public static void createXlsFile() throws Exception{
+		
+		Workbook wb = new HSSFWorkbook();
 
-	public static void main(String args[]) {
+		Sheet sh = wb.createSheet("sheet1");
+		//HSSFSheet sh = wb.getSheetAt(1);
+        
+        Row row = sh.createRow(0);
+        Cell cell = row.createCell(0);
+        cell.setCellValue("test");
+
+		try (OutputStream fileOut = new FileOutputStream("C:\\2022\\workbook.xls")) {
+			wb.write(fileOut);
+		}
+	}
+
+	public static void main(String args[]) throws Exception{
+		
+		createXlsFile();
 		
 		Map<String, String> test = new HashMap<String, String>();
 		

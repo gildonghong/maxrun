@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maxrun.application.common.auth.service.JWTTokenManager;
+import com.maxrun.application.common.crytography.DefaultCryptographyHelper;
 import com.maxrun.application.common.utils.CookieUtils;
 import com.maxrun.application.common.utils.HttpServletUtils;
 import com.maxrun.application.exception.BizExType;
@@ -24,6 +25,8 @@ public class EmployeeCtr {
 	private EmployeeService employeeService;
 	@Autowired
 	private JWTTokenManager jwt;
+	@Autowired
+	private DefaultCryptographyHelper cryptographyHelper;
 	
 	@ResponseBody
 	@GetMapping("/repairshop/employee/list")
@@ -37,7 +40,7 @@ public class EmployeeCtr {
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
 		/*작업자 신규 등록시만 파라미터 유효성 체크 진행*/
-		if(param.get("workerNo")==null && param.get("workerNo").equals(0)) {
+		if(!param.containsKey("workerNo") || (param.get("workerNo")==null && param.get("workerNo").equals(0))) {
 			if(param.get("departmentNo")==null || param.get("departmentNo").equals(0)) {
 				throw new BizException(BizExType.PARAMETER_MISSING, "부서는 필수값입니다");
 			}
@@ -56,6 +59,11 @@ public class EmployeeCtr {
 		}
 
 		param.put("regUserId", claims.get("workerNo"));
+		
+		if(param.containsKey("pwd")) {
+			if(param.get("pwd")!=null)
+				param.put("pwd", cryptographyHelper.sha256(String.valueOf(param.get("pwd"))));
+		}
 		param.put("outWorkerNo", null);
 		return employeeService.regWorker(param);
 	}

@@ -1,21 +1,15 @@
 package com.maxrun.repairshop.service;
 
-import java.sql.SQLException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.maxrun.application.common.auth.service.JWTTokenManager;
-import com.maxrun.application.common.utils.CookieUtils;
 import com.maxrun.application.common.utils.HttpClientUtil;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;

@@ -11,18 +11,16 @@
 <script>
 
 $(document).ready(function(){
-	
-	
+
 	//'request'라는 id를 가진 버튼 클릭 시 실행.
 	$("#ddd").click(function(){
 
 	        // json 형식으로 데이터 set
 	        var params = {
-	                  "reqNo": "1",
-	                  "carLicenseNo": "11가1111"}
+	                  "reqNo": 2}
 	        
 	        
-			var memo = [{"memoNo":"", "regDate":"2023-10-25", "memo":"dfdsfadsfaadfs"}];
+			var memo = [{"memoNo":"", "regDate":"2023-10-25", "memo":"dfdsfadsfaadfs"}, {"memoNo":"", "regDate":"2023-10-25", "memo":"33333"}];
 	        
 	        params.memo=memo;
 	        
@@ -30,7 +28,7 @@ $(document).ready(function(){
 	        $.ajax({
 	            type : "POST",            // HTTP method type(GET, POST) 형식이다.
 	            contentType:"application/json; charset=utf-8",
-	            url : "/repairshop/carcare/enterin",      // 컨트롤러에서 대기중인 URL 주소이다.
+	            url : "/repairshop/carentering",      // 컨트롤러에서 대기중인 URL 주소이다.
 	            data : JSON.stringify(params),            // Json 형식의 데이터이다.
 	            success : function(res){ // 비동기통신의 성공일경우 success콜백으로 들어옵니다. 'res'는 응답받은 데이터이다.
 	                // 응답코드 > 0000

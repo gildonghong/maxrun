@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.maxrun.application.common.auth.service.JWTTokenManager;
 import com.maxrun.application.common.utils.HttpServletUtils;
+import com.maxrun.application.exception.BizExType;
+import com.maxrun.application.exception.BizException;
 import com.maxrun.notice.service.NoticeService;
 
 @Controller
@@ -39,6 +41,9 @@ public class NoticeCtr {
 	public Map<String, Object> regNotice(@RequestParam Map<String, Object> param) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
+		if(!claims.get("repairShopNo").equals(-1)) {
+			throw new BizException(BizExType.NOT_AUTHORIZED, "맥스런 사용자가 아닌경우 공지사항 등록은 불가합니다");
+		}
 		param.put("regUserId",claims.get("workerNo"));
 		param.put("outNoticeNo", 0);
 		noticeService.regNotice(param);

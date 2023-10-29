@@ -42,7 +42,11 @@ public class CarCarJobCtr {
 
 	@ResponseBody
 	@PostMapping("/repairshop/carcare/enterin")	/*차량입고등록*/
-	public Map<String, Object>regCarRepairReq(@RequestBody Map<String, Object> param)throws Exception{
+	public Map<String, Object>regCarRepairReq(@RequestParam Map<String, Object> param)throws Exception{
+		if(!param.containsKey("carLicenseNo") || param.get("carLicenseNo") == null || String.valueOf(param.get("carLicenseNo")).equals("")) {
+			throw new BizException(BizExType.PARAMETER_MISSING, "차량번호가 누락되었습니다");
+		}
+		
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
 		param.put("workerNo", claims.get("workerNo"));
@@ -80,6 +84,35 @@ public class CarCarJobCtr {
 		}
 		
 		return carCareJobService.regPhoto(request);	//저장돈 파일의 파일그룹번호를 반환한다
+	}
+	
+	@ResponseBody
+	@GetMapping("/repairshop/carcare/photo/list")	/* 입고차량별 전체사진목록 */
+	public List<Map<String, Object>> getPhotoListByCar(@RequestParam int reqNo) throws Exception{
+		return carCareJobService.getPhotoListByRepairReq(reqNo);
+	}
+	
+	@ResponseBody
+	@PostMapping("/repairshop/carcare/memo")
+	public Map<String, Object> regMemo(@RequestParam Map<String, Object> param) throws Exception{
+		if(!param.containsKey("reqNo")) {
+			throw new BizException(BizExType.PARAMETER_MISSING, "차량 입고번호가 누락도었습니다!");
+		}
+		
+		return carCareJobService.regMemo(param);
+	}
+	
+	@ResponseBody
+	@PostMapping("/repairshop/carcare/memo/delete")
+	public int delMemo(@RequestParam int memoNo) throws Exception{
+		
+		return carCareJobService.deleteMemo(memoNo);
+	}
+	
+	@ResponseBody
+	@GetMapping("/repairshop/carcare/memo/list")
+	public List<Map<String, Object>> getMemoList(@RequestParam int reqNo) throws Exception{
+		return carCareJobService.getMemoList(reqNo);
 	}
 
 }

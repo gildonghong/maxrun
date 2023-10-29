@@ -165,7 +165,8 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 //					byte[] bytes = new byte[(int) file.length()];
 					
 					if (Files.notExists(Paths.get(filePath))) {
-						//서버경로에 파일이 없어서 
+						//서버경로에 파일이 없어서
+						System.out.println(filePath + " is not exists");
 					}else {
 						byte[] bytes = Files.readAllBytes(Paths.get(filePath));
 						
@@ -178,9 +179,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 //					byte[] data = DatatypeConverter.parseBase64Binary(b64Str);
 //					
 //					FileOutputStream out = new FileOutputStream(new File("C:\\Temp3\\base64Test." + m.get("fileExt")));
-//					out.write(data);
-					
-					
+//					out.write(data);		
 				}
 				msgStr = gson.toJson(m);
 				TextMessage message = new TextMessage(msgStr);

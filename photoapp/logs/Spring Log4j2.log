@@ -1,30 +1,12 @@
-2023/10/26 20:11:36,612 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] HTTP POST https://alimtalk-api.bizmsg.kr/v2/sender/send
-2023/10/26 20:11:36,675 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Accept=[application/json, application/*+json]
-2023/10/26 20:11:36,739 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Writing [{msg=홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다., tmplId=photoapp01, phn=0821045673546, profile=ddd220da6741a415878d216a1b93c0b93702d7b8, message_type=AT}] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2023/10/26 20:11:37,481 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Response 200 OK
-2023/10/26 20:11:37,503 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Reading to [java.util.Map<java.lang.String, java.lang.Object>]
-2023/10/26 20:13:01,922 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] HTTP POST https://alimtalk-api.bizmsg.kr/v2/sender/send
-2023/10/26 20:13:01,984 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Accept=[application/json, application/*+json]
-2023/10/26 20:13:02,049 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Writing [{msg=홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다., tmplId=photoapp01, phn=0821045673546, profile=ddd220da6741a415878d216a1b93c0b93702d7b8, message_type=AT}] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2023/10/26 20:13:02,724 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Response 200 OK
-2023/10/26 20:13:02,746 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Reading to [java.util.Map<java.lang.String, java.lang.Object>]
-2023/10/26 20:22:27,127 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] HTTP POST https://alimtalk-api.bizmsg.kr/v2/sender/send
-2023/10/26 20:22:27,149 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Accept=[application/json, application/*+json]
-2023/10/26 20:22:27,164 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Writing [[{msg=홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다., tmplId=photoapp01, phn=0821045673546, profile=ddd220da6741a415878d216a1b93c0b93702d7b8, message_type=AT}]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2023/10/26 20:22:27,406 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Response 200 OK
-2023/10/26 20:22:27,412 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Reading to [java.util.Map<java.lang.String, java.lang.Object>]
-2023/10/26 20:23:27,328 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] HTTP POST https://alimtalk-api.bizmsg.kr/v2/sender/send
-2023/10/26 20:23:27,391 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Accept=[application/json, application/*+json]
-2023/10/26 20:23:27,453 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Writing [[{msg=홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다., tmplId=photoapp01, phn=0821045673546, profile=ddd220da6741a415878d216a1b93c0b93702d7b8, message_type=AT}]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2023/10/26 20:23:28,156 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Response 200 OK
-2023/10/26 20:23:28,177 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Reading to [java.util.Map<java.lang.String, java.lang.Object>]
-2023/10/26 20:25:53,303 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] HTTP POST https://alimtalk-api.bizmsg.kr/v2/sender/send
-2023/10/26 20:25:53,333 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Accept=[application/json, application/*+json]
-2023/10/26 20:25:53,349 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Writing [[{msg=홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다., tmplId=photoapp01, phn=0821045673546, profile=ddd220da6741a415878d216a1b93c0b93702d7b8, message_type=AT}]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2023/10/26 20:25:53,568 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Response 200 OK
-2023/10/26 20:25:53,575 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Reading to [java.util.Map<java.lang.String, java.lang.Object>]
-2023/10/26 20:28:47,074 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] HTTP POST https://alimtalk-api.bizmsg.kr/v2/sender/send
-2023/10/26 20:28:47,135 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Accept=[application/json, application/*+json]
-2023/10/26 20:28:47,197 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Writing [[{msg=홍일사 의 55가5555 차량에 대한 케미컬 청구 신청 합니다., tmplId=photoapp01, phn=0821045673546, profile=ddd220da6741a415878d216a1b93c0b93702d7b8, message_type=AT}]] with org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-2023/10/26 20:28:47,922 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Response 200 OK
-2023/10/26 20:28:47,943 [DEBUG]  [org.springframework.core.log.CompositeLog] [main] Reading to [java.util.Map<java.lang.String, java.lang.Object>]
+2023/10/28 02:26:43,536 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
+2023/10/28 02:26:43,785 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
+2023/10/28 02:27:24,396 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
+2023/10/28 02:27:24,537 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
+2023/10/28 02:30:11,622 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
+2023/10/28 02:30:11,771 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
+2023/10/28 02:36:01,414 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
+2023/10/28 02:36:01,420 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
+2023/10/28 02:41:08,948 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
+2023/10/28 02:41:08,969 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
+2023/10/28 02:43:27,940 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
+2023/10/28 02:43:28,087 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null

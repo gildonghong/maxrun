@@ -16,11 +16,12 @@ public class MaxRunExceptionCtr {
 	@ExceptionHandler(BizException.class)
     public ResponseEntity handleException(BizException e) {
 		System.out.println("에러-->" + e.getMessage());
+		HttpStatus status=HttpStatus.INTERNAL_SERVER_ERROR;
 		HttpHeaders responseHeaders = new HttpHeaders();
 	    //responseHeaders.set("CONTENT_ENCODING","utf-8"); //
 	    responseHeaders.set("Content-Type", "application/json;charset=utf-8"); 
-	    
-	    return ResponseEntity.status(HttpStatus.FORBIDDEN).headers(responseHeaders).body(e.getMessage());
+
+	    return ResponseEntity.status(e.getHttpStatus()).headers(responseHeaders).body(e.getMessage());
         //return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     } 
 	

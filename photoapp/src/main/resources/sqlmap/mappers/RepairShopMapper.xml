@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maxrun.repairshop.service.RepairShopMapper">
-<!-- PROCEDURE [dbo].[sp_getNoticeList]	@from_date	smalldatetime,
-											@to_date	smalldatetime,
-											@pageNo		int -->
+
 <select id="getRepairShop" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
 		call sp_getRepairShop(#{repairShopNo})
 	}	
 </select>
-<!-- [dbo].[sp_regNotice]	@noticeNo		bigint=null,
-								@notice			nvarchar(1000), 
-								@regUserId		bigint,
-								@outNoticeNo	bigint	output -->
-<select id="regRepairShop" statementType="CALLABLE" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
-<!-- CREATE	PROCEDURE	[dbo].[sp_regRepairShop]	@repairShopNo	integer=null,
-												@repairShopName	nvarchar(100),
-												@businessNo		nchar(10)=null,
-												@photoSavedPath	nvarchar(300)=null,
-												@repairShopEmail	nvarchar(100)=null,
-												@repairShopTelNo	nvarchar(30)=null,
-												@maxrunChargerCpNo	nvarchar(30),
-												@regUserId	integer,
-												@outRepairShopNo	integer=null output -->
 
+<select id="getRepairShopList" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
-		call sp_regRepairShop(#{repairShopNo},#{repairShopName},#{businessNo}, #{photoSavedPath}, #{repairShopEmail}, #{repairShopTelNo}, #{maxrunChargerCpNo}, #{regUserId}, #{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
+		call sp_getRepairShopList()
+	}	
+</select>
+
+<select id="regRepairShop" statementType="CALLABLE" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
+	{
+		call sp_regRepairShop(#{repairShopNo},#{repairShopName},#{businessNo}, #{ceoName}, #{photoSavedPath}, #{repairShopEmail}, #{repairShopTelNo}, #{maxrunChargerCpNo}, #{regUserId}, #{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
 	}	
 </select>
 
@@ -68,20 +59,13 @@
 		call sp_getFileListForTransffering()
 	}
 </select>
-<!-- CREATE PROCEDURE sp_completeCopyToRepairShop	@repairShopNo	int,
-												@division		nvarchar(30)='FILE',
-												@reqNo			bigint=null,
-												@fileNo			bigint=null,
-												@result			nchar(1)='SUCCESS' -->
+
 <select id="completeCopyToRepairShop" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
 		call sp_completeCopyToRepairShop(#{repairShopNo}, #{division}, #{reqNo}, #{fileNo}, #{result}, #{errorMsg})
 	}
 </select>
-<!-- sp_getEnterListForMgrProgram	@repairShopNo	int,
-												@fromDate		smalldatetime=null,
-												@toDate			smalldatetime=null,
-												@carLicenseNo		nvarchar(100)=null -->
+
 <select id="getEnterList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
 		call sp_getEnterListForMgrProgram(#{repairShopNo}, #{fromDate}, #{toDate}, #{carLicenseNo})
@@ -105,10 +89,7 @@
 									#{orderByColName})
 	}
 </select>
-<!-- sp_regMessageSending	@messageId	nvarchar(100),
-										@reqNo		bigint,
-										@templateId	nvarchar(100),
-										@message	nvarchar(1000) -->
+
 <select	id="regMessageSending" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
 		call sp_regMessageSending (	#{messageId}, 

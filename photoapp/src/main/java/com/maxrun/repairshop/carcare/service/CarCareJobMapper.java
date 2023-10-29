@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Mapper
 public interface CarCareJobMapper {
@@ -19,6 +20,9 @@ public interface CarCareJobMapper {
 	public Map<String, Object> getJobDetails(Map<String, Object> param)throws SQLException;
 	public String getRepairReqPhotoPath(int reqNo)throws SQLException;
 	public List<Map<String, Object>> getFileListForTransffering()throws SQLException;
-	public void regRepairMemo(Map<String, Object> param) throws SQLException;
-	
+	public Map<String, Object> regRepairMemo(Map<String, Object> param) throws SQLException;
+	public List<Map<String, Object>> getPhotoListByRepairReq(int reqNo) throws SQLException;
+	public List<Map<String, Object>> getMemoList(int reqNo);
+	public List<Map<String, Object>> regMemo(Map<String, Object> param) throws SQLException;
+	public int deleteMemo(int memoNo);
 }

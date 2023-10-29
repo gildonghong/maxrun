@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -59,16 +63,24 @@ public class CarCareJobService {
 		try {
 			carCareJobMapper.regCarEnterIn(param);
 			
-			List<Map<String, Object>> memoLst = (List<Map<String, Object>>) param.get("memo");
-			
-			if(memoLst != null && memoLst.size()>0)
-				for(Map<String, Object> m:memoLst) {
-					m.put("reqNo", param.get("reqNo"));
-					m.put("outMemoNo", null);
-					carCareJobMapper.regRepairMemo(m);
-					
-					m.replace("memoNo", m.get("outMemoNo"));
-				}
+//			if(param.containsKey("memo")) {
+//				List<Map<String, Object>> memoLst = (List<Map<String, Object>>) param.get("memo");
+//				
+//				if(memoLst != null && memoLst.size()>0)
+//					for(Map<String, Object> m:memoLst) {
+//						m.put("reqNo", param.get("reqNo"));
+//						m.put("outMemoNo", null);
+//						carCareJobMapper.regRepairMemo(m);
+//						
+//						m.replace("memoNo", m.get("outMemoNo"));
+//					}
+//			}else {	//contentType:"application/json; charset=utf-8" 으로 호출된 경우는 차량번호를 불러오지 못해서 계속 에러가 발생함.. 이유를 모르겠음.. sqlserver 문제인지 스프링문제인지 
+//					//하여서 requestbody로 호출되는 memoLst가 존재하는 경우에는 아래 구문을 호출하지 않으면 에러는 없기 때문에 임시방편으로 else로 처리함
+//					//도저히 원인 파악이 안됨.. 제대로 mapper로 파라미터 값이 전달되는데도 sqlserver에서 값을 리턴하지 않음 
+//				if (StringUtils.isEmpty(createDirectory(Integer.parseInt(String.valueOf(param.get("outReqNo")))))) {
+//					throw new BizException(BizExType.UNKNOWN, "차량별 디렉토리 생성에 실패했습니다");
+//				}
+//			}
 			
 			if (StringUtils.isEmpty(createDirectory(Integer.parseInt(String.valueOf(param.get("outReqNo")))))) {
 				throw new BizException(BizExType.UNKNOWN, "차량별 디렉토리 생성에 실패했습니다");
@@ -218,6 +230,40 @@ public class CarCareJobService {
  
 	public String getRepairReqPhotoPath(int reqNo)throws Exception{
 		return carCareJobMapper.getRepairReqPhotoPath(reqNo);
+	}
+	
+	public Map<String, Object> regMemo(Map<String, Object> param) throws Exception{
+//		List<Map<String, Object>> memoLst = (List<Map<String, Object>>) param.get("memo");
+//		
+//		if(memoLst != null && memoLst.size()>0)
+//			for(Map<String, Object> m:memoLst) {
+//				m.put("reqNo", param.get("reqNo"));
+//				m.put("outMemoNo", null);
+//				
+//				carCareJobMapper.regRepairMemo(m);
+//				
+//				m.replace("memoNo", m.get("outMemoNo"));
+//			}
+		
+		Map<String, Object> memo = carCareJobMapper.regRepairMemo(param);
+		
+		param.put("regDate", memo.get("regDate"));
+		param.put("memoNo", param.get("outMemoNo"));
+		return param;
+	}
+	
+	public int deleteMemo(int memoNo) {
+		int delCnt = carCareJobMapper.deleteMemo(memoNo);
+		return delCnt;
+	}
+	
+	//메모목록
+	public List<Map<String, Object>> getMemoList(int reqNo)throws Exception{
+		return carCareJobMapper.getMemoList(reqNo);
+	}
+	//입고차량별 사진목록
+	public List<Map<String, Object>> getPhotoListByRepairReq(int reqNo) throws Exception {
+		return carCareJobMapper.getPhotoListByRepairReq(reqNo);
 	}
 
 	private String createDirectory(int reqNo) throws Exception{
