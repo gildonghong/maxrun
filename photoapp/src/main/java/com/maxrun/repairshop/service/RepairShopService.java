@@ -73,11 +73,12 @@ public class RepairShopService {
 	public void completeCopyToRepairShop(Map<String, Object> param) throws Exception{
 		
 		System.out.println("param===>" + param);
-//		CREATE PROCEDURE sp_completeCopyToRepairShop	@repairShopNo	int,
-//														@division		nvarchar(30)='FILE',
-//														@reqNo			bigint=null,
-//														@fileNo			bigint=null,
-//														@result			nvarchar(30)='SUCCESS'
+// 		CREATE PROCEDURE call sp_completeCopyToRepairShop(	#{repairShopNo}, 
+//															#{division}, 
+//															#{reqNo}, 
+//															#{fileNo}, 
+//															#{result}, 
+//															#{errorMsg})
 		List<Map<String, Object>> ret = repairShopMapper.completeCopyToRepairShop(param);
 		
 		System.out.println("ret===>" + ret);

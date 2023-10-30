@@ -62,13 +62,13 @@
 
 <select id="completeCopyToRepairShop" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_completeCopyToRepairShop(#{repairShopNo}, #{division}, #{reqNo}, #{fileNo}, #{result}, #{errorMsg})
+		call sp_completeCopyToRepairShop(#{repairShopNo}, #{division}, #{reqNo}, #{fileNo}, #{result}, #{exception})
 	}
 </select>
 
 <select	id="regWSException" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_regWSException(	#{repairShopNo}, #{reqNo}, #{fileNo}, #{exceptionDesc})
+		call sp_regWSException(	#{repairShopNo}, #{reqNo}, #{fileNo}, #{exception})
 	}
 </select>
 

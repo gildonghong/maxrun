@@ -65,6 +65,9 @@ public enum BizExType {
     REF_TOKEN_MISSING,
     REF_TOKEN_DIRTY,
     
+    //Socket 관련
+    FILE_NOT_EXISTS,
+    
     //SERVER ERROR
     SERVER_ERROR,
     API_ERROR,
