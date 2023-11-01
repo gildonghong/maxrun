@@ -64,8 +64,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 				System.out.println(msg.get("exception"));
 			}
 
-			//if(msg.get("result").equals("SUCCESS")) 
-			removeWorkAlreadySent(msg); //복사작업
+			removeWorkAlreadySent(msg); //복사작업완로된 건은 리스테에서 제거 
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -118,13 +117,13 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 	}
 
 	@Scheduled(fixedDelay = 2000)
-	public synchronized void doSomething() throws Exception {
+	public synchronized void transferDirNFile() throws Exception {
 
 		try {
 			if (repairShopList.size() == 0)
 				return;
 
-			if (needToSendLIst == null) {
+			if (needToSendLIst == null || needToSendLIst.size() == 0) {
 				needToSendLIst = repairShopService.getNeedToSenderListForTransffering();	
 			} else if(needToSendLIst.size()<100) {
 				needToSendLIst.addAll(repairShopService.getNeedToSenderListForTransffering());
@@ -150,23 +149,25 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 						if (Files.notExists(Paths.get(filePath))) {
 							// 서버경로에 파일이 없어서
 							System.out.println(filePath + " is not exists");
-							m.put("exception", "서버경로에 파일이 없습니다");
-
-							repairShopService.regWSException(m); // 예외발생을 기록함
-						} else {
+//							m.put("exception", "서버경로에 파일이 없습니다");
+//							m.put("result", "FAIL");
+//							
+//							repairShopService.regWSException(m); // 예외발생을 기록함
+//
+//							repairShopService.completeCopyToRepairShop(m);
+						}else {
 							byte[] bytes = Files.readAllBytes(Paths.get(filePath));
 
 							String b64Str = Base64.getEncoder().encodeToString(bytes);
 
 							m.put("base64", b64Str);
-							
-							msgStr = gson.toJson(m);
-							TextMessage message = new TextMessage(msgStr);
-							System.out.println(repairShopNo + " 정비소에 메시지 전송");
-							System.out.println(repairShopNo + "==>" + message.toString());
-
-							repairShop.sendMessage(message);
 						}
+						msgStr = gson.toJson(m);
+						TextMessage message = new TextMessage(msgStr);
+						System.out.println(repairShopNo + " 정비소에 메시지 전송");
+						System.out.println(repairShopNo + "==>" + message.toString());
+
+						repairShop.sendMessage(message);
 					}else {//DIRECGTORY 인 경우 
 						msgStr = gson.toJson(m);
 						TextMessage message = new TextMessage(msgStr);
@@ -175,7 +176,8 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 						repairShop.sendMessage(message);
 					}
-					
+				}else {	//정비소가 접속하지 않은 경우 
+
 				}
 				// }
 			} catch (IndexOutOfBoundsException e) {
