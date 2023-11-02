@@ -60,7 +60,7 @@ public class PersistenceConfig{
 //	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
 //	    config.addDataSourceProperty("portNumber", 1433);
 //	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
-//	    config.addDataSourceProperty("databaseName", "max-run");
+//	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
 //	    config.addDataSourceProperty("user", "sa");
 //	    config.addDataSourceProperty("password", "object_1@@4");
 	    
