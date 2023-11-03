@@ -26,4 +26,5 @@ public interface RepairShopMapper {
 	public void regWSException(Map<String, Object> param)throws SQLException;
 	public int deleteRepairShop(int repairShopNo)throws SQLException;
 	public int delDepartment(int departmentNo)throws SQLException;
+	public void updatePendingStatus();
 }

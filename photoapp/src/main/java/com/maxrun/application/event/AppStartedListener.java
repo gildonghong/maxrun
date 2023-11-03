@@ -2,6 +2,7 @@ package com.maxrun.application.event;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -11,10 +12,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import com.maxrun.http.message.json.XssDefenderableMapper;
+import com.maxrun.repairshop.service.RepairShopService;
 
 @Component
 public class AppStartedListener implements ApplicationListener<ContextRefreshedEvent> {
-
+	@Autowired
+	RepairShopService repairShopService;
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		// TODO Auto-generated method stub
@@ -51,6 +54,8 @@ public class AppStartedListener implements ApplicationListener<ContextRefreshedE
 
 			}
 		}
+		
+		repairShopService.updatePendingStatus();
 //			
 //			delIdx++;
 //		}

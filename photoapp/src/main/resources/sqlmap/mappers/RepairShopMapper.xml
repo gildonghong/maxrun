@@ -102,6 +102,12 @@
 	}
 </select>
 
+<select	id="updatePendingStatus" statementType="CALLABLE">
+	{
+		call sp_updatePendingStatus()
+	}
+</select>
+
 <select	id="regMessageSending" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
 		call sp_regMessageSending (	#{messageId}, 

@@ -192,4 +192,8 @@ public class RepairShopService {
 		}
 		
 	}
+	
+	public void updatePendingStatus() {
+		repairShopMapper.updatePendingStatus();
+	}
 }
