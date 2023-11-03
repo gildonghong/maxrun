@@ -40,11 +40,17 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 	@Override
 	public void afterConnectionEstablished(WebSocketSession session) {
-		System.out.println("connection created");
+//		System.out.println("connection created");
+//		Map<String, Object> userInfo = session.getAttributes();
+//		System.out.println("userInfo ==========>" + userInfo);
+//		System.out.println("uri ==========>" + session.getUri());
 		Map<String, Object> userInfo = session.getAttributes();
-		System.out.println("userInfo ==========>" + userInfo);
-		System.out.println("uri ==========>" + session.getUri());
-
+		
+//		for(WebSocketSession client:repairShopList) {
+//			Map<String, Object> info= client.getAttributes();
+//			if(info.get("loginId").equals(userInfo.get("loginId")))	//기접속 클라이언트가 다시 접속한 경우 
+//				return;
+//		}
 		repairShopList.add(session);
 	}
 
@@ -135,6 +141,13 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 		try {
 			if (repairShopList.size() == 0)
 				return;
+			
+			for(WebSocketSession w:repairShopList) {
+				Map<String, Object> ws = w.getAttributes();
+				System.out.println("############################# Connected Session Info ################################");
+				System.out.println(ws.get("loginId"));
+				System.out.println("############################# Connected Session Info ################################");
+			}
 
 			if (needToSendLIst == null || needToSendLIst.size() == 0) {
 				needToSendLIst = repairShopService.getNeedToSenderListForTransffering();	

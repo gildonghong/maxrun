@@ -28,6 +28,12 @@
 	}
 </select>
 
+<select id="deleteCarEnterIn" parameterType="int" statementType="CALLABLE"  resultType="int">
+	{
+		call sp_deleteCarEnterIn(#{value})
+	}	
+</select>
+
 <!-- 공정별 작업 사진 파일 등록 -->
 <select id="regPhoto" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="int">
 	{

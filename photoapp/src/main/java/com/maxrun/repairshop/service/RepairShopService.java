@@ -89,7 +89,12 @@ public class RepairShopService {
 	}
 	
 	public List<Map<String, Object>> getPhotoList(Map<String, Object> param) throws Exception{
-		return repairShopMapper.getPhotoList(param);
+		try {
+			return repairShopMapper.getPhotoList(param);
+		}catch(Exception ex) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "존재하지 않는 입고번호입니다");
+		}
+		
 	}
 	
 	public List<Map<String, Object>>getPerformanceList(Map<String, Object> param)throws Exception{

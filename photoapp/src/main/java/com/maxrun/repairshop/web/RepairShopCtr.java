@@ -250,11 +250,22 @@ public class RepairShopCtr {
 			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
 		}
 		
-		param.put("repairshopNo", claims.get("repairshopNo"));
-		param.put("regUserId", claims.get("workerNo"));
+		if(param.containsKey("delYn") && param.get("delYn").equals("Y")) {
+			int reqNo = Integer.parseInt(String.valueOf(param.get("reqNo")));
+			int delCnt = carCareJobService.deleteCarEnterIn(reqNo);
+			
+			Map<String, Object> ret = new HashMap<String, Object>();
+			
+			ret.put("delCnt", delCnt);
+			
+			return ret;
+		}else {
+			param.put("repairshopNo", claims.get("repairshopNo"));
+			param.put("regUserId", claims.get("workerNo"));
 
-		carCareJobService.regCarEnterIn(param);
-		
+			carCareJobService.regCarEnterIn(param);
+		}
+
 		return param;
 	}
 	

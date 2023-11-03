@@ -31,17 +31,17 @@ public class AuthInterceptor implements HandlerInterceptor {
 
 		String uAtoken = CookieUtils.getCookieValue("uAtoken");
 
-		if (StringUtils.hasText(request.getHeader("userAgent")) && uAtoken==null) {
+		if (uAtoken==null) {
 			uAtoken = request.getHeader("Authorization");
 			
-	        if (!StringUtils.hasText(uAtoken) || !uAtoken.startsWith("Bearer")) {
+	        if (!StringUtils.hasText(uAtoken) /*|| !uAtoken.startsWith("Bearer")*/) {
 	        	throw new BizException(BizExType.ACCESS_TOKEN_MISSING, ErrorCode.UNAUTHORIZED.getMessage());
 	        }
 	        uAtoken = uAtoken.replace("Bearer ", "");
-		}else if(!StringUtils.hasText(request.getHeader("userAgent"))) {	//Windwos App에서 
+		}/*else if(!StringUtils.hasText(request.getHeader("userAgent"))) {	//Windwos App에서 
 			if(!StringUtils.hasText(uAtoken))								//
 				throw new BizException(BizExType.NOT_AUTHENTICATED, "불법적인 접근입니다");
-		}
+		}*/
 
 		try {
 			Map<String, Object> user=jwtTokenManager.evaluateToken(uAtoken);

@@ -25,4 +25,5 @@ public interface CarCareJobMapper {
 	public List<Map<String, Object>> getMemoList(int reqNo);
 	public List<Map<String, Object>> regMemo(Map<String, Object> param) throws SQLException;
 	public int deleteMemo(int memoNo);
+	public int deleteCarEnterIn(int reqNo);
 }

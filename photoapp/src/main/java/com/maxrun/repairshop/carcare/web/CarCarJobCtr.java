@@ -1,5 +1,6 @@
 package com.maxrun.repairshop.carcare.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -32,13 +33,26 @@ public class CarCarJobCtr {
 	@ResponseBody
 	@PostMapping("/repairshop/carcare/enterin")	/*차량입고등록*/
 	public Map<String, Object>regCarRepairReq(@RequestParam Map<String, Object> param)throws Exception{
-		if(!param.containsKey("carLicenseNo") || param.get("carLicenseNo") == null || String.valueOf(param.get("carLicenseNo")).equals("")) {
-			throw new BizException(BizExType.PARAMETER_MISSING, "차량번호가 누락되었습니다");
-		}
+		
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
 		if(claims.get("repairShopNo").equals(-1)) {
 			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "maxrun 담당자로 로그인되어 있는 상태입니다");
+		}
+		
+		if(param.containsKey("delYn") && param.get("delYn").equals("Y")) {
+			int reqNo = Integer.parseInt(String.valueOf(param.get("reqNo")));
+			int delCnt = carCareJobService.deleteCarEnterIn(reqNo);
+			
+			Map<String, Object> ret = new HashMap<String, Object>();
+			
+			ret.put("delCnt", delCnt);
+			
+			return ret;
+		}
+		
+		if(!param.containsKey("carLicenseNo") || param.get("carLicenseNo") == null || String.valueOf(param.get("carLicenseNo")).equals("")) {
+			throw new BizException(BizExType.PARAMETER_MISSING, "차량번호가 누락되었습니다");
 		}
 		
 		param.put("workerNo", claims.get("workerNo"));

@@ -58,6 +58,10 @@ public class CarCareJobService {
 			
 		return photoList;
 	}
+	
+	public int deleteCarEnterIn(int reqNo){
+		return carCareJobMapper.deleteCarEnterIn(reqNo);
+	}
 
 	public void regCarEnterIn(Map<String, Object> param)throws Exception{
 		try {
@@ -263,7 +267,12 @@ public class CarCareJobService {
 	}
 	//입고차량별 사진목록
 	public List<Map<String, Object>> getPhotoListByRepairReq(int reqNo) throws Exception {
-		return carCareJobMapper.getPhotoListByRepairReq(reqNo);
+		try {
+			return carCareJobMapper.getPhotoListByRepairReq(reqNo);
+		}catch(Exception ex) {
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "존재하지 않는 입고차량입니다");
+		}
+		
 	}
 
 	private String createDirectory(int reqNo) throws Exception{
