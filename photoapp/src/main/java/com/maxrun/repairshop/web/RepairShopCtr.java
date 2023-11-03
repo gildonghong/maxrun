@@ -98,6 +98,9 @@ public class RepairShopCtr {
 	public Map<String, Object> regDepartment(@RequestParam Map<String, Object> param) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
+		if(!StringUtils.hasText(String.valueOf(param.get("departmentName"))))
+			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "부서명을 입력하세요!!");
+		
 		param.put("repairShopNo", claims.get("repairShopNo"));
 		param.put("regUserId", claims.get("workerNo"));
 		
@@ -170,7 +173,12 @@ public class RepairShopCtr {
 	@GetMapping("/repairshop/enter/photo/list")	/*관리자 차량별 사진 전체 목록*/
 	public List<Map<String, Object>> getPhotoList(@RequestParam Map<String, Object> param) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
-		param.put("repairShopNo", claims.get("repairShopNo"));
+		
+		/* 정비소 번호가 파라미터로 넘어온 경우는 파라미터를 사용하고 넘어오지 않았을 경우만 토큰 값을 사용한다 */
+		if(!StringUtils.hasText(String.valueOf(param.get("repairShopNo")))){
+			param.put("repairShopNo", claims.get("repairShopNo"));
+		}
+		
 		param.put("regUserId", claims.get("workerNo"));
 		
 		List<Map<String, Object>> photoLst = repairShopService.getPhotoList(param);

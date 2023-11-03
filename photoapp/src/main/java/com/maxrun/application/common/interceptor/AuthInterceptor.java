@@ -34,7 +34,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 		if (uAtoken==null) {
 			uAtoken = request.getHeader("Authorization");
 			
-	        if (!StringUtils.hasText(uAtoken) /*|| !uAtoken.startsWith("Bearer")*/) {
+	        if (!StringUtils.hasText(uAtoken) || !uAtoken.startsWith("Bearer")) {
 	        	throw new BizException(BizExType.ACCESS_TOKEN_MISSING, ErrorCode.UNAUTHORIZED.getMessage());
 	        }
 	        uAtoken = uAtoken.replace("Bearer ", "");
