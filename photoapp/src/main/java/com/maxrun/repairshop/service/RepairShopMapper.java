@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Mapper
 public interface RepairShopMapper {
-	public List<Map<String, Object>> getRepairShopList() throws SQLException;
+	public List<Map<String, Object>> getRepairShopList(Map<String, Object> param) throws SQLException;
 	public Map<String, Object> getRepairShop(int repairShopNo) throws SQLException;
 	public Map<String, Object> regRepairShop(Map<String, Object> param) throws SQLException;
 	public List<Map<String, Object>> getDepartmentList(int repairShopNo) throws SQLException;
@@ -24,4 +24,6 @@ public interface RepairShopMapper {
 	public List<Map<String, Object>>getPerformanceList(Map<String, Object> param)throws SQLException;
 	public Map<String, Object> regMessageSending(Map<String, Object> param) throws SQLException;
 	public void regWSException(Map<String, Object> param)throws SQLException;
+	public int deleteRepairShop(int repairShopNo)throws SQLException;
+	public int delDepartment(int departmentNo)throws SQLException;
 }

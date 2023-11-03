@@ -49,9 +49,27 @@ public class RepairShopCtr {
 			param.put("repairShopNo", claims.get("repairShopNo"));
 		}
 		
-		param.put("regUserId", claims.get("workerNo"));
-		param.put("outRepairShopNo", null);
-		return repairShopService.regRepairShop(param);
+		if(param.containsKey("delYn") && param.get("delYn").equals("Y")) {
+			if (!claims.get("repairShopNo").equals(-1)) {
+				throw new BizException(BizExType.NOT_AUTHENTICATED, "맥스런 권한이 아닌 경우는 정비소를 삭제할 수 없습니다");
+			}
+			int repairShopNo = Integer.parseInt(String.valueOf(param.get("repairShopNo")));
+			
+			int delCnt = repairShopService.deleteRepairShop(repairShopNo);
+			
+			Map<String, Object> ret = new HashMap<String, Object>();
+			ret.put("delCnt", delCnt);
+			
+			return ret;
+		}else {
+			if(!StringUtils.hasText(String.valueOf(param.get("repairShopNo")))) {//신규입력인 경우
+				if(!StringUtils.hasText(String.valueOf(param.get("businessNo"))))
+					throw new BizException(BizExType.PARAMETER_MISSING, "사업자번호는 필수 입력값입니다");
+			}
+			param.put("regUserId", claims.get("workerNo"));
+			param.put("outRepairShopNo", null);
+			return repairShopService.regRepairShop(param);
+		}
 	}
 	
 	@ResponseBody
@@ -62,8 +80,8 @@ public class RepairShopCtr {
 	
 	@ResponseBody
 	@GetMapping("/repairshop/list")
-	public List<Map<String, Object>> getRepairShopList() throws Exception{
-		return repairShopService.getRepairShopList();
+	public List<Map<String, Object>> getRepairShopList(@RequestParam Map<String, Object> param) throws Exception{
+		return repairShopService.getRepairShopList(param);
 	}
 	
 	@ResponseBody
@@ -82,7 +100,17 @@ public class RepairShopCtr {
 		
 		param.put("repairShopNo", claims.get("repairShopNo"));
 		param.put("regUserId", claims.get("workerNo"));
-		return repairShopService.regDepartment(param);
+		
+		if(param.containsKey("delYn") && param.get("delYn").equals("Y")) {
+			int departmentNo = Integer.parseInt(String.valueOf(param.get("departmentNo")));
+			Map<String, Object> ret = new HashMap<String, Object>();
+			
+			int delCnt = repairShopService.delDepartment(departmentNo);
+			ret.put("delCnt", delCnt);
+			return ret;
+		}else {
+			return repairShopService.regDepartment(param);
+		}
 	}
 	
 	@ResponseBody
@@ -101,7 +129,7 @@ public class RepairShopCtr {
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
 		if(claims.get("repairShopNo").equals(-1)){//maxrun 사용자가 로그인 했을 경우
-			if(!param.containsKey("repairShopNo")|| param.get("repairShopNo")==null || !StringUtils.hasText(String.valueOf(param.get("repairShopNO")))) {
+			if(!param.containsKey("repairShopNo")|| param.get("repairShopNo")==null || !StringUtils.hasText(String.valueOf(param.get("repairShopNo")))) {
 				throw new BizException(BizExType.PARAMETER_MISSING, "정비소 번호가 누락되었습니다");
 			}
 		}else {

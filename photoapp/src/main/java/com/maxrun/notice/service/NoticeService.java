@@ -21,6 +21,10 @@ public class NoticeService {
 		return noticeMapper.regNotice(param);
 	}
 	
+	public int delNotice(int noticeNo) {
+		return noticeMapper.deleteNotice(noticeNo);
+	}
+	
 	public Map<String, Object> getNoticeDetails(int noticeNo)throws Exception{
 		return noticeMapper.getNoticeDetails(noticeNo);
 	}

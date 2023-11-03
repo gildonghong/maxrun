@@ -8,9 +8,9 @@
 	}	
 </select>
 
-<select id="getRepairShopList" statementType="CALLABLE" resultType="CamelCaseHashMap">
+<select id="getRepairShopList" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
-		call sp_getRepairShopList()
+		call sp_getRepairShopList(#{repairShopName})
 	}	
 </select>
 
@@ -48,6 +48,12 @@
 	}
 </select>
 
+<select id="delDepartment" parameterType="int" statementType="CALLABLE" resultType="int">
+	{
+		call sp_deleteDepartment ( #{value})
+	}
+</select>
+
 <select id="regMaxRun" parameterType="java.util.HashMap" statementType="CALLABLE">
 	{
 		call sp_regMaxRun(#{maxrunChargerCpNo})
@@ -80,7 +86,7 @@
 
 <select id="getPhotoList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_getPhotoListForMgrProgram (#{reqNo}, #{departmentNo}, #{departmentName})
+		call sp_getPhotoListForMgrProgram (#{reqNo}, #{departmentNo}, #{fromDate}, #{toDate})
 	}
 </select>
 
@@ -102,6 +108,12 @@
 									#{reqNo},
 									#{templateId},
 									#{sendingResult})
+	}
+</select>
+
+<select id="deleteRepairShop" parameterType="int" statementType="CALLABLE"  resultType="int">
+	{
+		call sp_deleteRepairShop( #{repairShopNo})
 	}
 </select>
 </mapper>

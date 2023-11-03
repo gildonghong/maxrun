@@ -26,8 +26,8 @@ public class RepairShopService {
 	@Autowired
 	private RepairShopMapper repairShopMapper;
 
-	public List<Map<String, Object>> getRepairShopList() throws Exception{
-		return repairShopMapper.getRepairShopList();
+	public List<Map<String, Object>> getRepairShopList(Map<String, Object> param) throws Exception{
+		return repairShopMapper.getRepairShopList(param);
 	}
 	
 	public Map<String, Object> getRepairShopInfo(int repairShopNo) throws Exception{
@@ -180,5 +180,16 @@ public class RepairShopService {
 		repairShopMapper.regWSException(param);
 	}
 
+	public int deleteRepairShop(int repairShopNo)throws Exception{
+		return repairShopMapper.deleteRepairShop(repairShopNo);
+	}
 	
+	public int delDepartment(int departmentNo)throws Exception{
+		try {
+			return repairShopMapper.delDepartment(departmentNo);
+		}catch(Exception e) {
+			throw new BizException(BizExType.REQUEST_FAIL, "해당 부서로 등록된 작업 처리 내역이 있습니다. 부서를 삭제하실 수 없습니다!!");
+		}
+		
+	}
 }

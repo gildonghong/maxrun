@@ -28,24 +28,19 @@ public class AuthInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		log.info(request.getRequestURI() + "에 대해서 preHandle 수행");
-		
 
-        
-//        Map<String, Object> user=jwtTokenManager.evaluateToken(uAtoken);
-//		
-		
 		String uAtoken = CookieUtils.getCookieValue("uAtoken");
-		//String bearerToken =null;
-		if (uAtoken==null) {
-//			UserAgent ua= UserAgent.parseUserAgentString(request.getHeader("userAgent"));
-//			
-//			throw new BizException(BizExType.ACCESS_TOKEN_MISSING, ErrorCode.UNAUTHORIZED.getMessage());
+
+		if (StringUtils.hasText(request.getHeader("userAgent")) && uAtoken==null) {
 			uAtoken = request.getHeader("Authorization");
 			
 	        if (!StringUtils.hasText(uAtoken) || !uAtoken.startsWith("Bearer")) {
 	        	throw new BizException(BizExType.ACCESS_TOKEN_MISSING, ErrorCode.UNAUTHORIZED.getMessage());
 	        }
 	        uAtoken = uAtoken.replace("Bearer ", "");
+		}else if(!StringUtils.hasText(request.getHeader("userAgent"))) {	//Windwos App에서 
+			if(!StringUtils.hasText(uAtoken))								//
+				throw new BizException(BizExType.NOT_AUTHENTICATED, "불법적인 접근입니다");
 		}
 
 		try {

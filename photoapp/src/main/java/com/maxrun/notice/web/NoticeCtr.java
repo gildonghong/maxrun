@@ -1,5 +1,6 @@
 package com.maxrun.notice.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,22 @@ public class NoticeCtr {
 		if(!claims.get("repairShopNo").equals(-1)) {
 			throw new BizException(BizExType.NOT_AUTHORIZED, "맥스런 사용자가 아닌경우 공지사항 등록은 불가합니다");
 		}
-		param.put("regUserId",claims.get("workerNo"));
-		param.put("outNoticeNo", 0);
-		return noticeService.regNotice(param);
+
+		
+		if (param.containsKey("delYn") && param.get("delYn").equals("Y")) {
+			Map<String, Object> ret = new HashMap<String, Object>();
+			int noticeNo = Integer.parseInt(String.valueOf(param.get("noticeNo")));
+			int delCnt = noticeService.delNotice(noticeNo);
+			
+			ret.put("delCnt", delCnt);
+			return ret;
+		}else {
+			param.put("regUserId",claims.get("workerNo"));
+			param.put("outNoticeNo", 0);
+			return noticeService.regNotice(param);
+		}
+		
+
 //		param.replace("noticeNo", param.get("outNoticeNo"));
 //		return param;
 	}

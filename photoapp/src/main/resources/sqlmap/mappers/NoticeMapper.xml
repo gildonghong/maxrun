@@ -15,7 +15,13 @@
 								@outNoticeNo	bigint	output -->
 <select id="regNotice" statementType="CALLABLE" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
 	{
-		call sp_regNotice(#{noticeNo},#{notice}, #{regUserId}, #{outNoticeNo,jdbcType=BIGINT, mode=OUT})
+		call sp_regNotice(#{noticeNo},#{title}, #{notice}, #{regUserId}, #{outNoticeNo,jdbcType=BIGINT, mode=OUT})
 	}	
+</select>
+
+<select id= "deleteNotice" statementType="CALLABLE" parameterType="int" resultType="int">
+	{
+		call sp_deleteNotice(#{noticeNo})
+	}
 </select>
 </mapper>
