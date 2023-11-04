@@ -3,7 +3,7 @@
 <mapper namespace="com.maxrun.repairshop.carcare.service.CarCareJobMapper">
 
 <!-- 입고차량별 디렉토리 명칭 반환 -->
-<select id="getRepairReqPhotoPath" parameterType="int" statementType="CALLABLE" resultType="String">
+<select id="getRepairReqPhotoPath" parameterType="int" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
 		call sp_getRepairReqPhotoPath(#{value})
 	}	

@@ -65,26 +65,8 @@ public class CarCareJobService {
 
 	public void regCarEnterIn(Map<String, Object> param)throws Exception{
 		try {
-			carCareJobMapper.regCarEnterIn(param);
 			
-//			if(param.containsKey("memo")) {
-//				List<Map<String, Object>> memoLst = (List<Map<String, Object>>) param.get("memo");
-//				
-//				if(memoLst != null && memoLst.size()>0)
-//					for(Map<String, Object> m:memoLst) {
-//						m.put("reqNo", param.get("reqNo"));
-//						m.put("outMemoNo", null);
-//						carCareJobMapper.regRepairMemo(m);
-//						
-//						m.replace("memoNo", m.get("outMemoNo"));
-//					}
-//			}else {	//contentType:"application/json; charset=utf-8" 으로 호출된 경우는 차량번호를 불러오지 못해서 계속 에러가 발생함.. 이유를 모르겠음.. sqlserver 문제인지 스프링문제인지 
-//					//하여서 requestbody로 호출되는 memoLst가 존재하는 경우에는 아래 구문을 호출하지 않으면 에러는 없기 때문에 임시방편으로 else로 처리함
-//					//도저히 원인 파악이 안됨.. 제대로 mapper로 파라미터 값이 전달되는데도 sqlserver에서 값을 리턴하지 않음 
-//				if (StringUtils.isEmpty(createDirectory(Integer.parseInt(String.valueOf(param.get("outReqNo")))))) {
-//					throw new BizException(BizExType.UNKNOWN, "차량별 디렉토리 생성에 실패했습니다");
-//				}
-//			}
+			carCareJobMapper.regCarEnterIn(param);
 			
 			if (StringUtils.isEmpty(createDirectory(Integer.parseInt(String.valueOf(param.get("outReqNo")))))) {
 				throw new BizException(BizExType.UNKNOWN, "차량별 디렉토리 생성에 실패했습니다");
@@ -152,19 +134,10 @@ public class CarCareJobService {
 		int	fileGroupNo  = Integer.parseInt(request.getParameter("fileGroupNo")==null?"0":String.valueOf(request.getParameter("fileGroupNo")).trim());
 		int repairShopNo  = Integer.parseInt(String.valueOf(claims.get("repairShopNo")));
 		int departmentNo  = Integer.parseInt(request.getParameter("departmentNo")==null?String.valueOf(request.getAttribute("departmentNo")):request.getParameter("departmentNo"));
-		/*사진 등록시 부서번호 또는 부서명 파라미터는 필수값*/
-//		if (request.getParameter("departmentNo")==null || "".equals(String.valueOf(request.getParameter("departmentNo")))) {
-//			if (request.getParameter("departmentName")==null || "".equals(String.valueOf(request.getParameter("departmentName")))) {
-//				throw new BizException(BizExType.PARAMETER_MISSING, "부서지정없이 파일 사진을 등록할수 없습니다");
-//			}
-//			Map<String, Object> param = new HashMap<String, Object>();
-//			param.put("repairShopNo", repairShopNo);
-//			param.put("departmentName", request.getParameter("departmentName"));
-//			departmentNo  = repairShopService.getDepartmentNo(param);
-//		}else {
-//			departmentNo  = Integer.parseInt(request.getParameter("departmentNo"));
-//		}
-		String pathString= this.createDirectory(reqNo);
+		
+		String osPath= PropertyManager.get("Globals.photo.os.path") + File.separator + this.getRepairReqPhotoPath(reqNo);
+		
+		//pathString = String.valueOf(repairShopNo) + File.pathSeparator + 
 
 		List<MultipartFile> files =request.getMultiFileMap().get("photo");
 		
@@ -173,10 +146,8 @@ public class CarCareJobService {
 		for(MultipartFile file: files) {
 			//String fileNm = this.createFileName(departmentNo);
 			//web상의 이미지 경로 : contextPath + "/" + 이미지폴더root + "/" + 정비소번호 + "/" + 년 + "/" + 월 + "/" + 파일명
-			String fileUrl= "/" + String.valueOf(repairShopNo) + "/" + 
-							CommonUtils.getYearBy4Digit(LocalDate.now()) + "/" +  
-							CommonUtils.getMonthBy2Digit(LocalDate.now()) + "/" + 
-							String.valueOf(reqNo);
+			String fileUrl= "/" + this.getRepairReqPhotoPath(reqNo);
+			fileUrl = fileUrl.replaceAll("\\\\", "/");
 			
 			Map<String, Object> fileMap = new HashMap<String, Object>();
 			
@@ -214,7 +185,7 @@ public class CarCareJobService {
 			//exception 발생시 fileDB 삭제
 			try {
 				//DB 트랜잭션이 성공했으므로 실제 물리 파일을 서비스 경로로 복사
-				File targetFile=new File( pathString + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
+				File targetFile=new File( osPath + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
 				file.transferTo(targetFile);
 			}catch(Exception ex) {
 				ex.printStackTrace();
@@ -233,7 +204,13 @@ public class CarCareJobService {
 	}
  
 	public String getRepairReqPhotoPath(int reqNo)throws Exception{
-		return carCareJobMapper.getRepairReqPhotoPath(reqNo);
+		Map<String, Object> ret= carCareJobMapper.getRepairReqPhotoPath(reqNo);
+
+		String path = 	String.valueOf(ret.get("repairShopNo")) + File.separator+ 
+						String.valueOf(ret.get("year")) + File.separator + 
+						String.valueOf(ret.get("month")) + File.separator + String.valueOf(reqNo);
+		
+		return path;
 	}
 	
 	public Map<String, Object> regMemo(Map<String, Object> param) throws Exception{
@@ -271,8 +248,7 @@ public class CarCareJobService {
 			return carCareJobMapper.getPhotoListByRepairReq(reqNo);
 		}catch(Exception ex) {
 			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "존재하지 않는 입고차량입니다");
-		}
-		
+		}	
 	}
 
 	private String createDirectory(int reqNo) throws Exception{
@@ -280,20 +256,20 @@ public class CarCareJobService {
 
 		int repairShopNo  = Integer.parseInt(String.valueOf(claims.get("repairShopNo")));
 
-		String folderNameForCar = getRepairReqPhotoPath(reqNo);
-		
-		if (!StringUtils.hasText(folderNameForCar))
-			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "입고차량을 확인해주십시오. 존재하지 않는 입고번호입니다");
-		
-		folderNameForCar=folderNameForCar.replaceAll(" ", "");
-		
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		System.out.println("folderNameForCar is =============>" + folderNameForCar);
-		
-		folderNameForCar = CommonUtils.getYearBy2Digit(LocalDate.now()) + CommonUtils.getMonthBy2Digit(LocalDate.now()) + folderNameForCar;
-		
-		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+//		String folderNameForCar = getRepairReqPhotoPath(reqNo);
+//		
+//		if (!StringUtils.hasText(folderNameForCar))
+//			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "입고차량을 확인해주십시오. 존재하지 않는 입고번호입니다");
+//		
+//		folderNameForCar=folderNameForCar.replaceAll(" ", "");
+//		
+//		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+//		System.out.println("folderNameForCar is =============>" + folderNameForCar);
+//		
+//		folderNameForCar = CommonUtils.getYearBy2Digit(LocalDate.now()) + CommonUtils.getMonthBy2Digit(LocalDate.now()) + folderNameForCar;
+//		
+//		System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+//		System.out.println("folderNameForCar is =============>" + folderNameForCar);
 
 		//OS상 파일 경로
 		String pathString=pmt.get("Globals.photo.os.path") + File.separator + 

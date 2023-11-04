@@ -51,7 +51,7 @@ public class CarCarJobCtr {
 			return ret;
 		}
 		
-		if(!param.containsKey("carLicenseNo") || param.get("carLicenseNo") == null || String.valueOf(param.get("carLicenseNo")).equals("")) {
+		if(!param.containsKey("carLicenseNo") || String.valueOf(param.get("carLicenseNo")).equals("")) {
 			throw new BizException(BizExType.PARAMETER_MISSING, "차량번호가 누락되었습니다");
 		}
 		
