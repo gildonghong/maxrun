@@ -56,13 +56,13 @@ public class PersistenceConfig{
 //	    config.addDataSourceProperty("user", PropertyManager.get("Globals.database.user.name"));
 //	    config.addDataSourceProperty("password", PropertyManager.get("Globals.database.user.password"));
 	    
-	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
-	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
-	    config.addDataSourceProperty("portNumber", 1433);
-	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
-	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
-	    config.addDataSourceProperty("user", "sa");
-	    config.addDataSourceProperty("password", "object_1@@4");
+//	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+//	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
+//	    config.addDataSourceProperty("portNumber", 1433);
+//	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
+//	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
+//	    config.addDataSourceProperty("user", "sa");
+//	    config.addDataSourceProperty("password", "object_1@@4");
 	    
 //	    config.setMaximumPoolSize(10);
 //	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
@@ -73,14 +73,14 @@ public class PersistenceConfig{
 //	    config.addDataSourceProperty("user", "gildonghon_sd1004");
 //	    config.addDataSourceProperty("password", "aoekf1djrdltkd");
 	    
-//	    config.setMaximumPoolSize(10);
-//	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
-//	    config.addDataSourceProperty("serverName","sql16ssd-006.localnet.kr");
-//	    config.addDataSourceProperty("portNumber", 1433);
-//	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
-//	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
-//	    config.addDataSourceProperty("user", "maxrundb_admin");
-//	    config.addDataSourceProperty("password", "maxrun!!");
+	    config.setMaximumPoolSize(10);
+	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+	    config.addDataSourceProperty("serverName","sql16ssd-006.localnet.kr");
+	    config.addDataSourceProperty("portNumber", 1433);
+	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
+	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
+	    config.addDataSourceProperty("user", "maxrundb_admin");
+	    config.addDataSourceProperty("password", "maxrun!!");
 
 	    return new HikariDataSource(config);  //pass in HikariConfig to HikariDataSource
 	}

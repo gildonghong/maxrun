@@ -70,7 +70,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 				System.out.println(msg.get("exception"));
 			}
 
-			removeWorkAlreadySent(msg); //복사작업완로된 건은 리스테에서 제거 
+			//removeWorkAlreadySent(msg); //복사작업완로된 건은 리스테에서 제거 
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -94,46 +94,46 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 		return null;
 	}
 
-	// cleint 로부터 처리완료 받은 메시지들은 메모리에서 바로 바로 삭제해준다
-	private synchronized void removeWorkAlreadySent(Map<String, Object> copyDone) {
-		try {
-			boolean removed=false;
-
-			for (Iterator<Map<String, Object>> itr = needToSendLIst.iterator(); itr.hasNext();) {
-				Map<String, Object> m = itr.next();
-
-				if (copyDone.get("division").equals("DIRECTORY")) {
-					//System.out.println("DIRECTORY--->" + m);
-					if (m.get("division").toString().equals("DIRECTORY")
-							&& m.get("reqNo").toString().equals(copyDone.get("reqNo").toString())) {
-						
-						itr.remove();
-						removed=true;
-					}
-				} else {
-					//System.out.println("FILE--->" + m);
-					if (m.get("division").toString().equals("FILE")
-							&& m.get("fileNo").toString().equals(copyDone.get("fileNo").toString())) {
-						itr.remove();
-						removed=true;
-					}
-				}
-			}
-			
-			if(removed==false) {
-				//System.out.println("copyDone.divisiton==>" + copyDone.get("division").toString());
-				if(copyDone.get("division").equals("DIRECTORY"))
-					System.out.println("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
-				else {
-					System.out.println("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
-					System.out.println("copyDone.fileNo==>" + copyDone.get("fileNo").toString());
-				}
-			}
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-
-	}
+//	// cleint 로부터 처리완료 받은 메시지들은 메모리에서 바로 바로 삭제해준다
+//	private synchronized void removeWorkAlreadySent(Map<String, Object> copyDone) {
+//		try {
+//			boolean removed=false;
+//
+//			for (Iterator<Map<String, Object>> itr = needToSendLIst.iterator(); itr.hasNext();) {
+//				Map<String, Object> m = itr.next();
+//
+//				if (copyDone.get("division").equals("DIRECTORY")) {
+//					//System.out.println("DIRECTORY--->" + m);
+//					if (m.get("division").toString().equals("DIRECTORY")
+//							&& m.get("reqNo").toString().equals(copyDone.get("reqNo").toString())) {
+//						
+//						itr.remove();
+//						removed=true;
+//					}
+//				} else {
+//					//System.out.println("FILE--->" + m);
+//					if (m.get("division").toString().equals("FILE")
+//							&& m.get("fileNo").toString().equals(copyDone.get("fileNo").toString())) {
+//						itr.remove();
+//						removed=true;
+//					}
+//				}
+//			}
+//			
+//			if(removed==false) {
+//				//System.out.println("copyDone.divisiton==>" + copyDone.get("division").toString());
+//				if(copyDone.get("division").equals("DIRECTORY"))
+//					System.out.println("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
+//				else {
+//					System.out.println("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
+//					System.out.println("copyDone.fileNo==>" + copyDone.get("fileNo").toString());
+//				}
+//			}
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//		}
+//
+//	}
 
 	@Scheduled(fixedDelay = 5000)
 	public synchronized void transferDirNFile() throws Exception {
@@ -160,14 +160,19 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 		Gson gson = new Gson();
 		// loop돌면서 sending
-		for (Map<String, Object> m : needToSendLIst) {
+		//for (Map<String, Object> m : needToSendLIst) {
+			
+		for (Iterator<Map<String, Object>> itr = needToSendLIst.iterator(); itr.hasNext();) {
+			Map<String, Object> m = itr.next();		
+			
+			
 			int repairShopNo = Integer.parseInt(String.valueOf(m.get("repairShopNo")));
 			String msgStr = null;
 			try {
 				WebSocketSession repairShop = findRepairShopSession(repairShopNo);
 				
 				if(repairShop != null) {
-					if (m.get("division").equals("FILE") && !String.valueOf(m.get("status")).equals("sent")) {
+					if (m.get("division").equals("FILE") /*&& !String.valueOf(m.get("status")).equals("sent")*/) {
 						String filePath = PropertyManager.get("Globals.photo.os.path") + m.get("serverPath");
 
 						System.out.println("filePath==>" + filePath);
@@ -184,20 +189,25 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 							m.put("base64", b64Str);
 						}
 						//m.put(", gson)
-						m.put("status", "sent");	//client로 전송했다는 플래그 값을 설정 
+						//m.put("status", "sent");	//client로 전송했다는 플래그 값을 설정 
 						msgStr = gson.toJson(m);
 						TextMessage message = new TextMessage(msgStr);
 						System.out.println(repairShopNo + " 정비소에 메시지 전송");
 						//System.out.println(repairShopNo + "==>" + message.toString());
 						
 						repairShop.sendMessage(message);
-					}else if(m.get("division").equals("DIRECTORY") && !String.valueOf(m.get("status")).equals("sent")){//DIRECGTORY 인 경우 
+						itr.remove();
+						//removeWorkAlreadySent(m);
+					}else if(m.get("division").equals("DIRECTORY") /*&& !String.valueOf(m.get("status")).equals("sent")*/){//DIRECGTORY 인 경우 
 						msgStr = gson.toJson(m);
+						System.out.println("msgStr==>" + msgStr);
 						TextMessage message = new TextMessage(msgStr);
 						System.out.println(repairShopNo + " 정비소에 메시지 전송");
 						//System.out.println(repairShopNo + "==>" + message.toString());
-						m.put("status", "sent");
+						//m.put("status", "sent");
 						repairShop.sendMessage(message);
+						itr.remove();
+						//removeWorkAlreadySent(m);
 					}
 				}else {	//정비소가 접속하지 않은 경우 
 
