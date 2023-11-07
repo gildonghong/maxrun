@@ -54,6 +54,10 @@ public class CarCareJobService {
 				m.replace("fileSavedPath", photoRootPath + String.valueOf(m.get("fileSavedPath")).trim());
 			else
 				m.replace("fileSavedPath", photoRootPath + "/" +  String.valueOf(m.get("fileSavedPath")).trim());
+			
+			//default iamge 처리
+			if(m.get("fileGroupNo")==null)
+				m.replace("fileSavedPath", PropertyManager.get("Globals.photoapp.contetxt.root") + PropertyManager.get("Globals.photo.defaultimage.path"));
 		}
 			
 		return photoList;
