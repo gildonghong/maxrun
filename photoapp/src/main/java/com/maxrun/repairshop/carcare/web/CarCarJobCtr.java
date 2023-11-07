@@ -81,8 +81,18 @@ public class CarCarJobCtr {
 	public List<Map<String, Object>>getCarCareList(@RequestParam Map<String, Object> param)throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		
-		param.put("repairShopNo", claims.get("repairShopNo"));
+		if(String.valueOf(claims.get("userAgent")).indexOf("MobileApp")>-1) {	//모바일에서 접속한 경우
+			System.out.println("################### connected from mobile App");
+			System.out.println("################### connected from mobile App");
+			
+			param.put("departmentName", "신규등록");
+		}
 		
+		param.put("repairShopNo", claims.get("repairShopNo"));
+
+		for(String key:param.keySet()) {
+			System.out.println(key + "=======>" + param.get(key));
+		}
 		return carCareJobService.getPhotoList(param);
 	}
 
