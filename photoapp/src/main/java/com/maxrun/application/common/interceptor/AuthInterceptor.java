@@ -1,5 +1,6 @@
 package com.maxrun.application.common.interceptor;
 
+import java.util.Enumeration;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +47,23 @@ public class AuthInterceptor implements HandlerInterceptor {
 		try {
 			Map<String, Object> user=jwtTokenManager.evaluateToken(uAtoken);
 			request.getSession().setAttribute("uAtoken", uAtoken);
-			//CookieUtils.addCookie("uAtoken", uAtoken, 0);
+			
+			
+			Enumeration<String> pNm = request.getParameterNames();
+			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
+			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
+			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
+			
+			while(pNm.hasMoreElements()) {
+				String nm = pNm.nextElement();
+				
+				System.out.println(nm + ":" + request.getParameter(nm));
+			}
+			
+			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
+			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
+			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
+			
 			return true;
 		}catch(Exception e) {
 			throw e;

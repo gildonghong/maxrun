@@ -31,6 +31,9 @@ public class EmployeeCtr {
 	@ResponseBody
 	@GetMapping("/repairshop/employee/list")
 	public List<Map<String, Object>> getWorkerList(@RequestParam Map<String, Object> param) throws Exception{
+		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		param.put("repairShopNo", claims.get("repairShopNo"));
 		return employeeService.getWorkerList(param);
 	}
 	

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maxrun.repairshop.service.EmployeeMapper">
 
-<select id="getWorkerList" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
+<select id="getWorkerList" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
 		call sp_getWorkerList(#{repairShopNo})
 	}	
