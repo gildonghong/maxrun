@@ -1,8 +1,10 @@
 package com.maxrun.repairshop.service;
 
 import java.sql.SQLException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -66,8 +68,13 @@ public class RepairShopService {
 		repairShopMapper.regMaxRun(param);
 	}
 	
-	public List<Map<String, Object>> getNeedToSenderListForTransffering() throws Exception{
-		return repairShopMapper.getFileListForTransffering();
+	public Set<Map<String, Object>> getNeedToSenderListForTransffering() throws Exception{
+		List<Map<String, Object>> lst = repairShopMapper.getFileListForTransffering();
+		Set<Map<String, Object>> senderLst = new HashSet<Map<String, Object>>();
+		
+		for(Map<String, Object> map:lst)
+			senderLst.add(map);
+		return senderLst;
 	}
 	
 	public void completeCopyToRepairShop(Map<String, Object> param) throws Exception{

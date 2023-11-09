@@ -78,6 +78,13 @@ public class CommonUtils {
 
 	public static void main(String args[]) throws Exception{
 		
+		List aaa = new ArrayList();
+		
+		aaa.add(1, "dd");
+		//aaa.add(1, "bb");
+		
+		System.out.println(aaa.size());
+		
 		createXlsFile();
 		
 		Map<String, String> test = new HashMap<String, String>();

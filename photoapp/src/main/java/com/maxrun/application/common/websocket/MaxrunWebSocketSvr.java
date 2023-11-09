@@ -29,7 +29,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 	@Autowired
 	RepairShopService repairShopService;
 
-	static List<Map<String, Object>> needToSendLIst = null;
+	static Set<Map<String, Object>> needToSendLIst = null;
 	static Set<WebSocketSession> repairShopList = Collections.synchronizedSet(new HashSet<WebSocketSession>());
 
 	@Override
@@ -151,7 +151,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 			if (needToSendLIst == null || needToSendLIst.size() == 0) {
 				needToSendLIst = repairShopService.getNeedToSenderListForTransffering();	
-			} else if(needToSendLIst.size()<100) {
+			} else /*if(needToSendLIst.size()<100)*/ {
 				needToSendLIst.addAll(repairShopService.getNeedToSenderListForTransffering());
 			}
 		} catch (Exception e) {

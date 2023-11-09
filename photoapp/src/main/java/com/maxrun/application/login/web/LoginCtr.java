@@ -30,7 +30,7 @@ public class LoginCtr {
 	private DefaultCryptographyHelper cryptographyHelper;
 	
 	@ResponseBody
-	@PostMapping("/login")
+	@RequestMapping("/login")
 	public Map<String, Object> login(@RequestParam Map<String, Object> param)throws Exception{
 		HttpServletRequest req = HttpServletUtils.getRequest();
 		
