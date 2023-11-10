@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.maxrun.application.login.service.LoginMapper">
 
-<select id="login" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
+<select id="login" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
 		call sp_login(#{loginId},#{passwd})
 	}	
@@ -12,7 +12,7 @@
 	SELECT	1 id, 2 id2, null id3
 </select>
  -->
-<select id="logout" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
+<select id="logout" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="CamelCaseHashMap">
 	{
 		call sp_logout(#{loginId},#{passwd})
 	}	
