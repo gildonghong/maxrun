@@ -16,7 +16,17 @@
 
 <select id="regRepairShop" statementType="CALLABLE" parameterType="java.util.HashMap" resultType="CamelCaseHashMap">
 	{
-		call sp_regRepairShop(#{repairShopNo},#{repairShopName},#{businessNo}, #{ceoName}, #{photoSavedPath}, #{repairShopEmail}, #{repairShopTelNo}, #{maxrunChargerCpNo}, #{regUserId}, #{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
+		call sp_regRepairShop(	#{repairShopNo},
+								#{repairShopName},
+								#{businessNo}, 
+								#{ceoName}, 
+								#{photoSavedPath}, 
+								#{repairShopEmail}, 
+								#{repairShopTelNo}, 
+								#{useYn}, 
+								#{maxrunChargerCpNo}, 
+								#{regUserId}, 
+								#{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
 	}	
 </select>
 
