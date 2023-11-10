@@ -59,6 +59,8 @@ public class RepairShopService {
 		}catch(Exception e) {
 			if (e.getMessage().contains("UK_TB_DEPARTMENT")) {
 				throw new BizException(BizExType.DUPLICATED_PARAMETER, "이미 존재하는 부서명으로 수정하실 수 없습니다");
+			}else if(e.getMessage().contains("신규등록")) {
+				throw new BizException(BizExType.NOT_AUTHORIZED, "신규등록, 관리 공정은 수정하시거나 삭제하실 수 없습니다");
 			}
 			throw e;
 		}
@@ -200,6 +202,9 @@ public class RepairShopService {
 		try {
 			return repairShopMapper.delDepartment(departmentNo);
 		}catch(Exception e) {
+			if(e.getMessage().contains("신규등록")) {
+				throw new BizException(BizExType.NOT_AUTHORIZED, "신규등록, 관리 공정은 수정하시거나 삭제하실 수 없습니다");
+			}
 			throw new BizException(BizExType.REQUEST_FAIL, "해당 부서로 등록된 작업 처리 내역이 있습니다. 부서를 삭제하실 수 없습니다!!");
 		}
 		
