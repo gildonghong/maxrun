@@ -20,10 +20,11 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
 	
 	@Override
 	public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+
 		System.out.println("uri==>" + request.getURI());
-		System.out.println("uri==>" + request.getURI());
-		System.out.println("uri==>" + request.getURI());
-		System.out.println("uri==>" + request.getURI());
+		System.out.println("uri==>" + request.getHeaders());
+		System.out.println("uri==>" + request.getBody());
+		System.out.println("uri==>" + request.getMethod());
 
 		String queryString=request.getURI().getQuery();
 		
@@ -56,7 +57,6 @@ public class WebSocketHandshakeInterceptor extends HttpSessionHandshakeIntercept
 	@Override
 	public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
 			WebSocketHandler wsHandler, @Nullable Exception ex) {
-
 	}
 
 	@Override

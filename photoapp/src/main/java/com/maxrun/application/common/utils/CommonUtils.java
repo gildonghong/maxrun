@@ -24,12 +24,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javax.crypto.KeyGenerator;
@@ -48,6 +52,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
+
+import com.google.gson.Gson;
 import com.maxrun.application.exception.BizException;
 
 /**
@@ -59,7 +65,7 @@ import com.maxrun.application.exception.BizException;
  * <PRE>gslp-user|utils</PRE>
  */
 public class CommonUtils {
-	
+
 	public static void createXlsFile() throws Exception{
 		
 		Workbook wb = new HSSFWorkbook();
@@ -75,15 +81,57 @@ public class CommonUtils {
 			wb.write(fileOut);
 		}
 	}
+	
+	static Set<Map<String, Object>> set = Collections.synchronizedSet(new HashSet<Map<String, Object>>());
+	
+	private synchronized static void setTest() {
+		
+		System.out.println(set.size());
+		
 
+		for(Iterator<Map<String, Object>> iter= set.iterator();iter.hasNext(); ) {
+			Map<String, Object> temp = iter.next();
+			iter.remove();
+			
+			System.out.println(set.size());
+		}
+
+		
+	}
+	
 	public static void main(String args[]) throws Exception{
+		for(int i=0;i<5;i++) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			
+			map.put("no", i);
+			
+			set.add(map);
+		}
+		setTest();
 		
-		List aaa = new ArrayList();
+		Gson gson = new Gson();
 		
-		aaa.add(1, "dd");
-		//aaa.add(1, "bb");
+		Set<Map<String, Object>> set = new HashSet<Map<String, Object>>();
 		
-		System.out.println(aaa.size());
+		Map<String, Object> mp = new HashMap<String ,Object>();
+		
+		mp.put("repairShopNo",1);
+		mp.put("division", "DIRECTORY");
+		mp.put("aaaa", "dkfdsajf");
+		
+		Map<String, Object> mp2 = new HashMap<String ,Object>();
+		
+		mp2.put("repairShopNo",2);
+		mp2.put("division", "DIRECTORY");
+		mp2.put("aaaa", "kdfjdsafjdsafa");
+		
+		set.add(mp);
+		set.add(mp2);
+		
+		String jsonStr = gson.toJson(set);
+		
+		System.out.println(jsonStr);
+		
 		
 		createXlsFile();
 		

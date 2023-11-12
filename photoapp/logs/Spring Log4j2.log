@@ -1,12 +1,2 @@
-2023/10/28 02:26:43,536 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
-2023/10/28 02:26:43,785 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
-2023/10/28 02:27:24,396 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
-2023/10/28 02:27:24,537 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
-2023/10/28 02:30:11,622 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
-2023/10/28 02:30:11,771 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
-2023/10/28 02:36:01,414 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
-2023/10/28 02:36:01,420 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
-2023/10/28 02:41:08,948 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
-2023/10/28 02:41:08,969 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
-2023/10/28 02:43:27,940 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
-2023/10/28 02:43:28,087 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null
+2023/11/11 20:41:46,018 [WARN ]  [org.apache.poi.POIDocument] [main] DocumentSummaryInformation property set came back as null
+2023/11/11 20:41:46,034 [WARN ]  [org.apache.poi.POIDocument] [main] SummaryInformation property set came back as null

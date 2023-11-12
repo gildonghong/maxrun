@@ -37,7 +37,16 @@ public class RepairShopService {
 	}
 	
 	public Map<String, Object> regRepairShop(Map<String, Object> param) throws Exception{
-		return repairShopMapper.regRepairShop(param);
+		try {
+			return repairShopMapper.regRepairShop(param);
+		}catch(Exception ex) {
+			if (ex.getMessage().contains("UK_")) {
+				throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "이미 존재하는 사업자 번호입니다");
+			}
+			throw ex;
+		}
+		
+		
 	}
 
 	public List<Map<String, Object>> getDepartmentList(int repairShopNo) throws Exception{
@@ -70,13 +79,14 @@ public class RepairShopService {
 		repairShopMapper.regMaxRun(param);
 	}
 	
-	public Set<Map<String, Object>> getNeedToSenderListForTransffering() throws Exception{
-		List<Map<String, Object>> lst = repairShopMapper.getFileListForTransffering();
-		Set<Map<String, Object>> senderLst = new HashSet<Map<String, Object>>();
-		
-		for(Map<String, Object> map:lst)
-			senderLst.add(map);
-		return senderLst;
+	public List<Map<String, Object>> getNeedToSenderListForTransffering() throws Exception{
+		return repairShopMapper.getFileListForTransffering();
+//		List<Map<String, Object>> lst = repairShopMapper.getFileListForTransffering();
+//		Set<Map<String, Object>> senderLst = new HashSet<Map<String, Object>>();
+//		
+//		for(Map<String, Object> map:lst)
+//			senderLst.add(map);
+//		return senderLst;
 	}
 	
 	public void completeCopyToRepairShop(Map<String, Object> param) throws Exception{
