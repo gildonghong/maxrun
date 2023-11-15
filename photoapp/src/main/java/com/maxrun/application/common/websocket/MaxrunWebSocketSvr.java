@@ -58,6 +58,8 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 			// System.out.println("paylod--->" + msg);
 			repairShopService.completeCopyToRepairShop(msg);
+			System.out.println("socket client로부터 메시지 수신");
+			System.out.println(msg);
 			
 			if (msg.get("result").equals("FAIL")) {
 				System.out.println(msg.get("exception"));
