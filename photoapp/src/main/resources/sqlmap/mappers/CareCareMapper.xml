@@ -56,7 +56,9 @@
 		call sp_getPhotoList( 	#{repairShopNo}, 
 								#{departmentNo},
 								#{departmentName},
-								#{carLicenseNo})
+								#{carLicenseNo},
+								#{rowNum},
+								#{defRowCnt})
 	}
 </select>
 
