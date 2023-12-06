@@ -1,24 +1,20 @@
 package com.maxrun.repairshop.carcare.service;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -27,10 +23,12 @@ import com.j256.simplemagic.ContentInfoUtil;
 import com.maxrun.application.common.auth.service.JWTTokenManager;
 import com.maxrun.application.common.utils.CommonUtils;
 import com.maxrun.application.common.utils.HttpServletUtils;
+import com.maxrun.application.common.utils.ImageCompressUtil;
 import com.maxrun.application.config.PropertyManager;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
 import com.maxrun.repairshop.service.RepairShopService;
+import java.io.IOException;
 
 @Transactional
 @Service
@@ -43,7 +41,11 @@ public class CarCareJobService {
 	private JWTTokenManager jwt;
 	@Autowired
 	private PropertyManager	pmt;
+	@Autowired
+	private ImageCompressUtil imgComUtil;
 	
+	Logger logger = LogManager.getLogger(CarCareJobService.class);
+
 	public List<Map<String, Object>>getPhotoList(Map<String, Object> param)throws Exception{
 		List<Map<String, Object>> photoList = carCareJobMapper.getPhotoList(param);
 		String photoRootPath = pmt.get("Globals.photoapp.contetxt.root") + "/" + pmt.get("Globals.photo.root.path");
@@ -191,6 +193,8 @@ public class CarCareJobService {
 				//DB 트랜잭션이 성공했으므로 실제 물리 파일을 서비스 경로로 복사
 				File targetFile=new File( osPath + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
 				file.transferTo(targetFile);
+				//file resizing
+				compressImage(targetFile, reqNo, (String)fileMap.get("fileName"), (String)fileMap.get("fileExt"));
 			}catch(Exception ex) {
 				ex.printStackTrace();
 				//OS 상에서 파일 저장과정에서 에러가 발생했으므로 DB에 기저장된 메터 정보도 같이 삭제한다
@@ -201,6 +205,37 @@ public class CarCareJobService {
 		//파일이 저장되었으면 파일 그룹번호를 반환한다. 여러개의 파일을 등록하더라도 한 세션에선 저장된 파일은 동일한 파일 그룹번호를 공유한다
 		return fileGroupNo;
 
+	}
+	
+	//upload된 이미지 파일을 리사이징, 파일용량 최적화 
+	private void compressImage(File originalImage, int reqNo, String fileNm, String ext) throws Exception{
+		//File targetFile=new File( osPath + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
+		try {
+			BufferedImage og = ImageIO.read(originalImage);
+
+			int iHeight= og.getHeight();
+			int iWidth = og.getWidth();
+			long size = originalImage.length();
+			
+			BufferedImage compressed = ImageCompressUtil.resizeImage(og, iWidth, iHeight);
+			
+			//백업 폴더 생성 
+			String reqRepairFolderPath= PropertyManager.get("Globals.photo.os.path") + File.separator + this.getRepairReqPhotoPath(reqNo);
+			
+			File backUpFolderPath= new File(reqRepairFolderPath + File.separator + "backup");
+			backUpFolderPath.mkdirs();
+			//원본파일을 백업폴더로 이동
+			originalImage.renameTo(backUpFolderPath);
+			
+			//리사이징된 파일을 원본파일 경로로 저장
+			File compressedImg = new File(reqRepairFolderPath +  File.separator + fileNm + "." + ext);
+			ImageIO.write(compressed, ext, compressedImg);
+
+		}catch(IOException e) {
+			e.printStackTrace();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void removePhoto(int fileNo) throws Exception{
