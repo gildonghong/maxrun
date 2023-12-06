@@ -7,6 +7,9 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class ImageCompressUtil {
 
 	public static void main(String[] args) throws IOException {
