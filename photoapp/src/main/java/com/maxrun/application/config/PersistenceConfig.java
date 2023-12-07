@@ -44,10 +44,11 @@ public class PersistenceConfig{
 //	    		Globals.database.user.name=maxrundb_admin
 //	    		Globals.database.user.password=maxrun!!
 //	    		Globals.photoapp.contetxt.root=http://www.sabangdisco.com
-	    config.setMaximumPoolSize(10);
+//	    config.setMaximumPoolSize(10);
 	    
 //	    System.out.println("datasource class -->" + PropertyManager.get("Globals.database.datasource.class.name"));
-//	    
+	    
+//	    config.setMaximumPoolSize(10);
 //	    config.setDataSourceClassName(PropertyManager.get("Globals.database.datasource.class.name"));
 //	    config.addDataSourceProperty("serverName",PropertyManager.get("Globals.database.server.name"));
 //	    config.addDataSourceProperty("portNumber", 1433);
@@ -56,8 +57,18 @@ public class PersistenceConfig{
 //	    config.addDataSourceProperty("user", PropertyManager.get("Globals.database.user.name"));
 //	    config.addDataSourceProperty("password", PropertyManager.get("Globals.database.user.password"));
 	    
+//	    config.setMaximumPoolSize(10);
 //	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
 //	    config.addDataSourceProperty("serverName","DESKTOP-J4L2EEK");
+//	    config.addDataSourceProperty("portNumber", 1433);
+//	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
+//	    config.addDataSourceProperty("databaseName", "maxrundb_admin");
+//	    config.addDataSourceProperty("user", "sa");
+//	    config.addDataSourceProperty("password", "object_1@@4");
+	    
+//	    config.setMaximumPoolSize(10);
+//	    config.setDataSourceClassName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
+//	    config.addDataSourceProperty("serverName","DESKTOP-5LF6KLK");
 //	    config.addDataSourceProperty("portNumber", 1433);
 //	    config.addDataSourceProperty("encrypt", false);	//실제 SSL인증서가 존재하는 경우 이 설정은 제거하도록 할 것
 //	    config.addDataSourceProperty("databaseName", "maxrundb_admin");

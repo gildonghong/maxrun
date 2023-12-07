@@ -194,7 +194,7 @@ public class CarCareJobService {
 				File targetFile=new File( osPath + File.separator + fileMap.get("fileName")+ "." + fileMap.get("fileExt"));
 				file.transferTo(targetFile);
 				//file resizing
-				compressImage(targetFile, reqNo, (String)fileMap.get("fileName"), (String)fileMap.get("fileExt"));
+				compressImage(targetFile, reqNo, String.valueOf(fileMap.get("fileName")), String.valueOf(fileMap.get("fileExt")));
 			}catch(Exception ex) {
 				ex.printStackTrace();
 				//OS 상에서 파일 저장과정에서 에러가 발생했으므로 DB에 기저장된 메터 정보도 같이 삭제한다
@@ -215,7 +215,10 @@ public class CarCareJobService {
 
 			int iHeight= og.getHeight();
 			int iWidth = og.getWidth();
-			long size = originalImage.length();
+			//long size = originalImage.length();
+			//가로 종횡비로 1920:1080 지정 
+			if (iWidth > 1920 ) iWidth=1920;
+			if (iHeight > 1080) iHeight=1080;
 			
 			BufferedImage compressed = ImageCompressUtil.resizeImage(og, iWidth, iHeight);
 			
@@ -224,8 +227,10 @@ public class CarCareJobService {
 			
 			File backUpFolderPath= new File(reqRepairFolderPath + File.separator + "backup");
 			backUpFolderPath.mkdirs();
-			//원본파일을 백업폴더로 이동
-			originalImage.renameTo(backUpFolderPath);
+			//backup File 생성
+			File backupFile = new File(backUpFolderPath + File.separator + fileNm + "." + ext);
+			//원본파일을 백업파일로 변경
+			originalImage.renameTo(backupFile);
 			
 			//리사이징된 파일을 원본파일 경로로 저장
 			File compressedImg = new File(reqRepairFolderPath +  File.separator + fileNm + "." + ext);
