@@ -6,29 +6,34 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.socket.CloseStatus;
+import org.springframework.web.socket.PingMessage;
+import org.springframework.web.socket.PongMessage;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.maxrun.application.config.PropertyManager;
-import com.maxrun.application.exception.BizExType;
-import com.maxrun.application.exception.BizException;
 import com.maxrun.repairshop.service.RepairShopService;
 
 public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 	@Autowired
 	RepairShopService repairShopService;
+	
+	Logger logger = LogManager.getLogger(getClass());
 
 	static List<Map<String, Object>> needToSendLIst = Collections.synchronizedList(new ArrayList<Map<String, Object>>());
 	static Set<WebSocketSession> repairShopList = Collections.synchronizedSet(new HashSet<WebSocketSession>());
@@ -49,10 +54,13 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 	@Override
 	public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) {
-
-		String paylod = (String) message.getPayload();
-
 		try {
+			if (message instanceof PongMessage) {
+				handlePongMessage(session, (PongMessage) message);
+				return;
+			}
+			String paylod = (String) message.getPayload();
+
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> msg = mapper.readValue(paylod, Map.class);
 
@@ -70,6 +78,11 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
+		logger.info(session.getId() + " pong message 수신 ");
 	}
 
 	@Override
@@ -128,6 +141,17 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 			ex.printStackTrace();
 		}
 
+	}
+	
+	@Scheduled(fixedDelay = 10000)
+	public synchronized void sendPing() throws Exception{
+		for(WebSocketSession w:repairShopList) {
+			PingMessage pm = new PingMessage();
+			logger.info("####### now ping send #######");
+			logger.info("####### now ping send #######");
+			logger.info("####### now ping send #######");
+			w.sendMessage(pm);	//ping message
+		}
 	}
 
 	@Scheduled(fixedDelay = 5000)
