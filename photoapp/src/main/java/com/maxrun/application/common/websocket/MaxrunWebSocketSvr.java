@@ -64,13 +64,11 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String, Object> msg = mapper.readValue(paylod, Map.class);
 
-			// System.out.println("paylod--->" + msg);
 			repairShopService.completeCopyToRepairShop(msg);
-			System.out.println("socket client로부터 메시지 수신");
-			System.out.println(msg);
-			
+			logger.info("socket client로부터 메시지 수신");
+
 			if (msg.get("result").equals("FAIL")) {
-				System.out.println(msg.get("exception"));
+				logger.info(msg.get("exception"));
 			}
 
 			removeWorkAlreadySent(msg); //복사작업완로된 건은 리스테에서 제거 
@@ -87,7 +85,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 	@Override
 	public void handleTransportError(WebSocketSession session, Throwable exception) {
-		System.out.println("handleTransportError===>" + exception.getMessage());
+		//System.out.println("handleTransportError===>" + exception.getMessage());
 	}
 
 	private WebSocketSession findRepairShopSession(int repairShopNo) {
@@ -129,12 +127,12 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 			}
 			
 			if(removed==false) {
-				//System.out.println("copyDone.divisiton==>" + copyDone.get("division").toString());
+				logger.info("################################ 복사작업완된 정보객체게 메모리에서 삭제되지 않음 ###############################");
 				if(copyDone.get("division").equals("DIRECTORY"))
-					System.out.println("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
+					logger.info("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
 				else {
-					System.out.println("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
-					System.out.println("copyDone.fileNo==>" + copyDone.get("fileNo").toString());
+					logger.info("copyDone.clientPath==>" + copyDone.get("clientPath").toString());
+					logger.info("copyDone.fileNo==>" + copyDone.get("fileNo").toString());
 				}
 			}
 		} catch (Exception ex) {
@@ -147,8 +145,6 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 	public synchronized void sendPing() throws Exception{
 		for(WebSocketSession w:repairShopList) {
 			PingMessage pm = new PingMessage();
-			logger.info("####### now ping send #######");
-			logger.info("####### now ping send #######");
 			logger.info("####### now ping send #######");
 			w.sendMessage(pm);	//ping message
 		}
@@ -166,9 +162,9 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 
 			for(WebSocketSession w:repairShopList) {
 				Map<String, Object> ws = w.getAttributes();
-				System.out.println("############################# Connected Session Info ################################");
-				System.out.println(ws.get("loginId"));
-				System.out.println("############################# Connected Session Info ################################");
+				logger.info("############################# Connected Session Info ################################");
+				logger.info(ws.get("loginId"));
+				logger.info("############################# Connected Session Info ################################");
 				
 				if("maxrun".equals("loginId")) {
 					WebSocketSession repairShop = findRepairShopSession(-1);
@@ -186,7 +182,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 			if (needToSendLIst == null || needToSendLIst.size() == 0) {
 				needToSendLIst = repairShopService.getNeedToSenderListForTransffering();	
 			} else /*if(needToSendLIst.size()<100)*/ {
-				System.out.println("needToSendLIst----->" + needToSendLIst);
+				//System.out.println("needToSendLIst----->" + needToSendLIst);
 				needToSendLIst.addAll(repairShopService.getNeedToSenderListForTransffering());
 			}
 		} catch (Exception e) {
@@ -205,11 +201,11 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 					if (m.get("division").equals("FILE") /*&& !String.valueOf(m.get("status")).equals("sent")*/) {
 						String filePath = PropertyManager.get("Globals.photo.os.path") + m.get("serverPath");
 
-						System.out.println("filePath==>" + filePath);
+						//System.out.println("filePath==>" + filePath);
 
 						if (Files.notExists(Paths.get(filePath))) {
 							// 서버경로에 파일이 없어서
-							System.out.println(filePath + " is not exists");
+							logger.info(filePath + " is not exists");
 
 						}else {
 							byte[] bytes = Files.readAllBytes(Paths.get(filePath));
@@ -222,7 +218,7 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 						//m.put("status", "sent");	//client로 전송했다는 플래그 값을 설정 
 						msgStr = gson.toJson(m);
 						TextMessage message = new TextMessage(msgStr);
-						System.out.println(repairShopNo + " 정비소에 메시지 전송");
+						logger.info(repairShopNo + " 정비소에 파일 메시지 전송");
 						//System.out.println(repairShopNo + "==>" + message.toString());
 						
 						repairShop.sendMessage(message);
@@ -230,9 +226,9 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 						//removeWorkAlreadySent(m);
 					}else if(m.get("division").equals("DIRECTORY") /*&& !String.valueOf(m.get("status")).equals("sent")*/){//DIRECGTORY 인 경우 
 						msgStr = gson.toJson(m);
-						System.out.println("msgStr==>" + msgStr);
+						//logger.info("msgStr==>" + msgStr);
 						TextMessage message = new TextMessage(msgStr);
-						System.out.println(repairShopNo + " 정비소에 메시지 전송");
+						logger.info(repairShopNo + " 정비소에 메시지 디렉토리 명칭 전송");
 						//System.out.println(repairShopNo + "==>" + message.toString());
 						//m.put("status", "sent");
 						repairShop.sendMessage(message);

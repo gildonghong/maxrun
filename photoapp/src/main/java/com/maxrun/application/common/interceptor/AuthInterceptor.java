@@ -21,14 +21,15 @@ import eu.bitwalker.useragentutils.BrowserType;
 import eu.bitwalker.useragentutils.UserAgent;
 
 public class AuthInterceptor implements HandlerInterceptor {
-	private static final Logger log = LogManager.getLogger(AuthInterceptor.class);
+	
+	Logger logger = LogManager.getLogger(getClass());
 	
 	@Autowired
 	JWTTokenManager jwtTokenManager;
 	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		log.info(request.getRequestURI() + "에 대해서 preHandle 수행");
+		logger.info(request.getRequestURI() + "에 대해서 preHandle 수행");
 
 		String uAtoken = CookieUtils.getCookieValue("uAtoken");
 
@@ -47,23 +48,15 @@ public class AuthInterceptor implements HandlerInterceptor {
 		try {
 			Map<String, Object> user=jwtTokenManager.evaluateToken(uAtoken);
 			request.getSession().setAttribute("uAtoken", uAtoken);
-			
-			
+
 			Enumeration<String> pNm = request.getParameterNames();
-			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
-			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
-			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
 			
 			while(pNm.hasMoreElements()) {
 				String nm = pNm.nextElement();
 				
-				System.out.println(nm + ":" + request.getParameter(nm));
+				logger.info(nm + ":" + request.getParameter(nm));
 			}
-			
-			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
-			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
-			System.out.println("########################################### " + request.getRequestURI() + "########################################### ");
-			
+
 			return true;
 		}catch(Exception e) {
 			throw e;
@@ -72,11 +65,11 @@ public class AuthInterceptor implements HandlerInterceptor {
 	
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable ModelAndView modelAndView) throws Exception {
-		log.info(request.getRequestURI() + "에 대해서 postHandle 수행");
+		//logger.info(request.getRequestURI() + "에 대해서 postHandle 수행");
 	}
 	
 	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, @Nullable Exception ex) throws Exception {
-		log.info(request.getRequestURI() + "에 대해서 afterCompletion 수행");
+		//logger.info(request.getRequestURI() + "에 대해서 afterCompletion 수행");
 	}
 	
 

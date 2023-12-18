@@ -412,7 +412,7 @@ public class CommonUtils {
     
     public static String getLocalIPAddress() throws UnknownHostException {
     	InetAddress addr = InetAddress.getLocalHost();
-    	System.out.println("####################################" + addr.getHostAddress());
+    	//System.out.println("####################################" + addr.getHostAddress());
     	return addr.getHostAddress();
     }
     //개발환경에서 접속했는지 여부 

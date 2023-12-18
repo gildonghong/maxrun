@@ -34,7 +34,7 @@ import com.maxrun.http.message.json.XssDefenderableMapper;
 public class PhotoAppMVCConfig implements WebMvcConfigurer{
 	
 	public PhotoAppMVCConfig() {
-		System.out.println("PhotoAppMVCConfig, I was called");
+		//System.out.println("PhotoAppMVCConfig, I was called");
 	}
 
 	private final Logger logger	= LogManager.getLogger(this.getClass());
@@ -43,7 +43,7 @@ public class PhotoAppMVCConfig implements WebMvcConfigurer{
         //by default prefix = "/WEB-INF/" and  suffix = ".jsp"
         registry.jsp().prefix("/WEB-INF/views/");
         registry.jsp().suffix(".jsp");
-        System.out.println("PhotoAppMVCConfig.configureViewResolvers, I was called");
+        //System.out.println("PhotoAppMVCConfig.configureViewResolvers, I was called");
     }
     
     @Bean
@@ -81,8 +81,8 @@ public class PhotoAppMVCConfig implements WebMvcConfigurer{
     
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-    	System.out.println("extendMessageConverters was called");
-    	System.out.println("현재 설정된  HttpConverters 개수:" + converters.size());
+    	//System.out.println("extendMessageConverters was called");
+    	//System.out.println("현재 설정된  HttpConverters 개수:" + converters.size());
     	
     	logger.info("HttpMessageConverter className===>" + converters.get(0).getClass().getName());
 		logger.info("HttpMessageConverter CanonicalName===>" + converters.get(0).getClass().getCanonicalName());
@@ -102,7 +102,7 @@ public class PhotoAppMVCConfig implements WebMvcConfigurer{
 		
 		converters.add(htmlEscapingConverter);
 		
-    	System.out.println("htmlEscapeConverter추가 후  HttpConverters 개수:" + converters.size());
+    	//System.out.println("htmlEscapeConverter추가 후  HttpConverters 개수:" + converters.size());
     	
     	for(HttpMessageConverter<?> mv:converters) {
     		logger.info("HttpMessageConverter className===>" + mv.getClass().getName());

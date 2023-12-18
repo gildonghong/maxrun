@@ -32,7 +32,7 @@ public class AppStartedListener implements ApplicationListener<ContextRefreshedE
 		
 		String[] beans = springContext.getBeanDefinitionNames();
 		
-		System.out.println(beans);
+		//System.out.println(beans);
 		RequestMappingHandlerAdapter rmha = (RequestMappingHandlerAdapter)springContext.getBean(RequestMappingHandlerAdapter.class);
 //		
 		List<HttpMessageConverter<?>> hConverters = rmha.getMessageConverters();

@@ -43,14 +43,9 @@ public class CommonCtr {
 		if (param.get("endDate")==null) {
 			param.put("endDate", now.plusDays(6).toString());
 		}
-		
-        // 결과 출력
-        System.out.println(now);
-        
-        //param.put("endDate", now.plusDays(6));
-       
+
 		List<Map<String, Object>> lst = commonService.getPointScoreList(param);
-		System.out.println(lst);
+
 		model.addAttribute("pointList", lst);
 		model.addAttribute("strtDate", param.get("strtDate"));
 		model.addAttribute("endDate", param.get("endDate"));
@@ -63,7 +58,7 @@ public class CommonCtr {
 		
 		List<Map<String, Object>> lst = commonService.getPointDetailList(param);
 		
-		System.out.println("detailList:"+lst);
+		//System.out.println("detailList:"+lst);
 		
 		model.addAttribute("detailList", lst);
 		model.addAttribute("emp_name", param.get("emp_name"));
@@ -103,7 +98,7 @@ public class CommonCtr {
 		
 		List<Map<String,Object>> lst = commonService.getWorkList(param);
 		
-		System.out.println(lst);
+		//System.out.println(lst);
 		model.addAttribute("list", lst);
 		model.addAttribute("endDate",  param.get("endDate"));
 		model.addAttribute("strtDate", param.get("strtDate"));
@@ -150,7 +145,7 @@ public class CommonCtr {
 		
 		List<Map<String,Object>> lst = commonService.getMamaFeeList(param);
 		
-		System.out.println(lst);
+		//System.out.println(lst);
 		model.addAttribute("list", lst);
 		model.addAttribute("endDate",  param.get("endDate"));
 		model.addAttribute("strtDate", param.get("strtDate"));

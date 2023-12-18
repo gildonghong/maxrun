@@ -164,7 +164,7 @@ public class RepairShopCtr {
 		//List mLst = (List) lst.get(0).get("memo");
 		//List<Map<String, Object>> memoLst = (List<Map<String, Object>>) lst.get(0).get("memo");
 		
-		System.out.println("입고목록 ===>" + lst);
+//		System.out.println("입고목록 ===>" + lst);
 		
 		return lst;
 	}

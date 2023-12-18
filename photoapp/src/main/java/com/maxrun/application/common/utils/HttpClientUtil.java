@@ -158,8 +158,7 @@ public class HttpClientUtil {
 	    con.setDoOutput(true);
 	    // DATA
 	    OutputStreamWriter wr= new OutputStreamWriter(con.getOutputStream());
-	    System.out.println("ddd-->" + param.toString());
-	    System.out.println("ddd-->" + String.valueOf(param.toString()));
+
 	    wr.write(param.toString());
 	    wr.flush();
 	    // API 호출

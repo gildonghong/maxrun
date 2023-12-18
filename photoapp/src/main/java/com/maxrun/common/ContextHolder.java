@@ -4,6 +4,8 @@ import javax.servlet.ServletContext;
 
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -13,7 +15,7 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 
 @Component
 public class ContextHolder implements ApplicationContextAware, ServletContextAware {
-	
+	Logger logger = LogManager.getLogger(getClass());
 	private static ApplicationContext springContext;
 	private static ServletContext servletContext;
 	
@@ -26,13 +28,13 @@ public class ContextHolder implements ApplicationContextAware, ServletContextAwa
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		// TODO Auto-generated method stub
-		System.out.println("===================spring context====================");
+		//System.out.println("===================spring context====================");
 		
 		this.springContext = applicationContext;
 		
-		if(applicationContext==null) {
-			System.out.println("################ spring context is null");
-		}
+//		if(applicationContext==null) {
+//			System.out.println("################ spring context is null");
+//		}
 		
 		String[] beans = springContext.getBeanDefinitionNames();
 		
@@ -41,7 +43,7 @@ public class ContextHolder implements ApplicationContextAware, ServletContextAwa
 //		rma.setMessageConverters(messageConverters);
 
         for (String bean : beans) {
-            System.out.println("bean : " + bean);
+            logger.info("bean : " + bean);
         }
         
 //        SqlSessionFactory sqlSessionFactory = applicationContext.getBean(SqlSessionFactory.class);
