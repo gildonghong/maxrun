@@ -21,7 +21,7 @@ import com.navercorp.lucy.security.xss.servletfilter.XssEscapeServletFilter;
 public class PhotoAppWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	public PhotoAppWebApplicationInitializer() {
-		System.out.println("SDWebApplicationInitializer created");
+		//System.out.println("SDWebApplicationInitializer created");
 	}
 	@Override
 	protected Class<?>[] getRootConfigClasses() {

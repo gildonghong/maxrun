@@ -81,7 +81,7 @@ public class CarCareJobService {
 			param.put("reqNo", param.get("outReqNo"));
 			
 		}catch(Exception e) {
-			System.out.println(e.getMessage());
+			logger.info(e.getMessage());
 			if(e.getMessage().contains("이미 입고내역이 있는 차량번호입니다")) {
 				throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "동일 년월에 등록된 차량번호입니다. 차량번호 다음에 _숫자등을 부여해서 구분해주세요!!");
 			}else {
@@ -132,8 +132,6 @@ public class CarCareJobService {
 	}
 	
 	public int regPhoto(MultipartHttpServletRequest request)throws Exception{
-		System.out.println("------------Globals.photo.os.path===============>" + pmt.get("Globals.photo.os.path"));
-		System.out.println("------------Globals.photoapp.contetxt.root===============>" + PropertyManager.get("Globals.photoapp.contetxt.root"));
 		
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
 		int reqNo = Integer.parseInt(request.getParameter("reqNo")==null?String.valueOf(request.getAttribute("reqNo")):request.getParameter("reqNo"));
@@ -173,11 +171,11 @@ public class CarCareJobService {
 			ContentInfoUtil util = new ContentInfoUtil();
 			ContentInfo info = util.findMatch(file.getBytes());
 			if (info == null) {
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111111 Unknown content-type");
+				//System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!111111 Unknown content-type");
 				throw new BizException(BizExType.PARAMETER_NOT_ALLOWDED, "Unknown content-type");
 			} else if(!info.getMimeType().startsWith("image/")) {
 			   // other information in ContentInfo type
-			   System.out.println("##########################  Content-type is: " + info.getMimeType());
+			   //System.out.println("##########################  Content-type is: " + info.getMimeType());
 			   throw new BizException(BizExType.PARAMETER_NOT_ALLOWDED, "only image file can be uploaded");
 			}
 			//file 매터정보 db저장 
@@ -322,22 +320,22 @@ public class CarCareJobService {
 							CommonUtils.getMonthBy2Digit(LocalDate.now())+ File.separator + 
 							String.valueOf(reqNo);	//차량별 디렉토리
 		
-		System.out.println("******************************************");
-		System.out.println("pathString is =============>" + pathString);
+//		System.out.println("******************************************");
+//		System.out.println("pathString is =============>" + pathString);
 		
 		File folder= new File(pathString);
 		
 		folder.mkdirs();
-		if(folder.exists()) {
-			System.out.println("######################################################################");
-			System.out.println(folder.getAbsolutePath() + " directory is created!!!!!!!!!!!!!!!!!");
-			System.out.println("######################################################################");
-
-		}else {
-			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-			System.out.println(folder.getAbsolutePath() + " directory is creatiom fail!!!!!!!!!!!!!!!!!");
-			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
-		}
+//		if(folder.exists()) {
+//			System.out.println("######################################################################");
+//			System.out.println(folder.getAbsolutePath() + " directory is created!!!!!!!!!!!!!!!!!");
+//			System.out.println("######################################################################");
+//
+//		}else {
+//			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+//			System.out.println(folder.getAbsolutePath() + " directory is creatiom fail!!!!!!!!!!!!!!!!!");
+//			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
+//		}
 		return folder.getAbsolutePath();
 	}
 }

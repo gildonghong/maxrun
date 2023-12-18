@@ -22,6 +22,6 @@ public class PhotoAppRootConfig {
 	ApplicationContext applicationContext;
 	
 	public PhotoAppRootConfig() {
-		System.out.println("PhotoAppRootConfig, I was called");
+		//System.out.println("PhotoAppRootConfig, I was called");
 	}
 }

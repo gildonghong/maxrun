@@ -1,5 +1,7 @@
 package com.maxrun.application.exception.web;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,10 +14,10 @@ import com.maxrun.application.exception.ErrorCode;
 
 @ControllerAdvice
 public class MaxRunExceptionCtr {
-	
+	Logger logger = LogManager.getLogger(getClass());
 	@ExceptionHandler(BizException.class)
     public ResponseEntity handleException(BizException e) {
-		System.out.println("에러-->" + e.getMessage());
+		logger.info("에러-->" + e.getMessage());
 		HttpStatus status=HttpStatus.INTERNAL_SERVER_ERROR;
 		HttpHeaders responseHeaders = new HttpHeaders();
 	    //responseHeaders.set("CONTENT_ENCODING","utf-8"); //

@@ -91,7 +91,7 @@ public class RepairShopService {
 	
 	public void completeCopyToRepairShop(Map<String, Object> param) throws Exception{
 		
-		System.out.println("param===>" + param);
+//		System.out.println("param===>" + param);
 // 		CREATE PROCEDURE call sp_completeCopyToRepairShop(	#{repairShopNo}, 
 //															#{division}, 
 //															#{reqNo}, 
@@ -100,7 +100,7 @@ public class RepairShopService {
 //															#{errorMsg})
 		List<Map<String, Object>> ret = repairShopMapper.completeCopyToRepairShop(param);
 		
-		System.out.println("ret===>" + ret);
+//		System.out.println("ret===>" + ret);
 	}
 	
 	public List<Map<String, Object>> getEnterList(@RequestParam Map<String, Object> param) throws Exception{
