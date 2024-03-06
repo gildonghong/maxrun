@@ -2,13 +2,12 @@ package com.maxrun.repairshop.carcare.service;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.imageio.ImageIO;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
-
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
 import com.maxrun.application.common.auth.service.JWTTokenManager;
@@ -28,7 +26,6 @@ import com.maxrun.application.config.PropertyManager;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
 import com.maxrun.repairshop.service.RepairShopService;
-import java.io.IOException;
 
 @Transactional
 @Service
@@ -337,5 +334,13 @@ public class CarCareJobService {
 //			System.out.println("VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV");
 //		}
 		return folder.getAbsolutePath();
+	}
+	
+	public void setFileTransferStatus(Map<String, Object> param) throws Exception{
+		try {
+			carCareJobMapper.setFileTransferStatus(param);
+		}catch(Exception e) {
+			throw new BizException(e.getMessage());
+		}
 	}
 }

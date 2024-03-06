@@ -96,4 +96,10 @@
 	}
 </select>
 
+<select id="setFileTransferStatus" parameterType="java.util.HashMap" statementType="CALLABLE" resultType="int">
+	{
+		call sp_setFileTransferStatus(#{reqNo}, #{status})
+	}
+</select>
+
 </mapper>

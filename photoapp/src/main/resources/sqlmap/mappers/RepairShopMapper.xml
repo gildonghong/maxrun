@@ -25,6 +25,8 @@
 								#{repairShopTelNo}, 
 								#{useYn}, 
 								#{maxrunChargerCpNo}, 
+								#{maxrunChargerCpNo1}, 
+								#{maxrunChargerCpNo2}, 
 								#{regUserId}, 
 								#{outRepairShopNo, jdbcType=BIGINT, mode=OUT})
 	}	

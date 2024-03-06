@@ -151,5 +151,13 @@ public class CarCarJobCtr {
 	public List<Map<String, Object>> getMemoList(@RequestParam int reqNo) throws Exception{
 		return carCareJobService.getMemoList(reqNo);
 	}
+	
+	@ResponseBody
+	@PostMapping("/repairshop/carcare/photo/transfer")
+	public void setFileTransferStatus(@RequestParam Map<String, Object> param) throws Exception{
+		carCareJobService.setFileTransferStatus(param);
+		
+		//return (int)param.get("reqNo");
+	}
 
 }
