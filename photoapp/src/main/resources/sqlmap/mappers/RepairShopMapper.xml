@@ -92,13 +92,13 @@
 
 <select id="getEnterList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_getEnterListForMgrProgram(#{repairShopNo}, #{fromDate}, #{toDate}, #{carLicenseNo})
+		call sp_getEnterListForMgrProgram(#{repairShopNo}, #{fromDate}, #{toDate}, #{carLicenseNo}, #{maxrunUserId})
 	}
 </select>
 
 <select id="getPhotoList" parameterType="java.util.HashMap" statementType="CALLABLE"  resultType="CamelCaseHashMap">
 	{
-		call sp_getPhotoListForMgrProgram (#{reqNo}, #{departmentNo}, #{fromDate}, #{toDate})
+		call sp_getPhotoListForMgrProgram (#{reqNo}, #{departmentNo}, #{fromDate}, #{toDate}, #{maxrunUserId})
 	}
 </select>
 

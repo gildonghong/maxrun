@@ -135,6 +135,8 @@ public class RepairShopCtr {
 			if(!param.containsKey("repairShopNo")|| param.get("repairShopNo")==null || !StringUtils.hasText(String.valueOf(param.get("repairShopNo")))) {
 				throw new BizException(BizExType.PARAMETER_MISSING, "정비소 번호가 누락되었습니다");
 			}
+			
+			param.put("maxrunUserId", claims.get("loginId"));
 		}else {
 			param.put("repairShopNo", claims.get("repairShopNo"));
 		}
@@ -173,6 +175,10 @@ public class RepairShopCtr {
 	@GetMapping("/repairshop/enter/photo/list")	/*관리자 차량별 사진 전체 목록*/
 	public List<Map<String, Object>> getPhotoList(@RequestParam Map<String, Object> param) throws Exception{
 		Map<String, Object> claims = jwt.evaluateToken(String.valueOf(HttpServletUtils.getRequest().getSession().getAttribute("uAtoken")));
+		
+		if(claims.get("repairShopNo").equals(-1)){//maxrun 사용자가 로그인 했을 경우
+			param.put("maxrunUserId", claims.get("loginId"));
+		}
 		
 		/* 정비소 번호가 파라미터로 넘어온 경우는 파라미터를 사용하고 넘어오지 않았을 경우만 토큰 값을 사용한다 */
 		if(!StringUtils.hasText(String.valueOf(param.get("repairShopNo")))){
@@ -237,13 +243,26 @@ public class RepairShopCtr {
 			throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "target parameter 값이 허용되지 않는 값을 가지고 있습니다");
 		}
 		
-		if(param.get("target").equals("maxrun"))
+		if(param.get("target").equals("maxrun")) {
 			param.put("maxrunChargerCpNo", claims.get("maxrunChargerCpNo"));
-
+		}
+		
 		param.put("repairShopName", claims.get("repairShopName"));
 		param.put("repairShopTelNo", claims.get("repairShopTelNo"));
 
-		return repairShopService.regMessageSending(param);
+		Map<String, Object> ret = repairShopService.regMessageSending(param);
+		
+		if(param.get("target").equals("maxrun") && StringUtils.hasText(String.valueOf(claims.get("maxrunChargerCpNo1")))) {
+			param.replace("maxrunChargerCpNo", claims.get("maxrunChargerCpNo1"));
+			ret = repairShopService.regMessageSending(param);
+		}
+		
+		if(param.get("target").equals("maxrun") && StringUtils.hasText(String.valueOf(claims.get("maxrunChargerCpNo2")))) {
+			param.replace("maxrunChargerCpNo", claims.get("maxrunChargerCpNo2"));
+			ret = repairShopService.regMessageSending(param);
+		}
+		
+		return ret;
 	}
 	
 	@ResponseBody
