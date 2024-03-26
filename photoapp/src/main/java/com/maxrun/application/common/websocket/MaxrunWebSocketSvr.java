@@ -160,24 +160,24 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 			if (repairShopList.size() == 0)
 				return;
 
-			for(WebSocketSession w:repairShopList) {
-				Map<String, Object> ws = w.getAttributes();
-				logger.info("############################# Connected Session Info ################################");
-				logger.info(ws.get("loginId"));
-				logger.info("############################# Connected Session Info ################################");
-				
-				if("maxrun".equals("loginId")) {
-					WebSocketSession repairShop = findRepairShopSession(-1);
-					/*현재 접속중인 공업사 목록을 보낸다*/
-					msgStr = gson.toJson(repairShopList);
-					TextMessage message = new TextMessage(msgStr);
-					repairShop.sendMessage(message);
-					/*현재 소켓서버가 들고 있는 데이터목록을 보낸다*/
-					msgStr = gson.toJson(needToSendLIst);
-					message = new TextMessage(msgStr);
-					repairShop.sendMessage(message);
-				}
-			}
+//			for(WebSocketSession w:repairShopList) {
+//				Map<String, Object> ws = w.getAttributes();
+//				logger.info("############################# Connected Session Info ################################");
+//				logger.info(ws.get("loginId"));
+//				logger.info("############################# Connected Session Info ################################");
+//				
+//				if("maxrun".equals("loginId")) {
+//					WebSocketSession repairShop = findRepairShopSession(-1);
+//					/*현재 접속중인 공업사 목록을 보낸다*/
+//					msgStr = gson.toJson(repairShopList);
+//					TextMessage message = new TextMessage(msgStr);
+//					repairShop.sendMessage(message);
+//					/*현재 소켓서버가 들고 있는 데이터목록을 보낸다*/
+//					msgStr = gson.toJson(needToSendLIst);
+//					message = new TextMessage(msgStr);
+//					repairShop.sendMessage(message);
+//				}
+//			}
 			
 			if (needToSendLIst == null || needToSendLIst.size() == 0) {
 				needToSendLIst = repairShopService.getNeedToSenderListForTransffering();	
@@ -247,21 +247,21 @@ public class MaxrunWebSocketSvr extends AbstractWebSocketHandler {
 				// System.out.println("ok");
 			} catch (EOFException e) {
 				m.put("exception", e.getMessage());
-				System.out.println("message===>" + m);
+				//System.out.println("message===>" + m);
 				repairShopService.regWSException(m);
 
 				e.printStackTrace();
 				// throw e;
 			} catch (NullPointerException e) {
 				m.put("exception", e.getMessage());
-				System.out.println("message===>" + m);
+				//System.out.println("message===>" + m);
 				repairShopService.regWSException(m);
 
 				e.printStackTrace();
 				// throw e;
 			} catch (Exception e) {
 				m.put("exception", e.getMessage());
-				System.out.println("message===>" + m);
+				//System.out.println("message===>" + m);
 				repairShopService.regWSException(m);
 
 				e.printStackTrace();

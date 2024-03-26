@@ -3,6 +3,7 @@ package com.maxrun.repairshop.carcare.service;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.maxrun.application.config.PropertyManager;
 import com.maxrun.application.exception.BizExType;
 import com.maxrun.application.exception.BizException;
 import com.maxrun.repairshop.service.RepairShopService;
+import com.microsoft.sqlserver.jdbc.SQLServerException;
 
 @Transactional
 @Service
@@ -66,7 +68,7 @@ public class CarCareJobService {
 		return carCareJobMapper.deleteCarEnterIn(reqNo);
 	}
 
-	public void regCarEnterIn(Map<String, Object> param)throws Exception{
+	public void regCarEnterIn(Map<String, Object> param)throws BizException{
 		try {
 			
 			carCareJobMapper.regCarEnterIn(param);
@@ -77,13 +79,21 @@ public class CarCareJobService {
 
 			param.put("reqNo", param.get("outReqNo"));
 			
+		}catch(SQLException e) {
+			logger.info(e.getMessage());
+			if(e.getMessage().contains("특수기호를")) {
+				throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "차량번호에는 역슬래시 특수기호를 사용하실 수 없습니다");
+			}else {
+				e.printStackTrace();
+				throw new BizException(BizExType.SERVER_ERROR, "처리과정에서 서버 오류가 발생했습니다. 관리자에 문의 하십시오!!");
+			}
 		}catch(Exception e) {
 			logger.info(e.getMessage());
 			if(e.getMessage().contains("이미 입고내역이 있는 차량번호입니다")) {
 				throw new BizException(BizExType.WRONG_PARAMETER_VALUE, "동일 년월에 등록된 차량번호입니다. 차량번호 다음에 _숫자등을 부여해서 구분해주세요!!");
 			}else {
 				e.printStackTrace();
-				throw e;
+				throw new BizException(BizExType.SERVER_ERROR, "처리과정에서 서버 오류가 발생했습니다. 관리자에 문의 하십시오!!");
 			}
 		}
 		

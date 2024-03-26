@@ -55,6 +55,15 @@ public class CarCarJobCtr {
 			throw new BizException(BizExType.PARAMETER_MISSING, "차량번호가 누락되었습니다");
 		}
 		
+		String carLicenseNo = String.valueOf(param.get("carLicenseNo"));
+		
+		if(carLicenseNo.contains("/") || carLicenseNo.contains("?") || 
+				carLicenseNo.contains("*") || carLicenseNo.contains("<") || 
+				carLicenseNo.contains(">") || carLicenseNo.contains(":") ||
+				carLicenseNo.contains("\\") || carLicenseNo.contains("|")) {
+			throw new BizException(BizExType.PARAMETER_MISSING, "차량번호에 사용하실 수 없는 특수기호를 입력하셨습니다");
+		}
+		
 		param.put("workerNo", claims.get("workerNo"));
 		param.put("repairShopNo", claims.get("repairShopNo"));
 		
